@@ -8,7 +8,7 @@ window.POSTS = [
     body: "Singer Gyakie has announced a comeback concert for December 12, 2026 at Ghud Park, Accra Mall. The show marks her return after a break spent recording her upcoming album, Midnight. She says fans can expect a steady rollout of new music, live performances and exclusive content ahead of the night.\nSource: 3News",
     ts: 1793622270176,
     link: "https://3news.com/music/gyakie-announces-december-12-comeback-concert-at-ghud-park-accra",
-    images: [],
+    images: ["images/news-20261102-1200-1.jpg"],
     pin: false,
     status: "live"
   },
