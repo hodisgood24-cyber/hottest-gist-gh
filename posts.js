@@ -38,6 +38,7 @@ window.POSTS = [
   },
   {
     id: "news-20261102-1200-1",
+    eventAt: 1797098400000,
     title: "Gyakie announces December 12 comeback concert in Accra",
     cat: "Events",
     by: "News desk",
@@ -50,6 +51,7 @@ window.POSTS = [
   },
   {
     "id": "lasmid-concert-2026",
+    "eventAt": 1796493600000,
     "title": "Lasmid Live in Concert: The Legacy Begins",
     "cat": "Events",
     "by": "Hottest Gist GH",

@@ -118,7 +118,7 @@ input[type=search]{width:100%;background:var(--card);color:var(--text);border:1p
 .sb.wa{background:#25D366}.sb.fb{background:#1877F2}.sb.xx{background:#000}.sb.tg{background:#229ED9}.sb.cp{background:#6b7280}.sb.nat{background:#e11d48}
 .sb.cp svg,.sb.nat svg{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @media (prefers-reduced-motion:reduce){.pill.pop svg,.fl{animation:none}.sb,.pill{transition:none}}
-.locked header,.locked main,.locked footer{display:none}
+.locked header,.locked main,.locked footer,.locked .tabs{display:none}
 .who{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13px;color:var(--muted);font-weight:700}
 .who button{background:none;border:0;color:var(--red);font:inherit;font-weight:800;cursor:pointer;padding:0;text-decoration:underline}
 .gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
@@ -182,6 +182,48 @@ input[type=search]{width:100%;background:var(--card);color:var(--text);border:1p
 header.wrap{padding-right:64px}
 .logo{width:44px;height:44px;vertical-align:middle;margin-right:10px;border-radius:10px;display:inline-block}
 .gc .logo{width:56px;height:56px;display:block;margin:0 0 10px}
+.tabs{display:flex;gap:6px;margin:6px auto 4px;padding-block:6px;overflow-x:auto}
+.tabs button{flex:1;white-space:nowrap;font:inherit;font-weight:800;font-size:14px;padding:10px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--text);cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--red);color:var(--on-red);border-color:var(--red)}
+.vh{font:400 28px/1 var(--font-display);text-transform:uppercase;margin:6px 0 4px}
+.rxw{display:flex;gap:6px}
+.rx{font:inherit;font-size:16px;font-weight:800;border:1.5px solid var(--line);background:var(--bg);color:var(--text);border-radius:999px;padding:5px 10px;cursor:pointer;transition:transform .12s}
+.rx:active{transform:scale(.9)}
+.rx.on{border-color:var(--red);background:rgba(200,16,46,.1)}
+.rx.pop2{animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+.cd{display:inline-flex;align-items:center;font-size:13px;font-weight:800;color:#7a4a00;background:#fcd116;border-radius:999px;padding:6px 12px}
+.player{margin-top:12px;border-radius:12px;overflow:hidden;background:#000;flex-basis:100%}
+.player iframe{display:block;width:100%;border:0}
+.hot{margin:14px 0 4px}
+.hot h3,.poll .pk{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.hotrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+.hotc{flex:0 0 200px;text-align:left;font:inherit;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;padding:10px 12px;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.hotc .hn{font:400 22px/1 var(--font-display);color:var(--red)}
+.hotc .ht{font-size:13px;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hotc .hs{font-size:12px;font-weight:800;color:var(--muted)}
+.poll{margin:14px 0;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:14px}
+.poll h3{margin:0 0 10px;font-size:18px;line-height:1.25}
+.opt{position:relative;display:flex;justify-content:space-between;gap:10px;width:100%;overflow:hidden;font:inherit;font-weight:700;font-size:15px;text-align:left;border:1.5px solid var(--line);background:var(--bg);color:var(--text);border-radius:12px;padding:11px 12px;margin-top:8px;cursor:pointer}
+.opt .bar{position:absolute;left:0;top:0;bottom:0;background:rgba(200,16,46,.18);transition:width .4s}
+.opt.mine{border-color:var(--red)}
+.opt .ot,.opt .op{position:relative}
+.poll .pt{margin-top:10px;font-size:12px;color:var(--muted);font-weight:700}
+.wach{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0 0;padding:12px;border-radius:12px;background:#25D366;color:#fff;font-weight:800;text-decoration:none}
+.bdg{display:inline-block;margin-left:6px;font-size:11px;font-weight:800;color:var(--red);background:rgba(200,16,46,.1);border-radius:999px;padding:1px 8px}
+.cm.re{margin-left:18px;border-left:3px solid var(--line);padding-left:10px}
+.rl{background:none;border:0;color:var(--muted);font:inherit;font-size:12px;font-weight:800;cursor:pointer;padding:2px 0}
+.rb{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;background:var(--bg);border-radius:8px;padding:6px 10px}
+.rb button{background:none;border:0;color:var(--red);font-weight:800;cursor:pointer}
+.wm{padding:10px 12px;border-bottom:1px solid var(--line)}
+.wm b{font-size:14px}.wm small{color:var(--muted);margin-left:6px;font-size:12px}.wm p{margin:3px 0 0;overflow-wrap:anywhere}
+.qz{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:16px;margin-top:12px}
+.qz h3{margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.qz .qq{font-size:20px;font-weight:800;line-height:1.25;margin-bottom:8px}
+.qo{display:block;width:100%;text-align:left;font:inherit;font-weight:700;border:1.5px solid var(--line);background:var(--bg);color:var(--text);border-radius:12px;padding:12px;margin-top:8px;cursor:pointer}
+.qo.ok{border-color:#15803d;background:rgba(21,128,61,.15)}
+.qo.no{border-color:var(--red);background:rgba(200,16,46,.15)}
+.qz .big{font:400 54px/1 var(--font-display);color:var(--red)}
+.go2{font:inherit;font-weight:800;font-size:15px;background:var(--red);color:var(--on-red);border:0;border-radius:10px;padding:12px 18px;cursor:pointer;margin-top:12px;margin-right:8px;text-decoration:none;display:inline-block}
 </style>
 </head>
 <body>
@@ -193,10 +235,19 @@ header.wrap{padding-right:64px}
   <p class="sub">Fresh music, movies and culture from Ghana and beyond.</p>
   <div class="who" id="who" hidden></div>
 </header>
+<nav class="wrap tabs" id="tabs" aria-label="Sections" hidden></nav>
 <main class="wrap">
-  <input id="q" type="search" placeholder="Search posts" aria-label="Search posts">
-  <div class="chips" id="chips" hidden></div>
-  <div id="feed"></div>
+  <div id="vGist">
+    <div id="wach"></div>
+    <div id="topPoll"></div>
+    <div class="hot" id="hot" hidden></div>
+    <input id="q" type="search" placeholder="Search posts" aria-label="Search posts">
+    <div class="chips" id="chips" hidden></div>
+    <div id="feed"></div>
+  </div>
+  <div id="vPolls" hidden></div>
+  <div id="vWall" hidden></div>
+  <div id="vQuiz" hidden></div>
 </main>
 <footer class="wrap foot">Hottest Gist GH · Fresh music, movies and culture from Ghana and beyond.</footer>
 
@@ -206,6 +257,7 @@ header.wrap{padding-right:64px}
 
 <script src="config.js"></script>
 <script src="posts.js"></script>
+<script src="polls.js"></script>
 <script>
 (function(){
 "use strict";
@@ -246,6 +298,7 @@ $("lb").onclick=closeLb;
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("lb").hidden)closeLb()});
 
 var P={
+ play:'<path d="M7 4l13 8-13 8z"/>',
  heart:'<path d="M12 21s-7.500-4.700-9.500-9.500C1.200 8 3.200 4.500 6.800 4.500c2 0 3.500 1.100 5.200 3 1.700-1.900 3.200-3 5.200-3 3.600 0 5.600 3.500 4.300 7C19.500 16.300 12 21 12 21z"/>',
  chat:'<path d="M21 11.500a8.500 8.500 0 0 1-12.300 7.600L3 20.500l1.500-5.200A8.500 8.500 0 1 1 21 11.500z"/>',
  wa:'<path d="M12 2.200a9.700 9.700 0 0 0-8.300 14.700L2.200 21.800l5-1.300A9.700 9.700 0 1 0 12 2.200zm0 1.900a7.800 7.800 0 1 1-4 14.500l-.3-.2-2.900.8.8-2.800-.2-.3A7.800 7.800 0 0 1 12 4.100zM8.700 7.300c-.3 0-.7.100-1 .5-.4.500-.6 1.400.2 2.700 1.200 2.200 3.200 3.800 5 4.300 1.100.3 2-.2 2.300-1.100.1-.4 0-.6-.3-.8l-1.500-.7c-.3-.1-.5 0-.7.200l-.5.600c-1.100-.4-2.100-1.300-2.600-2.400l.5-.6c.2-.2.2-.4.1-.7l-.7-1.500c-.1-.3-.3-.4-.3-.4z"/>',
@@ -382,7 +435,7 @@ function showGate(mode,note){
 function logout(){
   var t=SES&&SES.access_token;saveSes(null);
   if(t)authCall("logout",null,"POST",t).catch(function(){});
-  likeN={};comN={};showGate("signup");
+  likeN={};comN={};reactN={};myReact={};pollN={};myVote={};stats={};$("tabs").hidden=true;showGate("signup");
 }
 function renderWho(){
   var w=$("who");if(!CFG||!SES){w.hidden=true;return}
@@ -390,6 +443,9 @@ function renderWho(){
   var b=el("button",null,"Log out");b.type="button";b.onclick=logout;w.appendChild(b);
 }
 var likeN={},comN={},liked={};
+var R=[["fire","🔥"],["lol","😂"],["love","😍"],["clap","👏"]];
+var reactN={},myReact={},pollN={},myVote={},stats={},viewName="gist",deferred=null;
+window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferred=e});
 try{liked=JSON.parse(ls("gh-liked")||"{}")||{}}catch(e){liked={}}
 function paint(){
   var a=document.querySelectorAll("[data-like]");
@@ -397,11 +453,175 @@ function paint(){
     a[i].lastChild.textContent=(on?"Liked":"Like")+(n?" \u00b7 "+n:"");a[i].classList.toggle("on",on);a[i].setAttribute("aria-pressed",String(on))}
   var c=document.querySelectorAll("[data-com]");
   for(var j=0;j<c.length;j++){var n2=comN[c[j].getAttribute("data-com")]||0;c[j].lastChild.textContent="Comments"+(n2?" \u00b7 "+n2:"")}
+  var rx=document.querySelectorAll("[data-rx]");
+  for(var k=0;k<rx.length;k++){var key=rx[k].getAttribute("data-rx"),n3=reactN[key]||0;
+    rx[k].textContent=rx[k].getAttribute("data-e")+(n3?" "+n3:"");rx[k].classList.toggle("on",!!myReact[key])}
+}
+function score(p){var s=(likeN[p.id]||0)+2*(comN[p.id]||0);R.forEach(function(r){s+=reactN[p.id+"|"+r[0]]||0});return s}
+function goPost(id){
+  setView("gist");filter="All";term="";$("q").value="";renderChips();render();
+  var t=document.getElementById("post-"+id);if(t){t.classList.add("flash");t.scrollIntoView({behavior:"smooth",block:"start"})}
+}
+function renderHot(){
+  var box=$("hot");if(!box)return;box.textContent="";
+  var top=all.map(function(p){return{p:p,s:score(p)}}).filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s}).slice(0,5);
+  if(!top.length){box.hidden=true;return}
+  box.hidden=false;box.appendChild(el("h3",null,"🔥 Hot right now"));
+  var row=el("div","hotrow");
+  top.forEach(function(x,i){
+    var b=el("button","hotc");b.type="button";
+    b.appendChild(el("span","hn","#"+(i+1)));b.appendChild(el("span","ht",x.p.title));b.appendChild(el("span","hs","🔥 "+x.s+" points"));
+    b.onclick=function(){goPost(x.p.id)};row.appendChild(b);
+  });
+  box.appendChild(row);
+}
+function badgesFor(id){
+  var s=stats[id];if(!s)return"";var b=[];
+  if(s.comments>=25)b.push("👑 Legend");else if(s.comments>=10)b.push("⭐ Top Fan");else if(s.comments>=1)b.push("💬 Commenter");
+  if(s.likes>=25)b.push("🔥 Hype Fan");
+  return b.join(" · ");
+}
+function nameEl(name,id){var w=el("span");w.appendChild(el("b",null,name));var bg=badgesFor(id);if(bg)w.appendChild(el("span","bdg",bg));return w}
+function toggleReaction(p,code){
+  var k=p.id+"|"+code,on=!myReact[k];
+  if(on)myReact[k]=1;else delete myReact[k];
+  reactN[k]=Math.max(0,(reactN[k]||0)+(on?1:-1));paint();renderHot();
+  api("rpc/toggle_reaction_auth",{p_post:p.id,p_emoji:code,p_on:on}).catch(function(){
+    if(on)delete myReact[k];else myReact[k]=1;
+    reactN[k]=Math.max(0,(reactN[k]||0)+(on?-1:1));paint();renderHot();toast("Couldn't save your reaction");
+  });
+}
+function embedUrl(u){
+  if(!u)return null;var x;try{x=new URL(u)}catch(e){return null}
+  var h=x.hostname.replace(/^www\./,""),m,id;
+  if(h==="youtu.be"){id=x.pathname.slice(1)}
+  else if(/(^|\.)youtube\.com$/.test(h)){id=x.searchParams.get("v")||((m=x.pathname.match(/^\/(shorts|embed|live)\/([\w-]+)/))?m[2]:null)}
+  if(id&&/^[\w-]{6,20}$/.test(id))return{src:"https://www.youtube-nocookie.com/embed/"+id,ratio:"16/9"};
+  if(h==="open.spotify.com"&&(m=x.pathname.match(/^\/(track|album|playlist|episode|show)\/(\w+)/)))return{src:"https://open.spotify.com/embed/"+m[1]+"/"+m[2],h:m[1]==="track"?152:352};
+  if(h==="audiomack.com"&&(m=x.pathname.match(/^\/([\w.-]+)\/(song|album)\/([\w.-]+)/)))return{src:"https://audiomack.com/embed/"+m[2]+"/"+m[1]+"/"+m[3],h:m[2]==="song"?252:352};
+  return null;
+}
+function countdown(p){
+  if(!p.eventAt)return null;
+  var d=Math.ceil((p.eventAt-Date.now())/864e5);
+  if(d<0)return null;if(d===0)return"🎉 Today!";if(d===1)return"⏳ Tomorrow!";return"⏳ "+d+" days to go";
+}
+var POLLS=Array.isArray(window.POLLS)?window.POLLS:[];
+function pollCard(pl){
+  var c=el("section","poll");
+  c.appendChild(el("div","pk",pl.kind==="month"?"⭐ Fans' choice":"📊 Poll of the day"));
+  c.appendChild(el("h3",null,pl.q));
+  var total=0;pl.options.forEach(function(o,i){total+=pollN[pl.id+"|"+i]||0});
+  pl.options.forEach(function(o,i){
+    var n=pollN[pl.id+"|"+i]||0,pct=total?Math.round(n*100/total):0,mine=myVote[pl.id]===i;
+    var b=el("button","opt"+(mine?" mine":""));b.type="button";
+    var bar=el("span","bar");bar.style.width=pct+"%";b.appendChild(bar);
+    b.appendChild(el("span","ot",(mine?"✓ ":"")+o));b.appendChild(el("span","op",total?pct+"%":""));
+    b.onclick=function(){votePoll(pl,i)};c.appendChild(b);
+  });
+  c.appendChild(el("div","pt",total+" vote"+(total===1?"":"s")+(myVote[pl.id]==null?" · tap to vote":" · tap another to change")));
+  return c;
+}
+function renderPolls(){
+  var t=$("topPoll");if(t){t.textContent="";if(POLLS[0])t.appendChild(pollCard(POLLS[0]))}
+  var v=$("vPolls");if(!v)return;v.textContent="";
+  v.appendChild(el("h2","vh","📊 Polls"));
+  v.appendChild(el("p","sub","Vote and see what everyone thinks. You can change your vote anytime."));
+  if(!POLLS.length)v.appendChild(el("div","empty","No polls yet. Check back soon."));
+  POLLS.forEach(function(pl){v.appendChild(pollCard(pl))});
+}
+function votePoll(pl,i){
+  var prev=myVote[pl.id];if(prev===i)return;
+  if(prev!=null)pollN[pl.id+"|"+prev]=Math.max(0,(pollN[pl.id+"|"+prev]||0)-1);
+  pollN[pl.id+"|"+i]=(pollN[pl.id+"|"+i]||0)+1;myVote[pl.id]=i;renderPolls();
+  api("rpc/vote_poll_auth",{p_poll:pl.id,p_opt:i}).catch(function(){
+    pollN[pl.id+"|"+i]=Math.max(0,(pollN[pl.id+"|"+i]||0)-1);
+    if(prev!=null){pollN[pl.id+"|"+prev]=(pollN[pl.id+"|"+prev]||0)+1;myVote[pl.id]=prev}else delete myVote[pl.id];
+    renderPolls();toast("Couldn't save your vote");
+  });
+}
+function loadWall(){
+  var box=$("vWall");box.textContent="";
+  box.appendChild(el("h2","vh","💬 Fan wall"));
+  box.appendChild(el("p","sub","Say hello, shout out your favourite artist, hype the next show."));
+  var f=el("form","cf");var tx=el("textarea");tx.maxLength=200;tx.rows=2;tx.placeholder="Write on the wall (200 characters)";tx.setAttribute("aria-label","Wall message");
+  var bt=el("button","","Post to the wall");bt.type="submit";f.appendChild(tx);f.appendChild(bt);box.appendChild(f);
+  var list=el("div");list.appendChild(el("div","none","Loading..."));box.appendChild(list);
+  function load(){
+    api("wall?order=created_at.desc&limit=50&select=id,client_id,name,text,created_at").then(function(r){
+      list.textContent="";
+      if(!r||!r.length){list.appendChild(el("div","none","Nobody has posted yet. Be the first!"));return}
+      r.forEach(function(w){var d=el("div","wm"),h=el("div");h.appendChild(nameEl(w.name||"Fan",w.client_id));h.appendChild(el("small",null,fmtT(w.created_at)));d.appendChild(h);d.appendChild(el("p",null,w.text));list.appendChild(d)});
+    }).catch(function(){list.textContent="";list.appendChild(el("div","none","Couldn't load the wall right now."))});
+  }
+  f.onsubmit=function(e){
+    e.preventDefault();var t=tx.value.trim();if(!t){tx.focus();return}bt.disabled=true;
+    api("rpc/post_wall_auth",{p_text:t}).then(function(){tx.value="";bt.disabled=false;load();toast("Posted!")}).catch(function(){bt.disabled=false;toast("Couldn't post. Wait a moment, or log in again.")});
+  };
+  load();
+}
+var QUIZ=[
+ {q:"Which Ghanaian artist is known for \"Kwaku the Traveller\"?",a:"Black Sherif",w:["Kuami Eugene","Gyakie","Medikal"]},
+ {q:"The T in TGMA stands for which company?",a:"Telecel",w:["Tigo","Total","Talk Africa"]},
+ {q:"Which music style is widely seen as having started in Ghana?",a:"Highlife",w:["Amapiano","Reggae","Salsa"]},
+ {q:"Which Fuse ODG hit helped spread the Azonto dance worldwide?",a:"Antenna",w:["Terminator","Touch It","Rockstar"]},
+ {q:"\"Touch It\" is a hit by which artist?",a:"KiDi",w:["King Promise","Fameye","Amerado"]},
+ {q:"\"Terminator\" is a hit by which artist?",a:"King Promise",w:["KiDi","Sarkodie","Stonebwoy"]},
+ {q:"What is Sarkodie's real first name?",a:"Michael",w:["Kwame","Samuel","Emmanuel"]},
+ {q:"What symbol is in the middle of the Ghana flag?",a:"A black star",w:["A sun","A cocoa pod","A lion"]}
+];
+var qs={i:0,score:0,order:[],done:false};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function renderQuiz(reset){
+  var v=$("vQuiz");v.textContent="";
+  v.appendChild(el("h2","vh","🧠 Ghana music quiz"));
+  v.appendChild(el("p","sub","8 quick questions. How big a fan are you?"));
+  if(reset||!qs.order.length){qs={i:0,score:0,order:shuffle(QUIZ.map(function(_,i){return i})),done:false}}
+  var box=el("div","qz");v.appendChild(box);
+  if(qs.i>=QUIZ.length){
+    var s=qs.score,msg=s>=7?"Gist Master 🏆":s>=4?"Real fan 🔥":"Warm-up round 🎶";
+    box.appendChild(el("h3",null,"Your score"));box.appendChild(el("div","big",s+" / "+QUIZ.length));box.appendChild(el("p","qq",msg));
+    var again=el("button","go2","Play again");again.type="button";again.onclick=function(){renderQuiz(true)};box.appendChild(again);
+    var sh=el("a","go2","Share my score");sh.href="https://wa.me/?text="+encodeURIComponent("I scored "+s+"/"+QUIZ.length+" on the Hottest Gist GH Ghana music quiz! "+msg+"\nBeat me: "+location.origin);sh.target="_blank";sh.rel="noopener noreferrer";box.appendChild(sh);
+    return;
+  }
+  var item=QUIZ[qs.order[qs.i]];
+  box.appendChild(el("h3",null,"Question "+(qs.i+1)+" of "+QUIZ.length));
+  box.appendChild(el("div","qq",item.q));
+  var locked=false;
+  shuffle([item.a].concat(item.w)).forEach(function(o){
+    var b=el("button","qo",o);b.type="button";
+    b.onclick=function(){
+      if(locked)return;locked=true;
+      var good=o===item.a;if(good)qs.score++;b.classList.add(good?"ok":"no");
+      if(!good)Array.prototype.forEach.call(box.querySelectorAll(".qo"),function(x){if(x.textContent===item.a)x.classList.add("ok")});
+      setTimeout(function(){qs.i++;renderQuiz()},1100);
+    };
+    box.appendChild(b);
+  });
+}
+function setView(v){
+  viewName=v;
+  ["gist","polls","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
+  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();
+  window.scrollTo({top:0});
+}
+function buildTabs(){
+  var t=$("tabs");t.textContent="";t.hidden=false;
+  [["gist","🔥 Gist"],["polls","📊 Polls"],["wall","💬 Wall"],["quiz","🧠 Quiz"]].forEach(function(x){
+    var b=el("button",null,x[1]);b.type="button";b.setAttribute("data-v",x[0]);b.setAttribute("aria-pressed",String(x[0]===viewName));b.onclick=function(){setView(x[0])};t.appendChild(b);
+  });
 }
 function loadCounts(){
   if(!CFG)return;
-  api("like_counts?select=post_id,n").then(function(r){(r||[]).forEach(function(x){likeN[x.post_id]=x.n});paint()}).catch(function(){});
-  api("comment_counts?select=post_id,n").then(function(r){(r||[]).forEach(function(x){comN[x.post_id]=x.n});paint()}).catch(function(){});
+  api("like_counts?select=post_id,n").then(function(r){(r||[]).forEach(function(x){likeN[x.post_id]=x.n});paint();renderHot()}).catch(function(){});
+  api("comment_counts?select=post_id,n").then(function(r){(r||[]).forEach(function(x){comN[x.post_id]=x.n});paint();renderHot()}).catch(function(){});
+  api("reaction_counts?select=post_id,emoji,n").then(function(r){(r||[]).forEach(function(x){reactN[x.post_id+"|"+x.emoji]=x.n});paint();renderHot()}).catch(function(){});
+  api("reactions?select=post_id,emoji").then(function(r){(r||[]).forEach(function(x){myReact[x.post_id+"|"+x.emoji]=1});paint()}).catch(function(){});
+  api("poll_counts?select=poll_id,option_idx,n").then(function(r){(r||[]).forEach(function(x){pollN[x.poll_id+"|"+x.option_idx]=x.n});renderPolls()}).catch(function(){});
+  api("poll_votes?select=poll_id,option_idx").then(function(r){(r||[]).forEach(function(x){myVote[x.poll_id]=x.option_idx});renderPolls()}).catch(function(){});
+  api("user_stats?select=client_id,comments,likes&limit=2000").then(function(r){(r||[]).forEach(function(x){stats[x.client_id]=x})}).catch(function(){});
 }
 function toggleLike(p){
   var on=!liked[p.id];
@@ -416,33 +636,44 @@ function toggleLike(p){
   });
 }
 function fmtT(t){try{return new Date(t).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}catch(e){return""}}
-function addComment(list,c){
-  var d=el("div","cm"),b=el("b",null,c.name||"Fan");d.appendChild(b);d.appendChild(el("small",null,fmtT(c.created_at)));d.appendChild(el("p",null,c.text));list.appendChild(d);
-}
 function openComments(p,box){
   box.textContent="";
+  var replyTo=null;
   var list=el("div");list.appendChild(el("div","none","Loading comments..."));box.appendChild(list);
-  api("comments?post_id=eq."+encodeURIComponent(p.id)+"&order=created_at.asc&limit=100&select=name,text,created_at").then(function(r){
-    list.textContent="";
-    if(!r||!r.length)list.appendChild(el("div","none","No comments yet. Be the first."));
-    else r.forEach(function(c){addComment(list,c)});
-  }).catch(function(){list.textContent="";list.appendChild(el("div","none","Couldn't load comments right now."))});
   var f=el("form","cf");
+  var rb=el("div","rb");rb.hidden=true;
   var tx=el("textarea");tx.maxLength=500;tx.rows=3;tx.placeholder="Write a comment";tx.setAttribute("aria-label","Comment");
   var bt=el("button","","Post comment");bt.type="submit";
-  f.appendChild(tx);f.appendChild(bt);
+  function setReply(c){
+    replyTo=c;rb.hidden=!c;rb.textContent="";
+    if(c){rb.appendChild(el("span",null,"Replying to "+(c.name||"Fan")));var x=el("button",null,"\u2715");x.type="button";x.setAttribute("aria-label","Cancel reply");x.onclick=function(){setReply(null)};rb.appendChild(x);tx.focus();bt.textContent="Post reply"}
+    else bt.textContent="Post comment";
+  }
+  function one(c,child){
+    var d=el("div","cm"+(child?" re":"")),h=el("div");
+    h.appendChild(nameEl(c.name||"Fan",c.client_id));h.appendChild(el("small",null,fmtT(c.created_at)));d.appendChild(h);d.appendChild(el("p",null,c.text));
+    if(!child){var rp=el("button","rl","Reply");rp.type="button";rp.onclick=function(){setReply(c)};d.appendChild(rp)}
+    return d;
+  }
+  function load(){
+    api("comments?post_id=eq."+encodeURIComponent(p.id)+"&order=created_at.asc&limit=300&select=id,parent_id,client_id,name,text,created_at").then(function(r){
+      list.textContent="";
+      if(!r||!r.length){list.appendChild(el("div","none","No comments yet. Be the first."));return}
+      var kids={};r.forEach(function(c){if(c.parent_id){(kids[c.parent_id]=kids[c.parent_id]||[]).push(c)}});
+      r.forEach(function(c){if(!c.parent_id){list.appendChild(one(c,false));(kids[c.id]||[]).forEach(function(k){list.appendChild(one(k,true))})}});
+    }).catch(function(){list.textContent="";list.appendChild(el("div","none","Couldn't load comments right now."))});
+  }
+  f.appendChild(rb);f.appendChild(tx);f.appendChild(bt);
   f.onsubmit=function(e){
     e.preventDefault();
-    var name=myName(),text=tx.value.trim();
+    var text=tx.value.trim();
     if(!text){tx.focus();return}
     bt.disabled=true;
-    api("rpc/add_comment_auth",{p_post:p.id,p_text:text}).then(function(){
-      var none=list.querySelector(".none");if(none)list.removeChild(none);
-      addComment(list,{name:name,text:text,created_at:new Date().toISOString()});
-      comN[p.id]=(comN[p.id]||0)+1;paint();tx.value="";bt.disabled=false;
+    api("rpc/add_comment_auth",{p_post:p.id,p_text:text,p_parent:replyTo?replyTo.id:null}).then(function(){
+      tx.value="";setReply(null);bt.disabled=false;comN[p.id]=(comN[p.id]||0)+1;paint();renderHot();load();
     }).catch(function(){bt.disabled=false;toast("Couldn't post. Wait a moment, or log in again.")});
   };
-  box.appendChild(f);
+  box.appendChild(f);load();
 }
 function card(p){
   var a=el("article","post");a.id="post-"+p.id;
@@ -472,7 +703,24 @@ function card(p){
     box=el("div","com");box.hidden=true;
     cm.onclick=function(){if(box.hidden){box.hidden=false;openComments(p,box)}else{box.hidden=true}};
     row.appendChild(cm);
+    var rxw=el("div","rxw");
+    R.forEach(function(r){
+      var rb2=el("button","rx");rb2.type="button";rb2.setAttribute("data-rx",p.id+"|"+r[0]);rb2.setAttribute("data-e",r[1]);rb2.setAttribute("aria-label","React "+r[0]);rb2.textContent=r[1];
+      rb2.onclick=function(){toggleReaction(p,r[0]);rb2.classList.remove("pop2");void rb2.offsetWidth;rb2.classList.add("pop2")};rxw.appendChild(rb2);
+    });
+    row.appendChild(rxw);
   }
+  var pl=null,emb=embedUrl(l);
+  if(emb){
+    var pp=pill("play","Play");pl=el("div","player");pl.hidden=true;
+    pp.onclick=function(){
+      if(pl.hidden){pl.hidden=false;var fr=document.createElement("iframe");fr.src=emb.src;fr.loading="lazy";fr.allow="autoplay; encrypted-media; picture-in-picture; fullscreen";fr.setAttribute("allowfullscreen","");fr.referrerPolicy="strict-origin-when-cross-origin";fr.title="Player";
+        if(emb.ratio)fr.style.aspectRatio=emb.ratio;else fr.style.height=emb.h+"px";pl.appendChild(fr)}
+      else{pl.hidden=true;pl.textContent=""}
+    };
+    row.appendChild(pp);
+  }
+  var cdv=countdown(p);if(cdv)row.appendChild(el("span","cd",cdv));
   var sh=el("div","shr");sh.appendChild(el("small",null,"Share"));
   var url=permalink(p);
   if(navigator.share){var nt=sbtn("nat","nat","Share","button");nt.onclick=function(){navigator.share({title:p.title,text:p.title,url:url}).catch(function(){})};sh.appendChild(nt)}
@@ -483,6 +731,7 @@ function card(p){
   var cp=sbtn("cp","cp","Copy link","button");cp.onclick=function(){copyText(url)};sh.appendChild(cp);
   row.appendChild(sh);
   a.appendChild(row);
+  if(pl)a.appendChild(pl);
   if(box)a.appendChild(box);
   return a;
 }
@@ -532,6 +781,7 @@ function buildSettings(){
   if(CFG&&SES){
     p.appendChild(el("h3",null,"Account"));
     p.appendChild(el("div","who2","Signed in as "+myName()+(SES.user&&SES.user.email?" ("+SES.user.email+")":"")));
+    var mb=badgesFor(SES.user&&SES.user.id);p.appendChild(el("div","who2",mb?"Your badges: "+mb:"Your badges: comment on a post to earn your first one"));
     var nm=el("div","nm");var ni=el("input");ni.maxLength=40;ni.value=myName();ni.setAttribute("aria-label","Display name");
     var sv=el("button",null,"Save");sv.type="button";
     sv.onclick=function(){
@@ -546,6 +796,9 @@ function buildSettings(){
   p.appendChild(el("h3",null,"More"));
   var sh=el("button","item","\ud83d\udce4 Share this site");sh.type="button";
   sh.onclick=function(){var u=location.origin+location.pathname;if(navigator.share)navigator.share({title:"Hottest Gist GH",text:"Fresh music, movies and culture from Ghana",url:u}).catch(function(){});else copyText(u)};p.appendChild(sh);
+  var ins=el("button","item","\ud83d\udcf2 Install the app");ins.type="button";
+  ins.onclick=function(){if(deferred){deferred.prompt();deferred=null}else toast("iPhone: tap Share, then Add to Home Screen. Android: browser menu, then Install app.")};p.appendChild(ins);
+  if(CFG&&CFG.whatsapp){var wc=el("a","item","\ud83d\udce2 Join our WhatsApp channel");wc.href=CFG.whatsapp;wc.target="_blank";wc.rel="noopener noreferrer";p.appendChild(wc)}
   var up=el("button","item","\u2b06\ufe0f Back to top");up.type="button";up.onclick=function(){closeSettings();window.scrollTo({top:0,behavior:"smooth"})};p.appendChild(up);
 }
 function openSettings(){setOpen=true;buildSettings();$("sp").hidden=false;$("gear").setAttribute("aria-expanded","true")}
@@ -555,7 +808,9 @@ document.addEventListener("click",function(e){if(setOpen&&e.target.isConnected&&
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&setOpen){closeSettings();$("gear").focus()}});
 function start(){
   document.body.classList.remove("locked");$("gate").hidden=true;
-  renderWho();renderChips();render();loadCounts();
+  renderWho();buildTabs();setView(viewName);renderChips();render();renderPolls();loadCounts();
+  var wa=$("wach");wa.textContent="";
+  if(CFG&&CFG.whatsapp){var wl=el("a","wach","\ud83d\udce2 Join our WhatsApp channel");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wa.appendChild(wl)}
   $("q").hidden=!all.length;
   var h=location.hash.slice(1);
   if(h&&!/access_token|type=/.test(h)){var t=document.getElementById("post-"+h);if(t){t.classList.add("flash");t.scrollIntoView()}}
