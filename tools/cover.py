@@ -132,7 +132,7 @@ def make(title, cat, out):
     <div style="position:absolute;left:60px;right:480px;top:150px;bottom:130px;display:flex;align-items:center;
       font:800 {size}px/1.12 'DejaVu Sans',sans-serif;text-shadow:0 4px 18px rgba(0,0,0,.35)">{html.escape(title)}</div>
     <div style="position:absolute;left:60px;bottom:40px;font:800 38px 'DejaVu Sans',sans-serif;letter-spacing:1px">HOTTEST GIST <span style="background:#006b3f;padding:2px 14px;border-radius:6px">GH</span></div>
-    <div style="position:absolute;right:60px;bottom:48px;font:700 26px 'DejaVu Sans',sans-serif;opacity:.9">hottestgistgh.netlify.app</div>
+    <div style="position:absolute;right:60px;bottom:48px;font:700 26px 'DejaVu Sans',sans-serif;opacity:.9">hottest-gist-gh.hodisgood24.workers.dev</div>
     </div></body></html>"""
     with sync_playwright() as p:
         br = p.chromium.launch()

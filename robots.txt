@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hottestgistgh.netlify.app/sitemap.xml
+Sitemap: https://hottest-gist-gh.hodisgood24.workers.dev/sitemap.xml
