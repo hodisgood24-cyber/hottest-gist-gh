@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Hottest Gist GH</title>
+<meta name="description" content="Fresh music, movies and culture from Ghana and beyond.">
+<meta property="og:title" content="Hottest Gist GH">
+<meta property="og:description" content="Fresh music, movies and culture from Ghana and beyond.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://grand-strudel-f91b37.netlify.app/">
+<meta property="og:image" content="https://grand-strudel-f91b37.netlify.app/images/lasmid-concert-2026-1.jpg">
+<meta property="og:image:width" content="1032">
+<meta property="og:image:height" content="1280">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hottest Gist GH">
+<meta name="twitter:image" content="https://grand-strudel-f91b37.netlify.app/images/lasmid-concert-2026-1.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Public+Sans:wght@400;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#f2f2ee;--card:#ffffff;--text:#15140f;--muted:#5d5a51;--line:#dcdad1;
+  --red:#c8102e;--on-red:#ffffff;--green:#006b3f;--on-green:#ffffff;--gold:#fcd116;--focus:#1a5fd0;
+  --font-display:"Anton",Impact,"Arial Narrow",sans-serif;
+  --font-body:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0f0f0d;--card:#1a1916;--text:#f3f1ea;--muted:#a6a195;--line:#35332d;--red:#ff5c6c;--on-red:#1c0509;--green:#0a8650;--focus:#8bb5ff;color-scheme:dark}
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 var(--font-body)}
+h1,h2,p{margin:0}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+img{max-width:100%}
+.flag{height:8px;background:linear-gradient(90deg,var(--red) 0 33.34%,var(--gold) 33.34% 66.67%,var(--green) 66.67%)}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.wrap{padding-block:24px 8px}
+main.wrap{padding-block:8px 24px}
+h1{font:400 clamp(32px,10vw,48px)/.95 var(--font-display);text-transform:uppercase;letter-spacing:.01em}
+h1 span{display:inline-block;background:var(--green);color:var(--on-green);padding:0 8px;border-radius:4px;margin-left:6px}
+.sub{color:var(--muted);font-size:15px;margin-top:10px}
+input[type=search]{width:100%;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:16px}
+#feed{margin-top:16px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 0}
+.chip{white-space:nowrap;border:1px solid var(--line);background:var(--card);border-radius:6px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--green);color:var(--on-green);border-color:var(--green)}
+.post{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:16px;margin-bottom:16px;scroll-margin-top:16px}
+.post.flash{border-color:var(--green);border-width:2px}
+.tagrow{display:flex;gap:8px;align-items:center}
+.tag{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+.pin{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:#15140f;padding:1px 8px;border-radius:3px}
+.post h2{font:400 clamp(26px,7vw,34px)/1.1 var(--font-display);letter-spacing:.01em;margin:6px 0 4px;text-wrap:balance}
+.meta{font-size:13px;color:var(--muted)}
+.photos{display:grid;gap:4px;margin-top:12px;border-radius:6px;overflow:hidden}
+.photos.n1{grid-template-columns:1fr}
+.photos.n2{grid-template-columns:1fr 1fr}
+.photos.n3{grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;aspect-ratio:3/2}
+.photos.n3 button:first-child{grid-row:1 / span 2}
+.photos button{position:relative;padding:0;border:0;background:var(--line);cursor:zoom-in;min-width:0;display:block}
+.photos.n1 img{display:block;width:100%;max-height:min(80vh,640px);object-fit:contain;background:var(--line)}
+.photos.n2 button{aspect-ratio:1/1}
+.photos.n2 img,.photos.n3 img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.text{margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere;max-width:65ch}
+.linkbtn{display:inline-block;margin-top:14px;font-size:15px;font-weight:700;background:var(--red);color:var(--on-red);border-radius:6px;padding:10px 18px;text-decoration:none}
+.row{display:flex;gap:4px 16px;margin-top:12px;align-items:center;flex-wrap:wrap}
+.act{background:none;border:0;padding:4px 0;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;text-decoration:none}
+.act:hover{color:var(--text)}
+.empty{text-align:center;color:var(--muted);padding:44px 8px}
+.foot{text-align:center;color:var(--muted);font-size:12px;padding-block:8px 48px}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.lb img{max-width:100%;max-height:100%;object-fit:contain;border-radius:4px}
+.lbx{position:absolute;top:max(12px,env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;font-size:24px;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 16px;border-radius:6px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="flag"></div>
+<header class="wrap">
+  <h1>Hottest Gist<span>GH</span></h1>
+  <p class="sub">Fresh music, movies and culture from Ghana and beyond.</p>
+</header>
+<main class="wrap">
+  <input id="q" type="search" placeholder="Search posts" aria-label="Search posts">
+  <div class="chips" id="chips" hidden></div>
+  <div id="feed"></div>
+</main>
+<footer class="wrap foot">Hottest Gist GH · Fresh music, movies and culture from Ghana and beyond.</footer>
+
+<div class="lb" id="lb" hidden><button class="lbx" id="lbx" type="button" aria-label="Close photo">×</button><img id="lbimg" alt=""></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="posts.js"></script>
+<script>
+(function(){
+"use strict";
+function $(id){return document.getElementById(id)}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+
+var all=(Array.isArray(window.POSTS)?window.POSTS:[]).filter(function(p){
+  return p&&p.title&&p.status!=="draft"&&(p.ts||0)<=Date.now();
+});
+var filter="All",term="";
+
+function fmt(ts){try{return new Date(ts).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}catch(e){return""}}
+function safeLink(s){if(typeof s!=="string")return null;try{var u=new URL(s);return u.protocol==="https:"?u.href:null}catch(e){return null}}
+function linkLabel(u){
+  var h="";try{h=new URL(u).hostname.replace(/^www\./,"")}catch(e){}
+  if(/(^|\.)(youtube\.com|youtu\.be)$/.test(h))return "Watch on YouTube";
+  if(/(^|\.)audiomack\.com$/.test(h))return "Listen on Audiomack";
+  if(/(^|\.)spotify\.com$/.test(h))return "Listen on Spotify";
+  if(/(^|\.)music\.apple\.com$/.test(h))return "Listen on Apple Music";
+  if(/(^|\.)soundcloud\.com$/.test(h))return "Listen on SoundCloud";
+  if(/(^|\.)boomplay\.com$/.test(h))return "Listen on Boomplay";
+  if(/(^|\.)tickethubgh\.com$/.test(h))return "Get tickets";
+  return "Open link";
+}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("on")},2000)}
+function copyText(t){
+  function fb(){var ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}document.body.removeChild(ta);toast(ok?"Link copied":"Couldn't copy")}
+  try{navigator.clipboard.writeText(t).then(function(){toast("Link copied")},fb)}catch(e){fb()}
+}
+function permalink(p){return location.href.split("#")[0]+"#"+p.id}
+function shareText(p){
+  var l=safeLink(p.link);
+  return p.title+(l?"\n"+l:"")+"\n\nHottest Gist GH\n"+permalink(p);
+}
+function openLb(src,alt){$("lbimg").src=src;$("lbimg").alt=alt||"";$("lb").hidden=false;$("lbx").focus()}
+function closeLb(){$("lb").hidden=true;$("lbimg").removeAttribute("src")}
+$("lb").onclick=closeLb;
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("lb").hidden)closeLb()});
+
+function card(p){
+  var a=el("article","post");a.id="post-"+p.id;
+  var head=el("div","tagrow");head.appendChild(el("span","tag",p.cat||"News"));
+  if(p.pin)head.appendChild(el("span","pin","Pinned"));
+  a.appendChild(head);
+  a.appendChild(el("h2",null,p.title));
+  a.appendChild(el("div","meta",(p.by?"By "+p.by+" · ":"")+fmt(p.ts)));
+  var imgs=(Array.isArray(p.images)?p.images:[]).slice(0,3);
+  if(imgs.length){
+    var g=el("div","photos n"+imgs.length);
+    imgs.forEach(function(s,i){
+      var b=el("button");b.type="button";b.setAttribute("aria-label","View photo "+(i+1));
+      var im=document.createElement("img");im.src=s;im.alt=p.title+", photo "+(i+1);im.loading="lazy";
+      b.appendChild(im);b.onclick=function(){openLb(s,im.alt)};g.appendChild(b);
+    });
+    a.appendChild(g);
+  }
+  if(p.body)a.appendChild(el("p","text",p.body));
+  var l=safeLink(p.link);
+  if(l){var la=el("a","linkbtn",linkLabel(l));la.href=l;la.target="_blank";la.rel="noopener noreferrer";a.appendChild(la)}
+  var row=el("div","row");
+  var wa=el("a","act","Share on WhatsApp");wa.href="https://wa.me/?text="+encodeURIComponent(shareText(p));wa.target="_blank";wa.rel="noopener noreferrer";row.appendChild(wa);
+  var cp=el("button","act","Copy link");cp.type="button";cp.onclick=function(){copyText(permalink(p))};row.appendChild(cp);
+  a.appendChild(row);
+  return a;
+}
+
+function renderChips(){
+  var cats=[];all.forEach(function(p){if(p.cat&&cats.indexOf(p.cat)<0)cats.push(p.cat)});
+  var c=$("chips");c.textContent="";c.hidden=cats.length<2;
+  ["All"].concat(cats).forEach(function(n){
+    var b=el("button","chip",n);b.type="button";b.setAttribute("aria-pressed",String(n===filter));
+    b.onclick=function(){filter=n;renderChips();render()};c.appendChild(b);
+  });
+}
+
+function render(){
+  var f=$("feed");f.textContent="";
+  var list=all.filter(function(p){
+    return (filter==="All"||p.cat===filter)&&((p.title||"")+" "+(p.body||"")+" "+(p.by||"")).toLowerCase().indexOf(term)>-1;
+  }).sort(function(a,b){return (b.pin?1:0)-(a.pin?1:0)||(b.ts||0)-(a.ts||0)});
+  if(!list.length){f.appendChild(el("div","empty",all.length?"Nothing matches that search.":"No posts yet. Check back soon."));return}
+  list.forEach(function(p){f.appendChild(card(p))});
+}
+
+$("q").oninput=function(e){term=e.target.value.toLowerCase();render()};
+renderChips();render();
+if(!all.length)$("q").hidden=true;
+var h=location.hash.slice(1);
+if(h){var t=document.getElementById("post-"+h);if(t){t.classList.add("flash");t.scrollIntoView()}}
+})();
+</script>
+</body>
+</html>
