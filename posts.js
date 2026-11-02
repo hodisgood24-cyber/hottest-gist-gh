@@ -1,6 +1,20 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "smokelexx-collabo",
+    "title": "Meet Smokelexx: the Rulers Records star getting ready to drop \"Collabo\"",
+    "cat": "Afrobeats",
+    "by": "Hottest Gist GH",
+    "body": "Keep your eyes on Smokelexx 🔥\n\nBorn Emmanuel Nartey, the rising Afrobeats singer and songwriter is signed to Rulers Records, and he has built his name the hard way: performing on high school stages across Ghana and winning over crowds one campus at a time. That grind carried him into the mainstream with his debut single, and now he is ready for his next move.\n\nUp next is \"Collabo\", produced by BeatMasterNanKay. The artwork sets the mood: Smokelexx sitting close with a lady in a sunflower field, drawn in warm cartoon style. It looks like a sweet, laid-back love song, the kind that lives on your soft-life playlist.\n\nHottest Gist GH is putting you on early. Turn on phone alerts so you know the moment \"Collabo\" drops, and tell us in the comments: are you ready for Smokelexx? 🇬🇭🎶",
+    "ts": 1793643973735,
+    "images": [
+      "images/smokelexx-collabo-1.jpg",
+      "images/smokelexx-collabo-2.jpg"
+    ],
+    "pin": true,
+    "status": "live"
+  },
+  {
     id: "news-20261102-1607-1",
     title: "Kweku Smoke's \"Bra\" takes No. 1 on Apple Music Ghana chart",
     cat: "Trending",
