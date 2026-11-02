@@ -166,6 +166,23 @@ input[type=search]{width:100%;background:var(--card);color:var(--text);border:1p
 .gear{position:fixed;top:calc(16px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));z-index:60;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18);padding:0}
 .gear svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s}
 .gear:hover svg{transform:rotate(60deg)}
+.bell{position:fixed;top:calc(16px + env(safe-area-inset-top,0px));right:calc(max(14px,env(safe-area-inset-right,0px)) + 50px);z-index:60;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18);padding:0}
+.bell[hidden]{display:none}
+.bell svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bell .bd{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:var(--red);color:#fff;font-size:11px;font-weight:800;line-height:20px;text-align:center;box-sizing:border-box;border:2px solid var(--bg)}
+.bell.ring svg{animation:ring .8s ease 2}
+@keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(16deg)}40%{transform:rotate(-14deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-4deg)}}
+@media (prefers-reduced-motion:reduce){.bell.ring svg{animation:none}}
+body.locked .bell{display:none}
+.np .nt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:14px;background:none;border:0;border-bottom:1px solid var(--line);color:var(--text);padding:10px 2px;cursor:pointer}
+.np .nt:last-child{border-bottom:0}
+.np .nt.new{background:rgba(200,16,46,.08);border-radius:8px}
+.np .ni{font-size:20px;line-height:1.2}
+.np .nx{flex:1;min-width:0;overflow-wrap:anywhere}
+.np .nx small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.np .none{color:var(--muted);font-size:14px;padding:8px 0}
+header.wrap{padding-right:112px}
+@media(max-width:480px){h1{font-size:clamp(24px,7.4vw,40px)}.logo{width:36px;height:36px;margin-right:8px}}
 .sp{position:fixed;top:calc(66px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:60;width:min(330px,calc(100vw - 24px));max-height:calc(100vh - 90px);overflow:auto;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 16px 48px rgba(0,0,0,.28)}
 .sp h3{margin:14px 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
 .sp h3:first-child{margin-top:0}
@@ -298,6 +315,8 @@ body.hasnav .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 <div class="flag"></div>
 <button class="gear" id="gear" type="button" aria-label="Settings" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
 <div class="sp" id="sp" role="dialog" aria-label="Settings" hidden></div>
+<button class="bell" id="bell" type="button" aria-label="Notifications" aria-expanded="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+<div class="sp np" id="np" role="dialog" aria-label="Notifications" hidden></div>
 <header class="wrap">
   <h1><img class="logo" src="/favicon.svg" alt="" width="44" height="44">Hottest Gist<span>GH</span></h1>
   <p class="sub">Fresh music, movies and culture from Ghana and beyond.</p>
@@ -708,7 +727,7 @@ function mergeRemote(rows){
     if(have[r.id]||r.status!=="live"||r.ts>Date.now())return;
     all.push({id:r.id,title:r.title,cat:r.cat,by:r.author,body:r.body,link:r.link,images:Array.isArray(r.images)?r.images:[],pin:!!r.pin,status:"live",ts:r.ts,eventAt:r.event_at||undefined});
   });
-  renderChips();renderArtists();render();renderHot();
+  renderChips();renderArtists();render();renderHot();badge();
 }
 function renderArtists(){
   var box=$("arts");if(!box)return;box.textContent="";
@@ -1325,14 +1344,69 @@ function buildSettings(){
   if(CFG&&CFG.whatsapp){var wc=el("a","item","\ud83d\udce2 Join our WhatsApp channel");wc.href=CFG.whatsapp;wc.target="_blank";wc.rel="noopener noreferrer";p.appendChild(wc)}
   var up=el("button","item","\u2b06\ufe0f Back to top");up.type="button";up.onclick=function(){closeSettings();window.scrollTo({top:0,behavior:"smooth"})};p.appendChild(up);
 }
-function openSettings(){setOpen=true;buildSettings();$("sp").hidden=false;$("gear").setAttribute("aria-expanded","true")}
+function openSettings(){if(npOpen)closeNotes();setOpen=true;buildSettings();$("sp").hidden=false;$("gear").setAttribute("aria-expanded","true")}
 function closeSettings(){setOpen=false;$("sp").hidden=true;$("gear").setAttribute("aria-expanded","false")}
 $("gear").onclick=function(e){e.stopPropagation();setOpen?closeSettings():openSettings()};
 document.addEventListener("click",function(e){if(setOpen&&e.target.isConnected&&!$("sp").contains(e.target)&&e.target!==$("gear")&&!$("gear").contains(e.target))closeSettings()});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&setOpen){closeSettings();$("gear").focus()}});
+
+// ===== Notification bell =====
+var notes=[],npOpen=false,noteTimer=null;
+function seenTs(){return +(ls("gh-seen")||0)}
+function newStories(){var t=seenTs();if(!t)return[];return all.filter(function(p){return p.status==="live"&&p.ts>t&&!/^fp-/.test(p.id)}).sort(function(a,b){return b.ts-a.ts}).slice(0,5)}
+function agoTxt(ms){var m=Math.max(1,Math.round((Date.now()-ms)/60000));if(m<60)return m+"m ago";var h=Math.round(m/60);if(h<24)return h+"h ago";var d=Math.round(h/24);return d+"d ago"}
+function badge(){
+  var b=$("bell");if(!b)return;
+  var n=notes.filter(function(x){return!x.read}).length+newStories().length;
+  var bd=b.querySelector(".bd");
+  if(n){if(!bd){bd=el("span","bd");b.appendChild(bd)}var was=bd.textContent;bd.textContent=n>99?"99+":String(n);if(was!==bd.textContent){b.classList.remove("ring");void b.offsetWidth;b.classList.add("ring")}}
+  else if(bd)bd.remove();
+  b.setAttribute("aria-label",n?"Notifications, "+n+" new":"Notifications");
+}
+function loadNotes(){
+  if(!(CFG&&SES))return;
+  if(!ls("gh-seen"))ls("gh-seen",String(Date.now()));
+  api("notifications?select=id,actor,actor_name,kind,post_id,snippet,read,created_at&order=created_at.desc&limit=40").then(function(r){notes=r||[];badge();if(npOpen)buildNotes()}).catch(function(){badge()});
+}
+function noteRow(icon,text,sub,isNew,go){
+  var b=el("button","nt"+(isNew?" new":""));b.type="button";
+  b.appendChild(el("span","ni",icon));var x=el("span","nx");x.appendChild(el("span",null,text));if(sub)x.appendChild(el("small",null,sub));b.appendChild(x);
+  b.onclick=function(){closeNotes();go()};return b;
+}
+function buildNotes(){
+  var p=$("np");p.textContent="";
+  p.appendChild(el("h3",null,"Notifications"));
+  var ns=newStories(),any=false;
+  var W={like:["❤️"," liked your post"],comment:["💬"," commented on your post"],reply:["↩️"," replied to your comment"],follow:["🌟"," started following you"]};
+  function mine(n){any=true;var w=W[n.kind]||["🔔",""];
+    var sub=(n.snippet?"“"+n.snippet+"” · ":"")+agoTxt(Date.parse(n.created_at));
+    p.appendChild(noteRow(w[0],(n.actor_name||"A fan")+w[1],sub,!n.read,function(){if(n.kind==="follow"&&n.actor)openProfile(n.actor);else if(n.post_id)goPost(n.post_id)}));
+  }
+  notes.filter(function(n){return!n.read}).forEach(mine);
+  ns.forEach(function(s){any=true;p.appendChild(noteRow("🔥","New: "+s.title,(s.cat||"News")+" · "+agoTxt(s.ts),true,function(){goPost(s.id)}))});
+  notes.filter(function(n){return n.read}).forEach(mine);
+  if(!any)p.appendChild(el("div","none","No notifications yet. When someone likes, comments on or follows you, or a new story drops, you'll see it here."));
+}
+function openNotes(){
+  if(setOpen)closeSettings();
+  npOpen=true;buildNotes();$("np").hidden=false;$("bell").setAttribute("aria-expanded","true");
+  ls("gh-seen",String(Date.now()));
+  if(notes.some(function(n){return!n.read}))api("rpc/mark_notes_read",{}).catch(function(){});
+  notes.forEach(function(n){n.read=true});badge();
+}
+function closeNotes(){npOpen=false;$("np").hidden=true;$("bell").setAttribute("aria-expanded","false")}
+$("bell").onclick=function(e){e.stopPropagation();npOpen?closeNotes():openNotes()};
+document.addEventListener("click",function(e){if(npOpen&&e.target.isConnected&&!$("np").contains(e.target)&&!$("bell").contains(e.target))closeNotes()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&npOpen){closeNotes();$("bell").focus()}});
+function startNotes(){
+  if(!(CFG&&SES))return;
+  $("bell").hidden=false;loadNotes();
+  if(!noteTimer)noteTimer=setInterval(function(){if(!document.hidden)loadNotes()},60000);
+  document.addEventListener("visibilitychange",function(){if(!document.hidden)loadNotes()});
+}
 function start(){
   document.body.classList.remove("locked");$("gate").hidden=true;
-  renderWho();buildTabs();buildNav();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG&&SES)loadRemote();renderExtras();
+  renderWho();buildTabs();buildNav();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG&&SES)loadRemote();renderExtras();startNotes();
   var wa=$("wach");wa.textContent="";
   if(CFG&&CFG.whatsapp&&!document.querySelector(".wfab")){var wl=el("a","wfab");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wl.setAttribute("aria-label","Join our WhatsApp channel");wl.appendChild(svg("wa"));wl.appendChild(el("span",null,"Join our channel"));document.body.appendChild(wl)}
   $("q").hidden=!all.length;
