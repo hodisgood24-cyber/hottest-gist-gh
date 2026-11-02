@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Admin · Hottest Gist GH</title>
+<style>
+:root{--bg:#fff;--card:#f6f6f7;--text:#16161a;--muted:#666;--line:#ddd;--red:#c8102e}
+@media(prefers-color-scheme:dark){:root{--bg:#111;--card:#1b1b1f;--text:#f2f2f2;--muted:#aaa;--line:#333}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:16px}h1{font-size:22px;margin:0 0 4px}h2{font-size:18px;margin:26px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+label{display:block;font-weight:700;font-size:13px;margin:10px 0 4px}
+input,textarea,select{width:100%;font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+button,.b{font:inherit;font-weight:800;border:0;border-radius:999px;padding:9px 16px;background:var(--red);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)}button.d{background:#444}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}.m{color:var(--muted);font-size:13px}
+.it{display:flex;gap:10px;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.it p{margin:2px 0;overflow-wrap:anywhere}.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.thumbs img{width:70px;height:70px;object-fit:cover;border-radius:8px}
+.tag{background:var(--red);color:#fff;border-radius:6px;padding:0 6px;font-size:12px;font-weight:800}
+</style></head><body><div class="w">
+<h1>🛠️ Admin</h1><p class="m"><a href="/" style="color:var(--red)">← Back to the site</a></p>
+<div id="msg" class="card">Checking your login...</div>
+<div id="app" hidden>
+ <h2>Write a post</h2>
+ <form id="pf" class="card">
+  <label>Title</label><input id="t" required maxlength="140">
+  <label>Category</label><select id="c"><option>News</option><option>Music</option><option>Event</option><option>Movies</option><option>Sports</option><option>Business</option><option>Tech</option><option>Lifestyle</option><option>Education</option><option>Trending</option></select>
+  <label>Text</label><textarea id="b" rows="5" maxlength="2000"></textarea>
+  <label>Link (https, optional: YouTube, Spotify, tickets, article)</label><input id="l" type="url" placeholder="https://">
+  <label>Event date (optional, for the Events tab)</label><input id="e" type="date">
+  <label>Photos (up to 3, they are shrunk for you)</label><input id="f" type="file" accept="image/*" multiple>
+  <div class="thumbs" id="th"></div>
+  <div class="row"><label style="margin:0"><input type="checkbox" id="pin" style="width:auto"> Pin to top</label>
+  <label style="margin:0"><input type="checkbox" id="dr" style="width:auto"> Save as draft</label></div>
+  <div class="row"><button type="submit" id="sv">Publish</button><button type="button" class="g" id="cl">Clear</button></div>
+ </form>
+ <h2>Your posts</h2><div id="posts" class="card"></div>
+ <h2>Song of the day</h2>
+ <form id="sf" class="card"><label>Song title</label><input id="s1"><label>Artist</label><input id="s2"><label>Short note</label><input id="s3" maxlength="140"><label>Link (YouTube or Spotify)</label><input id="s4" type="url"><div class="row"><button>Save</button><button type="button" class="g" id="sx">Remove</button></div></form>
+ <h2>Sponsor strip</h2>
+ <form id="pf2" class="card"><label>Text</label><input id="p1" maxlength="100"><label>Link</label><input id="p2" type="url"><div class="row"><button>Save</button><button type="button" class="g" id="px">Remove</button></div></form>
+ <h2>Moderation</h2><div id="mod" class="card">Loading...</div>
+ <h2>Email subscribers</h2><div id="subs" class="card">Loading...</div>
+</div></div>
+<script src="config.js"></script>
+<script>
+var CFG=window.GH_CFG,SES=null,$=function(i){return document.getElementById(i)},imgs=[],editId=null,mine=[];
+try{SES=JSON.parse(localStorage.getItem("gh-ses")||"null")}catch(e){}
+function T(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function tok(){
+  if(!SES)return Promise.reject();
+  if(SES.expires_at-30>Date.now()/1000)return Promise.resolve(SES.access_token);
+  return fetch(CFG.url+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:CFG.key,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:SES.refresh_token})}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){SES={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at,user:j.user||SES.user};localStorage.setItem("gh-ses",JSON.stringify(SES));return SES.access_token});
+}
+function api(path,body){return tok().then(function(t){var o={method:body?"POST":"GET",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"}};if(body)o.body=JSON.stringify(body);return fetch(CFG.url+"/rest/v1/"+path,o)}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text().then(function(x){return x?JSON.parse(x):null})})}
+function rpc(n,b){return api("rpc/"+n,b||{})}
+function say(t){var m=$("msg");m.hidden=!t;m.textContent=t||""}
+(function(){
+  if(!CFG||!SES){say("Please log in on the main site first, then come back to this page.");return}
+  rpc("is_admin").then(function(v){
+    if(v!==true){say("This page is only for the site owner. Your login email is not on the admin list.");return}
+    say("");$("app").hidden=false;init();
+  }).catch(function(){say("Couldn't check your login. Run setup-owner.sql in Supabase first, then reload.")});
+})();
+function shrink(file){return new Promise(function(res,rej){
+  var im=new Image(),u=URL.createObjectURL(file);
+  im.onload=function(){var m=1400,r=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(function(b){b?res(b):rej()},"image/jpeg",.82)};
+  im.onerror=rej;im.src=u})}
+function upload(blob){
+  var name=Date.now().toString(36)+Math.random().toString(36).slice(2,7)+".jpg";
+  return tok().then(function(t){return fetch(CFG.url+"/storage/v1/object/post-images/"+name,{method:"POST",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"image/jpeg","x-upsert":"false"},body:blob})}).then(function(r){if(!r.ok)throw new Error("upload");return CFG.url+"/storage/v1/object/public/post-images/"+name});
+}
+function thumbs(){var th=$("th");th.textContent="";imgs.forEach(function(u,i){var im=document.createElement("img");im.src=u;im.title="Tap to remove";im.onclick=function(){imgs.splice(i,1);thumbs()};th.appendChild(im)})}
+function clearForm(){$("pf").reset();imgs=[];editId=null;thumbs();$("sv").textContent="Publish"}
+function loadPosts(){
+  api("site_posts?select=*&order=ts.desc&limit=100").then(function(r){
+    mine=r||[];var b=$("posts");b.textContent="";
+    if(!mine.length){b.textContent="No posts from this page yet.";return}
+    mine.forEach(function(p){
+      var d=el("div","it"),L=el("div");
+      L.appendChild(el("b",null,p.title));if(p.status!=="live")L.appendChild(el("span","tag"," draft"));if(p.pin)L.appendChild(el("span","tag"," pinned"));
+      L.appendChild(el("p","m",p.cat+" · "+new Date(p.ts).toLocaleDateString()));d.appendChild(L);
+      var R=el("div","row"),e=el("button","g","Edit"),x=el("button","d","Delete");
+      e.onclick=function(){editId=p.id;$("t").value=p.title;$("c").value=p.cat;$("b").value=p.body||"";$("l").value=p.link||"";$("e").value=p.event_at?new Date(p.event_at).toISOString().slice(0,10):"";$("pin").checked=!!p.pin;$("dr").checked=p.status!=="live";imgs=(p.images||[]).slice();thumbs();$("sv").textContent="Update";window.scrollTo({top:0,behavior:"smooth"})};
+      x.onclick=function(){if(confirm("Delete this post?"))rpc("admin_delete_post",{p_id:p.id}).then(loadPosts).catch(function(){alert("Couldn't delete")})};
+      R.appendChild(e);R.appendChild(x);d.appendChild(R);b.appendChild(d);
+    });
+  }).catch(function(){$("posts").textContent="Couldn't load posts."});
+}
+function loadMod(){
+  rpc("admin_moderation").then(function(m){
+    var box=$("mod");box.textContent="";
+    function sec(title,kind,rows){
+      box.appendChild(el("b",null,title));
+      if(!rows.length)box.appendChild(el("p","m","Nothing yet."));
+      rows.forEach(function(c){
+        var d=el("div","it"),L=el("div");
+        L.appendChild(el("p",null,(c.name||"Fan")+": "+c.text));
+        L.appendChild(el("p","m",new Date(c.created_at).toLocaleString()+(c.reports?" · "+c.reports+" report(s)":"")+(c.hidden?" · HIDDEN":"")));d.appendChild(L);
+        var b=el("button",c.hidden?"":"d",c.hidden?"Show":"Hide");
+        b.onclick=function(){rpc("admin_set_hidden",{p_kind:kind,p_id:c.id,p_hidden:!c.hidden}).then(loadMod).catch(function(){alert("Failed")})};
+        d.appendChild(b);box.appendChild(d);
+      });
+    }
+    sec("Comments","comment",m.comments||[]);box.appendChild(el("div","m"," "));sec("Wall","wall",m.wall||[]);
+    var s=$("subs");s.textContent="";var em=m.subscribers||[];
+    s.appendChild(el("p",null,em.length+" subscriber"+(em.length===1?"":"s")));
+    if(em.length){var ta=el("textarea");ta.rows=4;ta.readOnly=true;ta.value=em.join(", ");s.appendChild(ta);var cb=el("button",null,"Copy emails");cb.onclick=function(){ta.select();try{navigator.clipboard.writeText(ta.value)}catch(e){document.execCommand("copy")}cb.textContent="Copied"};s.appendChild(cb)}
+  }).catch(function(){$("mod").textContent="Couldn't load. Did you run setup-owner.sql?"});
+}
+function init(){
+  loadPosts();loadMod();
+  api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
+  $("f").onchange=function(){
+    var fs=[].slice.call(this.files).slice(0,3-imgs.length);if(!fs.length)return;$("sv").disabled=true;$("sv").textContent="Uploading...";
+    fs.reduce(function(p,f){return p.then(function(){return shrink(f).then(upload).then(function(u){imgs.push(u);thumbs()})})},Promise.resolve()).catch(function(){alert("A photo couldn't upload")}).then(function(){$("sv").disabled=false;$("sv").textContent=editId?"Update":"Publish";$("f").value=""});
+  };
+  $("cl").onclick=clearForm;
+  $("pf").onsubmit=function(e){
+    e.preventDefault();
+    var old=editId?mine.filter(function(p){return p.id===editId})[0]:null;
+    var id=editId||("site-"+Date.now().toString(36));
+    var ev=$("e").value?Date.parse($("e").value+"T00:00:00Z"):null;
+    var o={id:id,title:$("t").value.trim(),cat:$("c").value,author:"Hottest Gist GH",body:$("b").value.trim(),link:$("l").value.trim(),images:imgs,pin:$("pin").checked,status:$("dr").checked?"draft":"live",ts:old?old.ts:Date.now(),event_at:ev};
+    if(o.link&&o.link.indexOf("https://")!==0){alert("Link must start with https://");return}
+    $("sv").disabled=true;
+    rpc("admin_save_post",{p:o}).then(function(){clearForm();loadPosts();say("Saved. It shows on the site right away.");setTimeout(function(){say("")},3000)}).catch(function(){alert("Couldn't save. Run setup-owner.sql first.")}).then(function(){$("sv").disabled=false});
+  };
+  function setting(form,key,get,clr){
+    $(form).onsubmit=function(e){e.preventDefault();rpc("admin_set_setting",{p_key:key,p_value:get()}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
+    $(clr).onclick=function(){rpc("admin_set_setting",{p_key:key,p_value:{}}).then(function(){$(form).reset();say("Removed.");setTimeout(function(){say("")},2500)})};
+  }
+  setting("sf","song",function(){return{title:$("s1").value.trim(),artist:$("s2").value.trim(),note:$("s3").value.trim(),link:$("s4").value.trim()}},"sx");
+  setting("pf2","sponsor",function(){return{text:$("p1").value.trim(),link:$("p2").value.trim()}},"px");
+}
+</script></body></html>

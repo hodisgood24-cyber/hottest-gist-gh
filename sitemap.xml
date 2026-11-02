@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://hottest-gist-gh.hodisgood24.workers.dev/</loc><changefreq>hourly</changefreq><priority>1.0</priority></url>
+<url><loc>https://hottest-gist-gh.hodisgood24.workers.dev/about.html</loc></url>
+<url><loc>https://hottest-gist-gh.hodisgood24.workers.dev/privacy.html</loc></url>
+<url><loc>https://hottest-gist-gh.hodisgood24.workers.dev/terms.html</loc></url>
 </urlset>

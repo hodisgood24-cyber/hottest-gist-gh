@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /admin.html
 
 Sitemap: https://hottest-gist-gh.hodisgood24.workers.dev/sitemap.xml
