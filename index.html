@@ -318,7 +318,8 @@ function copyText(t){
   function fb(){var ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}document.body.removeChild(ta);toast(ok?"Link copied":"Couldn't copy")}
   try{navigator.clipboard.writeText(t).then(function(){toast("Link copied")},fb)}catch(e){fb()}
 }
-function permalink(p){return location.href.split("#")[0]+"#"+p.id}
+var staticIds={};(Array.isArray(window.POSTS)?window.POSTS:[]).forEach(function(p){if(p&&p.id)staticIds[p.id]=1});
+function permalink(p){var o=location.origin;if(!/^https?:/.test(o))return location.href.split("#")[0]+"#"+p.id;return staticIds[p.id]?o+"/s/"+p.id+".html":o+"/#"+p.id}
 function shareText(p){
   var l=safeLink(p.link);
   return p.title+(l?"\n"+l:"")+"\n\nHottest Gist GH\n"+permalink(p);
