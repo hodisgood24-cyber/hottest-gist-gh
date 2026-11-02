@@ -717,8 +717,8 @@ function makePlayer(emb){
 function soundsCard(){
   var list=Array.isArray(cfgSet.sounds)?cfgSet.sounds:(cfgSet.sounds&&Array.isArray(cfgSet.sounds.items)?cfgSet.sounds.items:[]);
   list=list.filter(function(x){return x&&x.title});
-  if(!list.length)return null;
   var c=el("section","snd");c.appendChild(el("div","pk","\ud83d\udd25 Trending on TikTok in Ghana"));c.appendChild(el("h3",null,"Trending sounds"));
+  if(!list.length)c.appendChild(el("p",null,"Today's Ghana list is coming soon. Check the live charts below."));
   list.slice(0,10).forEach(function(x,i){
     var r=el("div","snr");r.appendChild(el("div","n",String(i+1)));
     var t=el("div","t");t.appendChild(el("b",null,x.title));if(x.artist)t.appendChild(el("small",null,x.artist));r.appendChild(t);
@@ -726,6 +726,7 @@ function soundsCard(){
     c.appendChild(r);
   });
   var ml=el("a","more","See the live Ghana list on TikTok \u2192");ml.href="https://ads.tiktok.com/business/creativecenter/inspiration/popular/music/pc/en?region=GH";ml.target="_blank";ml.rel="noopener noreferrer";c.appendChild(ml);
+  c.appendChild(el("br"));var m2=el("a","more","More charts: Nigeria and worldwide \u2192");m2.href="https://tokchart.com/tiktok-trending-songs";m2.target="_blank";m2.rel="noopener noreferrer";c.appendChild(m2);
   if(cfgSet.sounds&&cfgSet.sounds.updated){c.appendChild(el("div",null,""));var u=el("small",null,"Updated "+new Date(cfgSet.sounds.updated).toLocaleDateString("en-GB",{day:"numeric",month:"short"}));u.style.opacity=".7";c.appendChild(u)}
   return c;
 }
