@@ -1,6 +1,67 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    id: "news-20261102-1607-1",
+    title: "Kweku Smoke's \"Bra\" takes No. 1 on Apple Music Ghana chart",
+    cat: "Trending",
+    by: "News desk",
+    body: "Kweku Smoke's \"Bra\" has moved up to No. 1 on the Apple Music Top 20 Ghana for November 2, 2026, replacing \"Faith\", which slips to No. 2. Kweku Smoke also holds No. 3 with \"Bombele\" and No. 5 with \"Survivor\", while Kofi Mole's \"BALOTELLI (SUPA)\" sits at No. 4. Asake, Black Sherif and Fameye also have songs in the top 20.\nSource: Pulse Ghana",
+    ts: 1793635679686,
+    link: "https://www.pulse.com.gh/story/kweku-smoke-apple-music-ghana-top-100-bra-number-one-2026110211071562627",
+    images: ["images/news-20261102-1607-1.jpg"],
+    pin: false,
+    status: "live"
+  },
+  {
+    id: "news-20261102-1607-2",
+    title: "\"Bra\" is the longest-running No. 1 on Ghana Apple Music this year",
+    cat: "Trending",
+    by: "News desk",
+    body: "Kweku Smoke's \"Bra\" has now spent 36 days at No. 1 on Ghana's Apple Music daily songs chart in 2026, the most of any song this year. \"Popstar\" is next with 35 days and \"Darkest Style\" third with 34 days. \"Sacrifice\" (21 days) and \"Don't Come Too Close II\" (20 days) complete the top five.\nSource: Pulse Ghana",
+    ts: 1793635678686,
+    link: "https://www.pulse.com.gh/story/ghana-apple-music-longest-running-number-one-hits-2026110215525784182",
+    images: ["images/news-20261102-1607-2.jpg"],
+    pin: false,
+    status: "live"
+  },
+  {
+    id: "news-20261102-1607-3",
+    title: "Cartun announces new single \"Mula\" for November 27",
+    cat: "Afrobeats",
+    by: "News desk",
+    body: "Ghanaian artiste Cartun is returning after an extended break with a new single called \"Mula\", out on digital platforms from midnight on November 27. The song blends Afrobeats with urban trap and is about ambition, survival and the daily hustle. Ray Joe produced it, Samsney handled the mixing and mastering, and a visualizer will follow on Cartun's YouTube channel.\nSource: Pulse Ghana",
+    ts: 1793635677686,
+    link: "https://www.pulse.com.gh/story/cartun-announces-new-single-mula-for-november-27-release-2026102817071306398",
+    images: ["images/news-20261102-1607-3.jpg"],
+    pin: false,
+    status: "live",
+    eventAt: 1795737600000
+  },
+  {
+    id: "news-20261102-1607-4",
+    title: "GPL matchday 9: Debibi beat Hearts of Oak, Kotoko draw with Medeama",
+    cat: "Sports",
+    by: "News desk",
+    body: "Debibi United beat Hearts of Oak 1-0 in matchday 9 of the Ghana Premier League, while Asante Kotoko and Medeama drew 1-1. FC Samartex won 1-0 against Bibiani Gold Stars and lead the table on 18 points, ahead of Medeama on goal difference. Hearts of Oak are third on 17 points and Aduana FC fourth on 16 after a 2-0 win over Berekum Chelsea.\nSource: Pulse Ghana",
+    ts: 1793635676686,
+    link: "https://www.pulse.com.gh/story/gpl-matchday-9-roundup-samartex-debibi-hearts-2026110213063166025",
+    images: ["images/news-20261102-1607-4.jpg"],
+    pin: false,
+    status: "live"
+  },
+  {
+    id: "news-20261102-1607-5",
+    title: "Ghanaian players abroad: Kudus named MOTM, Nuamah scores again",
+    cat: "Sports",
+    by: "News desk",
+    body: "Mohammed Kudus was named Man of the Match after setting up Archie Gray's opening goal in Tottenham's 2-0 win over Crystal Palace. Ernest Nuamah scored Lyon's opener in a 2-0 win over Angers and has four league goals this season, and Joseph Opoku scored and assisted in Swansea's 4-0 win over Blackburn. Marvin Senaya also returned from injury off the bench for Auxerre, who lost 5-1 to Strasbourg.\nSource: Pulse Ghana",
+    ts: 1793635675686,
+    link: "https://www.pulse.com.gh/story/ghanaian-players-abroad-kudus-nuamah-senaya-roundup-2026110212403616451",
+    images: ["images/news-20261102-1607-5.jpg"],
+    pin: false,
+    status: "live"
+  },
+  {
     id: "news-20261102-1230-1",
     title: "GES cancels November mid-term break for basic schools",
     cat: "Education",
