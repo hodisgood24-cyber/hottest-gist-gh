@@ -130,6 +130,7 @@ input[type=search]{width:100%;background:var(--card);color:var(--text);border:1p
 .gc input{font:inherit;font-size:16px;padding:12px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box}
 .gc .go{font:inherit;font-weight:800;font-size:16px;background:var(--red);color:var(--on-red);border:0;border-radius:8px;padding:13px;cursor:pointer}
 .gc .go:disabled{opacity:.6}
+.gc .kb{display:block;margin:14px auto 0;text-decoration:none;font-weight:800}
 .gc .lnk{background:none;border:0;color:var(--red);font:inherit;font-weight:700;cursor:pointer;padding:6px 0;text-decoration:underline;justify-self:start}
 .gc .msg{font-size:14px;font-weight:700;min-height:20px;color:var(--red)}
 .gc .msg.ok{color:#15803d}
@@ -381,7 +382,7 @@ function linkLabel(u){
   if(/(^|\.)tickethubgh\.com$/.test(h))return "Get tickets";
   return "Open link";
 }
-function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("on")},2000)}
+function toast(t){if(!SES&&document.body.classList.contains("locked"))return;var e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("on")},2000)}
 function copyText(t){
   function fb(){var ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}document.body.removeChild(ta);toast(ok?"Link copied":"Couldn't copy")}
   try{navigator.clipboard.writeText(t).then(function(){toast("Link copied")},fb)}catch(e){fb()}
@@ -445,6 +446,7 @@ function token(){
   return authCall("token?grant_type=refresh_token",{refresh_token:SES.refresh_token}).then(function(j){saveSes(j);return SES.access_token}).catch(function(e){saveSes(null);showGate("signup");throw e});
 }
 function api(path,body){
+  if(!SES&&body&&!/^rpc\/is_admin/.test(path)){needLogin();var le=new Error("login");le.login=true;return Promise.reject(le)}
   return token().then(function(t){
     var o={method:body?"POST":"GET",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"}};
     if(body)o.body=JSON.stringify(body);
@@ -455,6 +457,9 @@ function api(path,body){
   });
 }
 function field(type,ph,ac,label){var i=el("input");i.type=type;i.placeholder=ph;i.autocomplete=ac;i.setAttribute("aria-label",label||ph);return i}
+var started=false;
+function needLogin(why){needLogin.y=window.scrollY;showGate("signup",why||"Create a free account to like, comment, vote and post. It takes a few seconds.");window.scrollTo(0,0)}
+function keepBrowsing(){document.body.classList.remove("locked");$("gate").hidden=true;if(!started)start();else if(needLogin.y)window.scrollTo(0,needLogin.y)}
 function showGate(mode,note){
   document.body.classList.add("locked");
   var g=$("gate");g.hidden=false;g.textContent="";
@@ -530,16 +535,18 @@ function showGate(mode,note){
     }
   };
   c.appendChild(f);
+  if(!recovery&&!SES){var kb=el("button","lnk kb","Keep reading without an account \u2192");kb.type="button";kb.onclick=keepBrowsing;c.appendChild(kb)}
   var fl=el("div","tagl");["#CE1126","#FCD116","#006B3F"].forEach(function(k){var i=document.createElement("i");i.style.background=k;fl.appendChild(i)});c.appendChild(fl);
   g.appendChild(c);
 }
 function logout(){
   var t=SES&&SES.access_token;saveSes(null);
   if(t)authCall("logout",null,"POST",t).catch(function(){});
-  likeN={};comN={};reactN={};myReact={};pollN={};myVote={};stats={};$("tabs").hidden=true;buildNav();showGate("signup");
+  likeN={};comN={};reactN={};myReact={};pollN={};myVote={};stats={};start();toast("Logged out");
 }
 function renderWho(){
-  var w=$("who");if(!CFG||!SES){w.hidden=true;return}
+  var w=$("who");if(!CFG){w.hidden=true;return}
+  if(!SES){w.hidden=false;w.textContent="";w.appendChild(el("span",null,"Reading as a guest"));var lb=el("button",null,"Log in / Join");lb.type="button";lb.onclick=function(){showGate("signup")};w.appendChild(lb);return}
   w.hidden=false;w.textContent="";w.appendChild(el("span",null,"Hi, "+myName()));
   var b=el("button",null,"Log out");b.type="button";b.onclick=logout;w.appendChild(b);
 }
@@ -780,6 +787,7 @@ function renderExtras(){
 function loadRemote(){
   api("site_posts?select=*&order=ts.desc&limit=100").then(mergeRemote).catch(function(){});
   api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){cfgSet[x.key]=x.value});renderExtras()}).catch(function(){});
+  if(!SES)return;
   api("rpc/is_admin",{}).then(function(v){isAdm=v===true}).catch(function(){});
   api("subscribers?select=email").then(function(r){subscribed=!!(r&&r.length)}).catch(function(){});
   var me0=SES&&SES.user&&SES.user.id;
@@ -860,13 +868,14 @@ function avEl(c,size){
   else{a=el("span","av",((c&&c.name)||"F").charAt(0).toUpperCase())}
   a.style.width=a.style.height=size+"px";a.style.fontSize=Math.round(size*.45)+"px";return a;
 }
-function newPost(){setView("fans");setTimeout(function(){var t=document.querySelector("#vFans textarea");if(t){t.scrollIntoView({block:"center"});t.focus()}},50)}
+function loginBox(t){var d=el("div","empty",t+" ");var b=el("button","go2","Log in / Join");b.type="button";b.onclick=function(){needLogin()};d.appendChild(el("br"));d.appendChild(b);return d}
+function newPost(){if(!SES){needLogin("Create a free account to post your own gist, photos and videos.");return}setView("fans");setTimeout(function(){var t=document.querySelector("#vFans textarea");if(t){t.scrollIntoView({block:"center"});t.focus()}},50)}
 var NAVI={home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',fans:'<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><path d="M16 4.500a3.500 3.500 0 0 1 0 7M18 14.500a6.500 6.500 0 0 1 3.500 5.500"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'};
 function buildNav(){
   var n=$("bnav");if(!n)return;
-  if(!(CFG&&SES)){n.hidden=true;document.body.classList.remove("hasnav");return}
+  if(!CFG){n.hidden=true;document.body.classList.remove("hasnav");return}
   n.hidden=false;document.body.classList.add("hasnav");n.textContent="";
-  [["home","home","Home",function(){setView("gist")}],["search","search","Search",function(){setView("gist");setTimeout(function(){var q=$("q");if(q){q.scrollIntoView({block:"center"});q.focus()}},50)}],["add","plus","Post",newPost],["fans","fans","Fans",function(){setView("fans")}],["me","user","Profile",function(){openProfile(SES.user.id)}]].forEach(function(x){
+  [["home","home","Home",function(){setView("gist")}],["search","search","Search",function(){setView("gist");setTimeout(function(){var q=$("q");if(q){q.scrollIntoView({block:"center"});q.focus()}},50)}],["add","plus","Post",newPost],["fans","fans","Fans",function(){setView("fans")}],["me","user","Profile",function(){if(!SES){needLogin();return}openProfile(SES.user.id)}]].forEach(function(x){
     var b=el("button",x[0]==="add"?"add":"");b.type="button";b.setAttribute("data-nav",x[0]);b.setAttribute("aria-label",x[2]);
     var w=el("span",x[0]==="add"?"pl":"");w.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+NAVI[x[1]]+'</svg>';b.appendChild(w);b.appendChild(el("span",null,x[2]));b.onclick=x[3];n.appendChild(b);
   });
@@ -917,6 +926,7 @@ function renderFans(){
     showFans(box,q,fanFilter==="following"?"No posts from people you follow yet.":"No fan posts yet. Be the first!");
   }
   var HINT="Photos (up to 3) or one short video (up to 50 MB).";
+  if(CFG&&!SES)v.appendChild(loginBox("Want to post your own gist and grow your page?"));
   if(CFG&&SES){
     var imgs=[],vid=null,f=el("form","cf fc");
     var tx=el("textarea");tx.maxLength=500;tx.rows=3;tx.placeholder="What's the gist? (500 characters, no links here)";tx.setAttribute("aria-label","Your post");
@@ -998,7 +1008,7 @@ function renderGigs(){
   var v=$("vGigs");v.textContent="";
   v.appendChild(el("h2","vh","💼 Services"));
   v.appendChild(el("p","sub","Creators, editors and CapCut makers: list what you do and get offers. Brands and artists: find a creator for your promo."));
-  if(!(CFG&&SES)){v.appendChild(el("div","empty","Log in to browse and post services."));return}
+  if(!(CFG&&SES)){v.appendChild(loginBox("Log in to browse and post services."));return}
   var box=el("div");
   function load(){
     box.textContent="";box.appendChild(el("div","none","Loading..."));
@@ -1048,7 +1058,7 @@ function renderGigs(){
 }
 function renderProfile(uid){
   var v=$("vProfile");v.textContent="";
-  if(!(CFG&&SES)||!uid){v.appendChild(el("div","empty","Log in to see profiles."));return}
+  if(!(CFG&&SES)||!uid){v.appendChild(loginBox("Log in to see profiles and follow fans."));return}
   var me=SES.user.id,mine=uid===me;
   var back=el("button","rl","← Back to fans");back.type="button";back.onclick=function(){setView("fans")};v.appendChild(back);
   var body=el("div");v.appendChild(body);body.appendChild(el("div","none","Loading..."));
@@ -1405,8 +1415,9 @@ function startNotes(){
   document.addEventListener("visibilitychange",function(){if(!document.hidden)loadNotes()});
 }
 function start(){
+  started=true;
   document.body.classList.remove("locked");$("gate").hidden=true;
-  renderWho();buildTabs();buildNav();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG&&SES)loadRemote();renderExtras();startNotes();
+  renderWho();buildTabs();buildNav();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();startNotes();
   var wa=$("wach");wa.textContent="";
   if(CFG&&CFG.whatsapp&&!document.querySelector(".wfab")){var wl=el("a","wfab");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wl.setAttribute("aria-label","Join our WhatsApp channel");wl.appendChild(svg("wa"));wl.appendChild(el("span",null,"Join our channel"));document.body.appendChild(wl)}
   $("q").hidden=!all.length;
@@ -1443,7 +1454,7 @@ function start(){
     }).catch(function(){history.replaceState(null,"",location.pathname);showGate("magic","That link expired. Request a new one.")});
     return;
   }
-  if(SES)start();else showGate("signup");
+  start();
 })();
 })();
 </script>
