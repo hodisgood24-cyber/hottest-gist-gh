@@ -8,3 +8,5 @@ brand
 *.sql
 SETUP-LIKES-COMMENTS.txt
 node_modules
+
+supabase

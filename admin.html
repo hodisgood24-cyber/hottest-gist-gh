@@ -40,8 +40,11 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
  <form id="pf2" class="card"><label>Text</label><input id="p1" maxlength="100"><label>Link</label><input id="p2" type="url"><div class="row"><button>Save</button><button type="button" class="g" id="px">Remove</button></div></form>
  <h2>Moderation</h2><div id="mod" class="card">Loading...</div>
  <h2>Gold tick requests</h2><div id="vr" class="card">Loading...</div>
+ <h2>Recent automatic payments</h2><div id="pays" class="card">Loading...</div>
  <h2>Gold tick price and payment details</h2>
  <form id="vf2" class="card"><label>Price shown to fans (example: GH₵ 20)</label><input id="vp" maxlength="30">
+ <label>Price as a number for automatic payment (example: 20)</label><input id="va" type="number" min="1" step="0.5">
+ <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="vo" style="width:auto"> Automatic Paystack payment is on (turn on only after the Paystack setup is done)</label>
  <label>How to pay (example: Send MoMo to 024... name Kofi, then enter your MoMo number below)</label><textarea id="vh" rows="3" maxlength="400"></textarea>
  <label>Payment link (optional, Paystack payment page, https)</label><input id="vl" type="url">
  <div class="row"><button>Save</button><button type="button" class="g" id="vx">Close sign-ups</button></div></form>
@@ -116,6 +119,11 @@ function loadMod(){
     if(em.length){var ta=el("textarea");ta.rows=4;ta.readOnly=true;ta.value=em.join(", ");s.appendChild(ta);var cb=el("button",null,"Copy emails");cb.onclick=function(){ta.select();try{navigator.clipboard.writeText(ta.value)}catch(e){document.execCommand("copy")}cb.textContent="Copied"};s.appendChild(cb)}
   }).catch(function(){$("mod").textContent="Couldn't load. Did you run setup-owner.sql?"});
 }
+function loadPays(){
+  rpc("admin_payments").then(function(rows){var b=$("pays");b.textContent="";if(!rows.length){b.textContent="No automatic payments yet.";return}
+    rows.forEach(function(p){var d=el("div","it"),L=el("div");L.appendChild(el("b",null,(p.name||"Fan")+": "+p.currency+" "+(p.amount/100).toFixed(2)));L.appendChild(el("p","m",new Date(p.created_at).toLocaleString()+" · "+p.reference));d.appendChild(L);b.appendChild(d)})
+  }).catch(function(){$("pays").textContent="Not set up yet. Run setup-paystack.sql."});
+}
 function loadVer(){
   rpc("admin_verifications").then(function(rows){
     var b=$("vr");b.textContent="";
@@ -158,8 +166,8 @@ function loadCreators(){
   }).catch(function(){$("fans").textContent="Couldn't load. Did you run setup-creators.sql?";$("crt").textContent=""});
 }
 function init(){
-  loadPosts();loadMod();loadCreators();loadVer();
-  api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="verify"){$("vp").value=v.price||"";$("vh").value=v.how||"";$("vl").value=v.link||""}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
+  loadPosts();loadMod();loadCreators();loadVer();loadPays();
+  api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="verify"){$("vp").value=v.price||"";$("va").value=v.amount||"";$("vo").checked=!!v.auto;$("vh").value=v.how||"";$("vl").value=v.link||""}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
   $("f").onchange=function(){
     var fs=[].slice.call(this.files).slice(0,3-imgs.length);if(!fs.length)return;$("sv").disabled=true;$("sv").textContent="Uploading...";
     fs.reduce(function(p,f){return p.then(function(){return shrink(f).then(upload).then(function(u){imgs.push(u);thumbs()})})},Promise.resolve()).catch(function(){alert("A photo couldn't upload")}).then(function(){$("sv").disabled=false;$("sv").textContent=editId?"Update":"Publish";$("f").value=""});
@@ -186,7 +194,7 @@ function init(){
     $(form).onsubmit=function(e){e.preventDefault();rpc("admin_set_setting",{p_key:key,p_value:get()}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
     $(clr).onclick=function(){rpc("admin_set_setting",{p_key:key,p_value:{}}).then(function(){$(form).reset();say("Removed.");setTimeout(function(){say("")},2500)})};
   }
-  $("vf2").onsubmit=function(e){e.preventDefault();rpc("admin_set_setting",{p_key:"verify",p_value:{price:$("vp").value.trim(),how:$("vh").value.trim(),link:$("vl").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
+  $("vf2").onsubmit=function(e){e.preventDefault();rpc("admin_set_setting",{p_key:"verify",p_value:{price:$("vp").value.trim(),amount:Number($("va").value)||0,auto:$("vo").checked&&Number($("va").value)>0,how:$("vh").value.trim(),link:$("vl").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("vx").onclick=function(){rpc("admin_set_setting",{p_key:"verify",p_value:{}}).then(function(){$("vf2").reset();say("Sign-ups closed.");setTimeout(function(){say("")},2500)})};
   setting("sf","song",function(){return{title:$("s1").value.trim(),artist:$("s2").value.trim(),note:$("s3").value.trim(),link:$("s4").value.trim()}},"sx");
   setting("pf2","sponsor",function(){return{text:$("p1").value.trim(),link:$("p2").value.trim()}},"px");

@@ -939,9 +939,16 @@ function renderProfile(uid){
         else{
           vbox.appendChild(el("h3",null,"\u2b50 Gold tick: "+vcfg.price+" per month"));
           vbox.appendChild(el("p",null,"A gold tick shows next to your name on your profile, posts and comments so people know your page is the real you."));
-          if(vcfg.how)vbox.appendChild(el("p",null,vcfg.how));
-          var pl=safeLink(vcfg.link);if(pl){var pa=el("a","linkbtn","Pay now");pa.href=pl;pa.target="_blank";pa.rel="noopener noreferrer";vbox.appendChild(pa)}
-          var vf=el("form","cf");var ri=document.createElement("input");ri.placeholder="Payment reference or MoMo number you paid from";ri.maxLength=80;ri.setAttribute("aria-label","Payment reference");
+          if(vcfg.auto&&vcfg.amount){
+            var pb=el("button",null,"Pay GH\u20b5 "+vcfg.amount+" with Mobile Money or card");pb.type="button";pb.style.cssText="background:var(--red);color:#fff;border-color:var(--red);margin:6px 0";
+            var ps=el("div","none","You will pay on Paystack's secure page. Your tick turns on by itself within a minute.");
+            pb.onclick=function(){pb.disabled=true;pb.textContent="Opening payment page...";
+              token().then(function(t){return fetch(CFG.url.replace(/\/$/,"")+"/functions/v1/paystack-init",{method:"POST",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify({origin:location.origin})})}).then(function(r){return r.json()}).then(function(j){if(j&&j.url){location.href=j.url}else throw new Error(j&&j.error||"failed")}).catch(function(er){pb.disabled=false;pb.textContent="Pay GH\u20b5 "+vcfg.amount+" with Mobile Money or card";ps.textContent="Couldn't open the payment page ("+(er&&er.message||"error")+"). Try again in a moment."})};
+            vbox.appendChild(pb);vbox.appendChild(ps);
+          }
+          else if(vcfg.how)vbox.appendChild(el("p",null,vcfg.how));
+          var pl=vcfg.auto&&vcfg.amount?null:safeLink(vcfg.link);if(pl){var pa=el("a","linkbtn","Pay now");pa.href=pl;pa.target="_blank";pa.rel="noopener noreferrer";vbox.appendChild(pa)}
+          var vf=el("form","cf");if(vcfg.auto&&vcfg.amount)vf.hidden=true;var ri=document.createElement("input");ri.placeholder="Payment reference or MoMo number you paid from";ri.maxLength=80;ri.setAttribute("aria-label","Payment reference");
           var ni2=document.createElement("input");ni2.placeholder="Note (optional)";ni2.maxLength=200;
           var sb2=el("button",null,"I have paid, verify me");sb2.type="submit";vf.appendChild(ri);vf.appendChild(ni2);vf.appendChild(sb2);
           var vs=el("div","none","");
@@ -1201,6 +1208,18 @@ function start(){
   var wa=$("wach");wa.textContent="";
   if(CFG&&CFG.whatsapp&&!document.querySelector(".wfab")){var wl=el("a","wfab");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wl.setAttribute("aria-label","Join our WhatsApp channel");wl.appendChild(svg("wa"));wl.appendChild(el("span",null,"Join our channel"));document.body.appendChild(wl)}
   $("q").hidden=!all.length;
+  try{
+    var qp=new URLSearchParams(location.search);
+    if(qp.get("paid")&&CFG&&SES){
+      history.replaceState(null,"",location.pathname);
+      toast("Payment received. Turning on your gold tick...");
+      var tries=0,chk=function(){tries++;api("creator_stats?select=verified&user_id=eq."+SES.user.id).then(function(r){
+        if(r&&r[0]&&r[0].verified){delete cr[SES.user.id];openProfile(SES.user.id);toast("Your gold tick is active!")}
+        else if(tries<10)setTimeout(chk,3000);else{openProfile(SES.user.id);toast("Payment received. If your tick is not on in a few minutes, contact us.")}
+      }).catch(function(){if(tries<10)setTimeout(chk,3000)})};
+      setTimeout(chk,2500);return;
+    }
+  }catch(e){}
   var h=location.hash.slice(1);
   if(/^u-[0-9a-f-]{36}$/.test(h)&&CFG&&SES){openProfile(h.slice(2));return}
   if(h&&!/access_token|type=/.test(h)){var t=document.getElementById("post-"+h);if(t){t.classList.add("flash");t.scrollIntoView()}}
