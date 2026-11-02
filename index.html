@@ -244,6 +244,10 @@ header.wrap{padding-right:64px}
 .lbr .nm2{flex:1;min-width:0;font-weight:800;overflow-wrap:anywhere}
 .lbr .pts{font-weight:800;color:var(--red)}
 .streak{margin:10px 0;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:800}
+.wfab{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;align-items:center;gap:8px;background:#25D366;color:#fff;font-weight:800;font-size:14px;text-decoration:none;padding:12px 16px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+.wfab svg{width:22px;height:22px;fill:#fff}
+@media(max-width:420px){.wfab span{display:none}.wfab{padding:14px}}
+body.locked .wfab{display:none}
 .fl2{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:12px;font-weight:700;padding-top:6px}
 .fl2 a{color:var(--muted)}
 .gc .fl2{margin-top:10px}
@@ -956,7 +960,7 @@ function start(){
   document.body.classList.remove("locked");$("gate").hidden=true;
   renderWho();buildTabs();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG&&SES)loadRemote();renderExtras();
   var wa=$("wach");wa.textContent="";
-  if(CFG&&CFG.whatsapp){var wl=el("a","wach","\ud83d\udce2 Join our WhatsApp channel");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wa.appendChild(wl)}
+  if(CFG&&CFG.whatsapp&&!document.querySelector(".wfab")){var wl=el("a","wfab");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wl.setAttribute("aria-label","Join our WhatsApp channel");wl.appendChild(svg("wa"));wl.appendChild(el("span",null,"Join our channel"));document.body.appendChild(wl)}
   $("q").hidden=!all.length;
   var h=location.hash.slice(1);
   if(h&&!/access_token|type=/.test(h)){var t=document.getElementById("post-"+h);if(t){t.classList.add("flash");t.scrollIntoView()}}
