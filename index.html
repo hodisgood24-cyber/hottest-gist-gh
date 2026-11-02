@@ -181,6 +181,7 @@ body.locked .bell{display:none}
 .np .ni{font-size:20px;line-height:1.2}
 .np .nx{flex:1;min-width:0;overflow-wrap:anywhere}
 .np .nx small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.np .tg{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;font-weight:700;margin:0 0 8px;padding-bottom:10px;border-bottom:1px solid var(--line)}
 .np .none{color:var(--muted);font-size:14px;padding:8px 0}
 header.wrap{padding-right:112px}
 @media(max-width:480px){h1{font-size:clamp(24px,7.4vw,40px)}.logo{width:36px;height:36px;margin-right:8px}}
@@ -298,6 +299,32 @@ body.locked .wfab,body.locked .bnav{display:none}
 .bnav button.add svg{stroke:#fff}
 body.hasnav{padding-bottom:78px}
 body.hasnav .wfab{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+@media(max-width:700px){body.hasnav .wfab{display:none}}
+.instbar{display:flex;align-items:center;gap:10px;margin:14px 0;padding:10px 12px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.instbar .pbi{font-size:28px;width:40px;text-align:center;flex:none}
+.instbar img{width:40px;height:40px;border-radius:10px;flex:none}
+.instbar span{flex:1;min-width:0}.instbar b{display:block;font-size:14px}.instbar small{display:block;color:var(--muted);font-size:12px}
+.instbar .go2{margin:0;padding:9px 14px;font-size:14px}
+.instbar .ix{background:none;border:0;color:var(--muted);font-size:22px;cursor:pointer;padding:0 4px;line-height:1}
+.instdlg{background:var(--card);color:var(--text);border-radius:16px;padding:20px;max-width:340px;width:100%}
+.instdlg h3{margin:0 0 10px;font-size:19px}.instdlg ol{margin:0 0 8px;padding-left:22px;line-height:1.6;font-size:15px}
+.chartc{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.chartc.last{opacity:.9}
+.chd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;font-size:14px}.chd span{color:var(--red);font-weight:800;font-size:12px}
+.crow{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)}
+.crow:last-child{border-bottom:0}.crow.mine{background:rgba(31,138,76,.12);border-radius:10px}
+.cn{font:400 26px/1 var(--font-display);width:30px;text-align:center;color:var(--red);flex:none}
+.ct{flex:1;min-width:0}.ct b{display:block;overflow-wrap:anywhere}.ct small{color:var(--muted);font-size:12px}
+.cbar{height:5px;border-radius:9px;background:var(--line);margin-top:5px;overflow:hidden}.cbar i{display:block;height:100%;background:linear-gradient(90deg,#c8102e,#fcd116,#1f8a4c)}
+.cv{font:inherit;font-weight:800;font-size:13px;border-radius:99px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);padding:7px 12px;cursor:pointer;flex:none}
+.cv[aria-pressed=true]{background:#1f8a4c;border-color:#1f8a4c;color:#fff}
+.cmore{display:block;color:var(--muted);margin-top:6px}
+.crest{margin:6px 0 12px}.crest summary{cursor:pointer;font-weight:800;padding:6px 0}
+.wabar{display:flex;align-items:center;gap:10px;margin:14px 0;padding:12px 14px;border-radius:14px;background:#0f3d24;border:1px solid #25D366;color:#fff;text-decoration:none;font-weight:800;font-size:14px}
+.chtz{width:100%;font:inherit;font-weight:800;text-align:left;cursor:pointer;background:#2a1030;border-color:#e100ff}.chtz b{color:#ff7ae6}
+.wabar svg{width:22px;height:22px;flex:none;fill:#25D366}
+.wabar span{flex:1}
+.wabar b{color:#25D366}
 body.hasnav .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 .snd{margin:14px 0;padding:14px;border-radius:16px;background:#111;color:#fff;border:1px solid #333;background-image:linear-gradient(135deg,rgba(37,244,238,.12),rgba(254,44,85,.14))}
 .snd .pk{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;opacity:.9}
@@ -306,6 +333,8 @@ body.hasnav .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 .snr .n{width:26px;font:400 22px/1 var(--font-display);color:#25f4ee}
 .snr .t{flex:1;min-width:0;overflow-wrap:anywhere}.snr .t b{display:block}.snr .t small{opacity:.8}
 .snr a{flex:0 0 auto;background:#fe2c55;color:#fff;text-decoration:none;font-weight:800;font-size:12px;padding:7px 11px;border-radius:999px}
+.snd.slim{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;text-decoration:none;flex-wrap:wrap}
+.snd.slim b{color:#25f4ee;font-size:14px}
 .snd .more{display:inline-block;margin-top:8px;color:#25f4ee;font-size:13px;font-weight:800}
 .fl2{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:12px;font-weight:700;padding-top:6px}
 .fl2 a{color:var(--muted)}
@@ -337,6 +366,7 @@ body.hasnav .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   </div>
   <div id="vFans" hidden></div>
   <div id="vGigs" hidden></div>
+  <div id="vChart" hidden></div>
   <div id="vProfile" hidden></div>
   <div id="vEvents" hidden></div>
   <div id="vTop" hidden></div>
@@ -446,7 +476,7 @@ function token(){
   return authCall("token?grant_type=refresh_token",{refresh_token:SES.refresh_token}).then(function(j){saveSes(j);return SES.access_token}).catch(function(e){saveSes(null);showGate("signup");throw e});
 }
 function api(path,body){
-  if(!SES&&body&&!/^rpc\/is_admin/.test(path)){needLogin();var le=new Error("login");le.login=true;return Promise.reject(le)}
+  if(!SES&&body&&!/^rpc\/(is_admin|save_push|remove_push)$/.test(path)){needLogin();var le=new Error("login");le.login=true;return Promise.reject(le)}
   return token().then(function(t){
     var o={method:body?"POST":"GET",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"}};
     if(body)o.body=JSON.stringify(body);
@@ -639,6 +669,60 @@ function pollCard(pl){
   c.appendChild(el("div","pt",total+" vote"+(total===1?"":"s")+(myVote[pl.id]==null?" · tap to vote":" · tap another to change")));
   return c;
 }
+
+// ===== Weekly Ghana Top 10 =====
+var chartRows=null,myChart=null;
+function weekKey(off){var d=new Date(Date.now()-(off||0)*7*864e5);var t=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()));var day=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-day);var y=t.getUTCFullYear(),w=Math.ceil(((t-Date.UTC(y,0,1))/864e5+1)/7);return y+"-"+(w<10?"0":"")+w}
+function loadChart(cb){
+  if(!CFG){chartRows=[];cb&&cb();return}
+  api("chart_now?select=id,week,title,artist,votes").then(function(r){chartRows=r||[];
+    if(SES)return api("chart_votes?select=song_id&week=eq."+weekKey()).then(function(v){myChart=v&&v[0]?v[0].song_id:null});
+  }).catch(function(){chartRows=chartRows||[]}).then(function(){cb&&cb()});
+}
+function daysLeft(){var n=8-(new Date().getUTCDay()||7);return n===1?"Last day to vote!":n+" days left to vote"}
+function renderChart(){
+  var v=$("vChart");v.textContent="";
+  v.appendChild(el("h2","vh","🎵 Ghana Top 10"));
+  v.appendChild(el("p","sub","The fans' chart. Vote for your song of the week, or add one that's missing. New chart every Monday."));
+  var box=el("div");v.appendChild(box);
+  if(chartRows===null){box.appendChild(el("div","none","Loading the chart..."));loadChart(renderChart);return}
+  var wk=weekKey(),now=chartRows.filter(function(r){return r.week===wk}).sort(function(a,b){return b.votes-a.votes||a.id-b.id});
+  var prev=chartRows.filter(function(r){return r.week!==wk}).sort(function(a,b){return b.votes-a.votes||a.id-b.id});
+  var total=now.reduce(function(t,r){return t+r.votes},0)||1;
+  var card=el("section","chartc");
+  var hd=el("div","chd");hd.appendChild(el("b",null,"This week"));hd.appendChild(el("span",null,daysLeft()));card.appendChild(hd);
+  if(!now.length)card.appendChild(el("div","none","No songs yet this week. Add the first one below!"));
+  now.slice(0,10).forEach(function(r,i){
+    var row=el("div","crow"+(myChart===r.id?" mine":""));
+    row.appendChild(el("div","cn",String(i+1)));
+    var t=el("div","ct");t.appendChild(el("b",null,r.title));t.appendChild(el("small",null,r.artist+" · "+r.votes+" vote"+(r.votes===1?"":"s")));
+    var bar=el("div","cbar");var f=el("i");f.style.width=Math.round(r.votes/total*100)+"%";bar.appendChild(f);t.appendChild(bar);row.appendChild(t);
+    var b=el("button","cv",myChart===r.id?"✓ Voted":"Vote");b.type="button";b.setAttribute("aria-pressed",String(myChart===r.id));
+    b.onclick=function(){if(!SES){needLogin("Create a free account to vote in the Top 10.");return}if(myChart===r.id)return;b.disabled=true;
+      api("rpc/vote_chart",{p_song:r.id}).then(function(){toast("Vote counted 🎵");loadChart(renderChart)}).catch(function(e){b.disabled=false;if(!e.login)toast("Couldn't vote. Try again.")})};
+    row.appendChild(b);
+    if(isAdm){var h=el("button","cv","Hide");h.type="button";h.onclick=function(){if(confirm("Hide this song?"))api("rpc/admin_hide_chart_song",{p_id:r.id}).then(function(){loadChart(renderChart)})};row.appendChild(h)}
+    card.appendChild(row);
+  });
+  if(now.length>10)card.appendChild(el("small","cmore",(now.length-10)+" more songs below the Top 10. Vote to push them up!"));
+  box.appendChild(card);
+  if(now.length>10){var rest=el("details","crest");rest.appendChild(el("summary",null,"See all songs this week"));
+    now.slice(10).forEach(function(r){var row=el("div","crow");var t=el("div","ct");t.appendChild(el("b",null,r.title));t.appendChild(el("small",null,r.artist+" · "+r.votes));row.appendChild(t);
+      var b=el("button","cv","Vote");b.type="button";b.onclick=function(){if(!SES){needLogin();return}api("rpc/vote_chart",{p_song:r.id}).then(function(){toast("Vote counted 🎵");loadChart(renderChart)}).catch(function(){})};row.appendChild(b);rest.appendChild(row)});
+    box.appendChild(rest)}
+  var f=el("form","cf fc");f.appendChild(el("b",null,"Song missing? Add it"));
+  var ti=field("text","Song title","off","Song title");ti.maxLength=80;var ar=field("text","Artist","off","Artist");ar.maxLength=60;
+  var go=el("button","go2","Add and vote");go.type="submit";f.appendChild(ti);f.appendChild(ar);f.appendChild(go);
+  f.onsubmit=function(e){e.preventDefault();if(!SES){needLogin("Create a free account to add songs to the Top 10.");return}
+    if(!ti.value.trim()||!ar.value.trim()){toast("Add the song title and the artist");return}go.disabled=true;
+    api("rpc/add_chart_song",{p_title:ti.value,p_artist:ar.value}).then(function(){toast("Added. Your vote is in 🎵");loadChart(renderChart)}).catch(function(er){go.disabled=false;toast(er.detail||"Couldn't add the song")})};
+  box.appendChild(f);
+  if(prev.length){var lw=el("section","chartc last");lw.appendChild(el("div","chd")).appendChild(el("b",null,"Last week's Top 3"));
+    prev.slice(0,3).forEach(function(r,i){var row=el("div","crow");row.appendChild(el("div","cn",["🥇","🥈","🥉"][i]));var t=el("div","ct");t.appendChild(el("b",null,r.title));t.appendChild(el("small",null,r.artist+" · "+r.votes+" votes"));row.appendChild(t);lw.appendChild(row)});
+    box.appendChild(lw)}
+  var sh=el("button","go2","📣 Share the chart");sh.type="button";sh.onclick=function(){var top=now.slice(0,3).map(function(r,i){return(i+1)+". "+r.title+" - "+r.artist}).join("\n");var t="This week's Ghana Top 10 on Hottest Gist GH 🇬🇭\n"+(top?top+"\n":"")+"Vote here: "+location.origin+"/#top10";
+    if(navigator.share)navigator.share({text:t}).catch(function(){});else{window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank")}};box.appendChild(sh);
+}
 function renderPolls(){
   var t=$("topPoll");if(t){t.textContent="";if(POLLS[0])t.appendChild(pollCard(POLLS[0]))}
   var v=$("vPolls");if(!v)return;v.textContent="";
@@ -755,8 +839,11 @@ function makePlayer(emb){
 function soundsCard(){
   var list=Array.isArray(cfgSet.sounds)?cfgSet.sounds:(cfgSet.sounds&&Array.isArray(cfgSet.sounds.items)?cfgSet.sounds.items:[]);
   list=list.filter(function(x){return x&&x.title});
+  if(!list.length){
+    var sl=el("a","snd slim");sl.href="https://ads.tiktok.com/business/creativecenter/inspiration/popular/music/pc/en?region=GH";sl.target="_blank";sl.rel="noopener noreferrer";
+    sl.appendChild(el("span","pk","\ud83c\udfb5 TikTok Ghana"));sl.appendChild(el("b",null,"See today's trending sounds \u2192"));return sl;
+  }
   var c=el("section","snd");c.appendChild(el("div","pk","\ud83d\udd25 Trending on TikTok in Ghana"));c.appendChild(el("h3",null,"Trending sounds"));
-  if(!list.length)c.appendChild(el("p",null,"Today's Ghana list is coming soon. Check the live charts below."));
   list.slice(0,10).forEach(function(x,i){
     var r=el("div","snr");r.appendChild(el("div","n",String(i+1)));
     var t=el("div","t");t.appendChild(el("b",null,x.title));if(x.artist)t.appendChild(el("small",null,x.artist));r.appendChild(t);
@@ -768,11 +855,68 @@ function soundsCard(){
   if(cfgSet.sounds&&cfgSet.sounds.updated){c.appendChild(el("div",null,""));var u=el("small",null,"Updated "+new Date(cfgSet.sounds.updated).toLocaleDateString("en-GB",{day:"numeric",month:"short"}));u.style.opacity=".7";c.appendChild(u)}
   return c;
 }
+
+// ===== Phone alerts (web push) =====
+function pushOk(){return!!(CFG&&CFG.push&&"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window)}
+function b64u(s){var p="=".repeat((4-s.length%4)%4),r=atob((s+p).replace(/-/g,"+").replace(/_/g,"/")),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a}
+function pushState(){
+  if(!pushOk())return Promise.resolve("none");
+  if(Notification.permission==="denied")return Promise.resolve("blocked");
+  return navigator.serviceWorker.ready.then(function(r){return r.pushManager.getSubscription()}).then(function(s){return s?"on":"off"}).catch(function(){return"off"});
+}
+function pushOn(){
+  if(!pushOk()){
+    var ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+    toast(ios?"On iPhone, install the app first (Share › Add to Home Screen), then turn on alerts inside it.":"Your browser can't do phone alerts. Try Chrome.");
+    if(ios)installApp();return Promise.resolve(false);
+  }
+  return Notification.requestPermission().then(function(p){
+    if(p!=="granted"){toast("Alerts are blocked. Allow notifications for this site in your browser settings.");return false}
+    return navigator.serviceWorker.register("/sw.js").then(function(){return navigator.serviceWorker.ready}).then(function(r){
+      return r.pushManager.getSubscription().then(function(s){return s||r.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(CFG.push)})});
+    }).then(function(s){var j=s.toJSON();return api("rpc/save_push",{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth})})
+      .then(function(){ls("gh-push","1");toast("Phone alerts on 🔔 You'll hear when new gist drops.");renderExtras();return true})
+      .catch(function(){toast("Couldn't turn on alerts. Try again in a moment.");return false});
+  });
+}
+function pushOff(){
+  return navigator.serviceWorker.ready.then(function(r){return r.pushManager.getSubscription()}).then(function(s){
+    if(!s)return;var ep=s.endpoint;return s.unsubscribe().then(function(){return api("rpc/remove_push",{p_endpoint:ep}).catch(function(){})});
+  }).then(function(){ls("gh-push","");toast("Phone alerts off");renderExtras()}).catch(function(){});
+}
+function installApp(){
+  if(deferred){deferred.prompt();deferred.userChoice&&deferred.userChoice.then(function(c){if(c&&c.outcome==="accepted"){ls("gh-inst-x","1");renderExtras()}});deferred=null;return}
+  var ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  var m=el("div","lb");m.setAttribute("role","dialog");m.setAttribute("aria-label","Install the app");
+  var c=el("div","instdlg");c.appendChild(el("h3",null,"\ud83d\udcf2 Install Hottest Gist"));
+  var steps=ios?["Tap the Share button \u2b06\ufe0f at the bottom of Safari","Scroll down and tap \u201cAdd to Home Screen\u201d","Tap \u201cAdd\u201d. Done!"]:["Tap the browser menu \u22ee (top right)","Tap \u201cInstall app\u201d or \u201cAdd to Home screen\u201d","Tap \u201cInstall\u201d. Done!"];
+  var ol=el("ol");steps.forEach(function(t){ol.appendChild(el("li",null,t))});c.appendChild(ol);
+  if(ios)c.appendChild(el("p","sub","On iPhone this only works in Safari."));
+  var ok=el("button","go2","Got it");ok.type="button";ok.onclick=function(){m.remove()};c.appendChild(ok);
+  m.onclick=function(e){if(e.target===m)m.remove()};m.appendChild(c);document.body.appendChild(m);ok.focus();
+}
 function renderExtras(){
   var x=$("extras");if(!x)return;x.textContent="";
   var sp=cfgSet.sponsor;
   if(sp&&sp.text){var a=el("a","sponsor","Sponsored \u00b7 "+sp.text);if(safeLink(sp.link)){a.href=safeLink(sp.link);a.target="_blank";a.rel="sponsored noopener noreferrer"}x.appendChild(a)}
+  var standalone=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone;
+  if(!standalone&&ls("gh-inst-x")!=="1"){
+    var ib=el("div","instbar");ib.appendChild(el("img")).src="/icon-192.png";
+    var it=el("span",null,"");it.appendChild(el("b",null,"Get the Hottest Gist app"));it.appendChild(el("small",null,"Free. Opens full-screen from your home screen."));ib.appendChild(it);
+    var ig=el("button","go2","Install");ig.type="button";ig.onclick=installApp;ib.appendChild(ig);
+    var ix=el("button","ix","\u00d7");ix.type="button";ix.setAttribute("aria-label","Hide");ix.onclick=function(){ls("gh-inst-x","1");ib.remove()};ib.appendChild(ix);
+    x.appendChild(ib);
+  }
+  if(pushOk()&&ls("gh-push")!=="1"&&ls("gh-push-x")!=="1"&&Notification.permission!=="denied"){
+    var pb=el("div","instbar");pb.appendChild(el("span","pbi","\ud83d\udd14"));
+    var pt=el("span",null,"");pt.appendChild(el("b",null,"Get new gist on your phone"));pt.appendChild(el("small",null,"We'll send an alert when a big story drops."));pb.appendChild(pt);
+    var pg=el("button","go2","Turn on");pg.type="button";pg.onclick=function(){pushOn()};pb.appendChild(pg);
+    var px=el("button","ix","\u00d7");px.type="button";px.setAttribute("aria-label","Hide");px.onclick=function(){ls("gh-push-x","1");pb.remove()};pb.appendChild(px);
+    x.appendChild(pb);
+  }
   var sc=soundsCard();if(sc)x.appendChild(sc);
+  var ct=el("button","wabar chtz");ct.type="button";ct.appendChild(el("span",null,"\ud83c\udfb5 Ghana Top 10: vote for your song"));ct.appendChild(el("b",null,"Vote \u2192"));ct.onclick=function(){setView("chart")};x.appendChild(ct);
+  if(CFG&&CFG.whatsapp){var wb=el("a","wabar");wb.href=CFG.whatsapp;wb.target="_blank";wb.rel="noopener noreferrer";wb.appendChild(svg("wa"));wb.appendChild(el("span",null,"Get the gist first on our WhatsApp channel"));wb.appendChild(el("b",null,"Join \u2192"));x.appendChild(wb)}
   var so=cfgSet.song;
   if(so&&so.title){
     var c=el("section","song");c.appendChild(el("div","pk","\ud83c\udfb5 Song of the day"));
@@ -1140,14 +1284,14 @@ function renderProfile(uid){
 function setView(v){
   viewName=v;
   setTimeout(navMark,0);
-  ["gist","fans","gigs","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","fans","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
-  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="gigs")renderGigs();if(v==="profile")renderProfile(profUid);
+  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 function buildTabs(){
   var t=$("tabs");t.textContent="";t.hidden=false;
-  [["gist","🔥 Gist"],["fans","🌟 Fans"],["gigs","💼 Services"],["events","📅 Events"],["polls","📊 Polls"],["top","🏆 Top fans"],["wall","💬 Wall"],["quiz","🧠 Quiz"]].forEach(function(x){
+  [["gist","🔥 Gist"],["chart","🎵 Top 10"],["fans","🌟 Fans"],["gigs","💼 Services"],["events","📅 Events"],["polls","📊 Polls"],["top","🏆 Top fans"],["wall","💬 Wall"],["quiz","🧠 Quiz"]].forEach(function(x){
     var b=el("button",null,x[1]);b.type="button";b.setAttribute("data-v",x[0]);b.setAttribute("aria-pressed",String(x[0]===viewName));b.onclick=function(){setView(x[0])};t.appendChild(b);
   });
 }
@@ -1350,7 +1494,7 @@ function buildSettings(){
   var sh=el("button","item","\ud83d\udce4 Share this site");sh.type="button";
   sh.onclick=function(){var u=location.origin+location.pathname;if(navigator.share)navigator.share({title:"Hottest Gist GH",text:"Fresh music, movies and culture from Ghana",url:u}).catch(function(){});else copyText(u)};p.appendChild(sh);
   var ins=el("button","item","\ud83d\udcf2 Install the app");ins.type="button";
-  ins.onclick=function(){if(deferred){deferred.prompt();deferred=null}else toast("iPhone: tap Share, then Add to Home Screen. Android: browser menu, then Install app.")};p.appendChild(ins);
+  ins.onclick=function(){closeSettings();installApp()};p.appendChild(ins);
   if(CFG&&CFG.whatsapp){var wc=el("a","item","\ud83d\udce2 Join our WhatsApp channel");wc.href=CFG.whatsapp;wc.target="_blank";wc.rel="noopener noreferrer";p.appendChild(wc)}
   var up=el("button","item","\u2b06\ufe0f Back to top");up.type="button";up.onclick=function(){closeSettings();window.scrollTo({top:0,behavior:"smooth"})};p.appendChild(up);
 }
@@ -1386,6 +1530,8 @@ function noteRow(icon,text,sub,isNew,go){
 function buildNotes(){
   var p=$("np");p.textContent="";
   p.appendChild(el("h3",null,"Notifications"));
+  if(pushOk()){var pr=el("div","tg");pr.appendChild(el("span",null,"\ud83d\udcf2 Phone alerts for new stories"));var pbt=el("button","go2","\u2026");pbt.type="button";pbt.style.margin="0";pbt.style.padding="6px 12px";pr.appendChild(pbt);p.appendChild(pr);
+    pushState().then(function(st){pbt.textContent=st==="on"?"Turn off":st==="blocked"?"Blocked":"Turn on";pbt.disabled=st==="blocked";pbt.onclick=function(){pbt.disabled=true;(st==="on"?pushOff():pushOn()).then(function(){if(npOpen)buildNotes()})}})}
   var ns=newStories(),any=false;
   var W={like:["❤️"," liked your post"],comment:["💬"," commented on your post"],reply:["↩️"," replied to your comment"],follow:["🌟"," started following you"]};
   function mine(n){any=true;var w=W[n.kind]||["🔔",""];
@@ -1435,9 +1581,11 @@ function start(){
     }
   }catch(e){}
   var h=location.hash.slice(1);
+  if(h==="top10"){setView("chart");return}
   if(/^u-[0-9a-f-]{36}$/.test(h)&&CFG&&SES){openProfile(h.slice(2));return}
   if(h&&!/access_token|type=/.test(h)){var t=document.getElementById("post-"+h);if(t){t.classList.add("flash");t.scrollIntoView()}}
 }
+if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})});
 (function boot(){
   if(!CFG){start();return}
   var hs=location.hash.slice(1);
