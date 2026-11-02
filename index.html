@@ -320,6 +320,19 @@ body.hasnav .wfab{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 .cv[aria-pressed=true]{background:#1f8a4c;border-color:#1f8a4c;color:#fff}
 .cmore{display:block;color:var(--muted);margin-top:6px}
 .crest{margin:6px 0 12px}.crest summary{cursor:pointer;font-weight:800;padding:6px 0}
+.bnav button span{position:relative}
+.nbd{position:absolute;top:-4px;right:-8px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:var(--red);color:#fff;font:800 11px/18px var(--font,inherit);font-style:normal;text-align:center;border:2px solid var(--bg);box-sizing:border-box}
+.frs{display:flex;gap:8px;margin:10px 0 4px}
+.frs input{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--text)}
+.frh{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800;margin:18px 0 6px}
+.frw{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)}
+.frw .who{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--text);cursor:pointer;text-align:left}
+.frw .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frw .acts{display:flex;gap:6px;flex:none}
+.frb{font:inherit;font-weight:800;font-size:13px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);color:var(--text);padding:7px 12px;cursor:pointer;white-space:nowrap}
+.frb.go{background:var(--red);border-color:var(--red);color:#fff}
+.frb.ok{background:#1f8a4c;border-color:#1f8a4c;color:#fff}
+.frb:disabled{opacity:.6}
 .wabar{display:flex;align-items:center;gap:10px;margin:14px 0;padding:12px 14px;border-radius:14px;background:#0f3d24;border:1px solid #25D366;color:#fff;text-decoration:none;font-weight:800;font-size:14px}
 .chtz{width:100%;font:inherit;font-weight:800;text-align:left;cursor:pointer;background:#2a1030;border-color:#e100ff}.chtz b{color:#ff7ae6}
 .wabar svg{width:22px;height:22px;flex:none;fill:#25D366}
@@ -365,6 +378,7 @@ body.hasnav .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     <div id="feed"></div>
   </div>
   <div id="vFans" hidden></div>
+  <div id="vFriends" hidden></div>
   <div id="vGigs" hidden></div>
   <div id="vChart" hidden></div>
   <div id="vProfile" hidden></div>
@@ -670,6 +684,64 @@ function pollCard(pl){
   return c;
 }
 
+
+// ===== Friends =====
+var friends=[],frLoaded=false,frQ="",frRes=null,frTimer=null;
+function loadFriends(cb){
+  if(!(CFG&&SES)){friends=[];cb&&cb();return}
+  api("rpc/my_friends",{}).then(function(r){friends=r||[];frLoaded=true}).catch(function(){friends=friends||[]}).then(function(){friendBadge();cb&&cb()});
+}
+function friendBadge(){var b=$("frBadge");if(!b)return;var n=friends.filter(function(f){return f.state==="incoming"}).length;b.hidden=!n;b.textContent=n>9?"9+":String(n)}
+function frState(uid){var f=friends.find(function(x){return x.user_id===uid});return f?f.state:"none"}
+function friendBtns(uid,name,state,onChange){
+  var w=el("div","acts");
+  function act(path,body,msg){return api(path,body).then(function(r){toast(msg);loadFriends(onChange)}).catch(function(e){if(!e.login)toast(e.detail||"Something went wrong. Try again.")})}
+  if(state==="none"){var a=el("button","frb go","+ Add friend");a.type="button";a.onclick=function(){a.disabled=true;act("rpc/friend_request",{p_user:uid},"Friend request sent to "+name)};w.appendChild(a)}
+  else if(state==="sent"){var c=el("button","frb","Requested ✓");c.type="button";c.title="Tap to cancel";c.onclick=function(){c.disabled=true;act("rpc/friend_remove",{p_user:uid},"Request cancelled")};w.appendChild(c)}
+  else if(state==="incoming"){var y=el("button","frb ok","Accept");y.type="button";y.onclick=function(){y.disabled=true;act("rpc/friend_respond",{p_user:uid,p_accept:true},"You and "+name+" are now friends 🎉")};
+    var n=el("button","frb","Decline");n.type="button";n.onclick=function(){n.disabled=true;act("rpc/friend_respond",{p_user:uid,p_accept:false},"Request declined")};w.appendChild(y);w.appendChild(n)}
+  else{var f=el("button","frb ok","Friends ✓");f.type="button";f.onclick=function(){openProfile(uid)};w.appendChild(f)}
+  return w;
+}
+function frRow(p,onChange){
+  var r=el("div","frw");var who=el("button","who");who.type="button";who.appendChild(avEl(p,40));var nm=el("span",null,p.name||"Fan");who.appendChild(nm);if(p.verified)who.appendChild(vBadge(14));
+  who.onclick=function(){openProfile(p.user_id)};r.appendChild(who);r.appendChild(friendBtns(p.user_id,p.name||"Fan",p.state||frState(p.user_id),onChange));return r;
+}
+function renderFriends(){
+  var v=$("vFriends");v.textContent="";
+  v.appendChild(el("h2","vh","👫 Friends"));
+  if(!(CFG&&SES)){v.appendChild(loginBox("Log in to add friends and see who's on Hottest Gist GH."));return}
+  v.appendChild(el("p","sub","Find people, add them as friends and follow each other's gist."));
+  var sf=el("form","frs");var si=el("input");si.type="search";si.placeholder="Search people by name";si.setAttribute("aria-label","Search people by name");si.value=frQ;si.id="frq";
+  var sb=el("button","frb go","Search");sb.type="submit";sf.appendChild(si);sf.appendChild(sb);v.appendChild(sf);
+  var res=el("div");v.appendChild(res);
+  function search(){frQ=si.value.trim();res.textContent="";if(frQ.length<2){frRes=null;return}
+    res.appendChild(el("div","none","Searching..."));
+    api("rpc/find_people",{p_q:frQ}).then(function(r){frRes=r||[];res.textContent="";
+      if(!frRes.length){res.appendChild(el("div","none","No one called “"+frQ+"” yet. Share the site so your friends can join!"));return}
+      frRes.forEach(function(p){res.appendChild(frRow(p,renderFriends))});
+    }).catch(function(){res.textContent="";res.appendChild(el("div","none","Search isn't ready yet. Did you run setup-friends.sql?"))})}
+  sf.onsubmit=function(e){e.preventDefault();search()};
+  si.oninput=function(){clearTimeout(frTimer);frTimer=setTimeout(search,400)};
+  if(frQ.length>=2)search();
+  var body=el("div");v.appendChild(body);
+  if(!frLoaded){body.appendChild(el("div","none","Loading your friends..."));loadFriends(renderFriends);return}
+  var inc=friends.filter(function(f){return f.state==="incoming"}),fr=friends.filter(function(f){return f.state==="friends"}),sent=friends.filter(function(f){return f.state==="sent"});
+  if(inc.length){body.appendChild(el("div","frh","Friend requests ("+inc.length+")"));inc.forEach(function(p){body.appendChild(frRow(p,renderFriends))})}
+  body.appendChild(el("div","frh","Your friends ("+fr.length+")"));
+  if(!fr.length)body.appendChild(el("div","none","No friends yet. Search for people above or add someone below."));
+  fr.forEach(function(p){body.appendChild(frRow(p,renderFriends))});
+  if(sent.length){body.appendChild(el("div","frh","Requests you sent"));sent.forEach(function(p){body.appendChild(frRow(p,renderFriends))})}
+  var sg=el("div");body.appendChild(sg);
+  var me=SES.user.id,known={};friends.forEach(function(f){known[f.user_id]=1});
+  api("creator_stats?select=user_id,name,avatar,verified,followers&order=followers.desc,posts.desc&limit=30").then(function(r){
+    var list=(r||[]).filter(function(p){return p.user_id!==me&&!known[p.user_id]}).slice(0,8);
+    if(!list.length)return;sg.appendChild(el("div","frh","People you may know"));
+    list.forEach(function(p){p.state="none";sg.appendChild(frRow(p,renderFriends))});
+    var inv=el("button","go2","📣 Invite friends to Hottest Gist");inv.type="button";inv.style.marginTop="14px";
+    inv.onclick=function(){var t="Join me on Hottest Gist GH 🇬🇭🔥 Ghana's hottest music and gist. Add me as a friend: "+location.origin+"/#u-"+me;if(navigator.share)navigator.share({text:t}).catch(function(){});else window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank")};sg.appendChild(inv);
+  }).catch(function(){});
+}
 // ===== Weekly Ghana Top 10 =====
 var chartRows=null,myChart=null;
 function weekKey(off){var d=new Date(Date.now()-(off||0)*7*864e5);var t=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()));var day=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-day);var y=t.getUTCFullYear(),w=Math.ceil(((t-Date.UTC(y,0,1))/864e5+1)/7);return y+"-"+(w<10?"0":"")+w}
@@ -1014,22 +1086,23 @@ function avEl(c,size){
 }
 function loginBox(t){var d=el("div","empty",t+" ");var b=el("button","go2","Log in / Join");b.type="button";b.onclick=function(){needLogin()};d.appendChild(el("br"));d.appendChild(b);return d}
 function newPost(){if(!SES){needLogin("Create a free account to post your own gist, photos and videos.");return}setView("fans");setTimeout(function(){var t=document.querySelector("#vFans textarea");if(t){t.scrollIntoView({block:"center"});t.focus()}},50)}
-var NAVI={home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',fans:'<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><path d="M16 4.500a3.500 3.500 0 0 1 0 7M18 14.500a6.500 6.500 0 0 1 3.500 5.500"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'};
+var NAVI={addf:'<circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M19 8v6M16 11h6"/>',home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',fans:'<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><path d="M16 4.500a3.500 3.500 0 0 1 0 7M18 14.500a6.500 6.500 0 0 1 3.500 5.500"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'};
 function buildNav(){
   var n=$("bnav");if(!n)return;
   if(!CFG){n.hidden=true;document.body.classList.remove("hasnav");return}
   n.hidden=false;document.body.classList.add("hasnav");n.textContent="";
-  [["home","home","Home",function(){setView("gist")}],["search","search","Search",function(){setView("gist");setTimeout(function(){var q=$("q");if(q){q.scrollIntoView({block:"center"});q.focus()}},50)}],["add","plus","Post",newPost],["fans","fans","Fans",function(){setView("fans")}],["me","user","Profile",function(){if(!SES){needLogin();return}openProfile(SES.user.id)}]].forEach(function(x){
+  [["home","home","Home",function(){setView("gist")}],["search","search","Search",function(){setView("gist");setTimeout(function(){var q=$("q");if(q){q.scrollIntoView({block:"center"});q.focus()}},50)}],["add","plus","Post",newPost],["friends","addf","Friends",function(){setView("friends")}],["me","user","Profile",function(){if(!SES){needLogin();return}openProfile(SES.user.id)}]].forEach(function(x){
     var b=el("button",x[0]==="add"?"add":"");b.type="button";b.setAttribute("data-nav",x[0]);b.setAttribute("aria-label",x[2]);
-    var w=el("span",x[0]==="add"?"pl":"");w.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+NAVI[x[1]]+'</svg>';b.appendChild(w);b.appendChild(el("span",null,x[2]));b.onclick=x[3];n.appendChild(b);
+    var w=el("span",x[0]==="add"?"pl":"");w.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+NAVI[x[1]]+'</svg>';b.appendChild(w);b.appendChild(el("span",null,x[2]));if(x[0]==="friends"){var fbd=el("i","nbd");fbd.id="frBadge";fbd.hidden=true;w.appendChild(fbd)}b.onclick=x[3];n.appendChild(b);
   });
-  navMark();
+  navMark();friendBadge();
 }
 function navMark(){
-  var m={gist:"home",fans:"fans"};var cur=viewName==="profile"?(profUid&&SES&&SES.user&&profUid===SES.user.id?"me":"fans"):m[viewName];
+  var m={gist:"home",friends:"friends"};var cur=viewName==="profile"?(profUid&&SES&&SES.user&&profUid===SES.user.id?"me":"friends"):m[viewName];
   var b=document.querySelectorAll("#bnav button");for(var i=0;i<b.length;i++){if(b[i].getAttribute("data-nav")===cur)b[i].setAttribute("aria-current","true");else b[i].removeAttribute("aria-current")}
 }
-function openProfile(uid){profUid=uid;setView("profile")}
+var backTo="gist";
+function openProfile(uid){if(viewName!=="profile")backTo=viewName;profUid=uid;setView("profile")}
 function shrinkImg(file,max){return new Promise(function(res,rej){
   var im=new Image(),u=URL.createObjectURL(file);
   im.onload=function(){var r=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(function(b){b?res(b):rej()},"image/jpeg",.82)};
@@ -1204,7 +1277,7 @@ function renderProfile(uid){
   var v=$("vProfile");v.textContent="";
   if(!(CFG&&SES)||!uid){v.appendChild(loginBox("Log in to see profiles and follow fans."));return}
   var me=SES.user.id,mine=uid===me;
-  var back=el("button","rl","← Back to fans");back.type="button";back.onclick=function(){setView("fans")};v.appendChild(back);
+  var back=el("button","rl","← Back");back.type="button";back.onclick=function(){setView(backTo||"gist")};v.appendChild(back);
   var body=el("div");v.appendChild(body);body.appendChild(el("div","none","Loading..."));
   function load(){
     api("creator_stats?select=*&user_id=eq."+uid).then(function(r){
@@ -1229,6 +1302,9 @@ function renderProfile(uid){
         fb.onclick=function(){var on=!fol[uid];if(on)fol[uid]=1;else delete fol[uid];fb.textContent=fol[uid]?"Following ✔":"Follow";c.followers=Math.max(0,(c.followers||0)+(on?1:-1));fcount.textContent=String(c.followers);
           api("rpc/toggle_follow",{p_user:uid,p_on:on}).catch(function(){toast("Couldn't update follow");if(on)delete fol[uid];else fol[uid]=1;fb.textContent=fol[uid]?"Following ✔":"Follow"})};
         act.appendChild(fb);
+        var fw=el("span");act.appendChild(fw);
+        var drawF=function(){fw.textContent="";var bt=friendBtns(uid,c.name||"Fan",frState(uid),drawF);bt.style.display="inline-flex";fw.appendChild(bt)};
+        if(frLoaded)drawF();else loadFriends(drawF);
       }
       if(mine){
         var vcfg=cfgSet.verify||{};
@@ -1284,9 +1360,9 @@ function renderProfile(uid){
 function setView(v){
   viewName=v;
   setTimeout(navMark,0);
-  ["gist","fans","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","fans","friends","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
-  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 function buildTabs(){
@@ -1520,7 +1596,7 @@ function badge(){
 function loadNotes(){
   if(!(CFG&&SES))return;
   if(!ls("gh-seen"))ls("gh-seen",String(Date.now()));
-  api("notifications?select=id,actor,actor_name,kind,post_id,snippet,read,created_at&order=created_at.desc&limit=40").then(function(r){notes=r||[];badge();if(npOpen)buildNotes()}).catch(function(){badge()});
+  api("notifications?select=id,actor,actor_name,kind,post_id,snippet,read,created_at&order=created_at.desc&limit=40").then(function(r){var had=notes.length;notes=r||[];if(notes.some(function(x){return /^friend_/.test(x.kind)&&!x.read})&&notes.length!==had)loadFriends();badge();if(npOpen)buildNotes()}).catch(function(){badge()});
 }
 function noteRow(icon,text,sub,isNew,go){
   var b=el("button","nt"+(isNew?" new":""));b.type="button";
@@ -1533,10 +1609,10 @@ function buildNotes(){
   if(pushOk()){var pr=el("div","tg");pr.appendChild(el("span",null,"\ud83d\udcf2 Phone alerts for new stories"));var pbt=el("button","go2","\u2026");pbt.type="button";pbt.style.margin="0";pbt.style.padding="6px 12px";pr.appendChild(pbt);p.appendChild(pr);
     pushState().then(function(st){pbt.textContent=st==="on"?"Turn off":st==="blocked"?"Blocked":"Turn on";pbt.disabled=st==="blocked";pbt.onclick=function(){pbt.disabled=true;(st==="on"?pushOff():pushOn()).then(function(){if(npOpen)buildNotes()})}})}
   var ns=newStories(),any=false;
-  var W={like:["❤️"," liked your post"],comment:["💬"," commented on your post"],reply:["↩️"," replied to your comment"],follow:["🌟"," started following you"]};
+  var W={like:["❤️"," liked your post"],comment:["💬"," commented on your post"],reply:["↩️"," replied to your comment"],follow:["🌟"," started following you"],friend_request:["👋"," sent you a friend request"],friend_accept:["🤝"," accepted your friend request"]};
   function mine(n){any=true;var w=W[n.kind]||["🔔",""];
     var sub=(n.snippet?"“"+n.snippet+"” · ":"")+agoTxt(Date.parse(n.created_at));
-    p.appendChild(noteRow(w[0],(n.actor_name||"A fan")+w[1],sub,!n.read,function(){if(n.kind==="follow"&&n.actor)openProfile(n.actor);else if(n.post_id)goPost(n.post_id)}));
+    p.appendChild(noteRow(w[0],(n.actor_name||"A fan")+w[1],sub,!n.read,function(){if(n.kind==="friend_request"){frLoaded=false;setView("friends")}else if((n.kind==="follow"||n.kind==="friend_accept")&&n.actor)openProfile(n.actor);else if(n.post_id)goPost(n.post_id)}));
   }
   notes.filter(function(n){return!n.read}).forEach(mine);
   ns.forEach(function(s){any=true;p.appendChild(noteRow("🔥","New: "+s.title,(s.cat||"News")+" · "+agoTxt(s.ts),true,function(){goPost(s.id)}))});
@@ -1556,6 +1632,7 @@ document.addEventListener("click",function(e){if(npOpen&&e.target.isConnected&&!
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&npOpen){closeNotes();$("bell").focus()}});
 function startNotes(){
   if(!(CFG&&SES))return;
+  loadFriends();
   $("bell").hidden=false;loadNotes();
   if(!noteTimer)noteTimer=setInterval(function(){if(!document.hidden)loadNotes()},60000);
   document.addEventListener("visibilitychange",function(){if(!document.hidden)loadNotes()});
