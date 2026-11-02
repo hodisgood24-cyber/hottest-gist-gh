@@ -11,9 +11,14 @@ PAL = {
   "Movies": ("#232526", "#c8102e"), "TV": ("#0f2027", "#2c7be5"),
   "Celebrity": ("#ff0844", "#ffb199"), "Events": ("#c8102e", "#fcd116"),
   "Reviews": ("#134e5e", "#71b280"),
+  "News": ("#0f2027", "#c8102e"), "Trending": ("#8e2de2", "#ff0844"),
+  "Sports": ("#11998e", "#38ef7d"), "Business": ("#141e30", "#f7971e"),
+  "Tech": ("#0575e6", "#021b79"), "Lifestyle": ("#ee9ca7", "#ffdde1"),
+  "Education": ("#1e3c72", "#2a5298"),
 }
 EMOJI = {"Afrobeats": "🔥", "Highlife": "🎺", "Hiplife": "🎤", "Gospel": "🙏", "Movies": "🎬",
-         "TV": "📺", "Celebrity": "⭐", "Events": "🎟️", "Reviews": "🎧"}
+         "TV": "📺", "Celebrity": "⭐", "Events": "🎟️", "Reviews": "🎧",
+         "News": "📰", "Trending": "📈", "Sports": "⚽", "Business": "💰", "Tech": "💻", "Lifestyle": "✨", "Education": "🎓"}
 
 def make(title, cat, out):
     a, b = PAL.get(cat, ("#c8102e", "#006b3f"))
