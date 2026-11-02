@@ -5,8 +5,9 @@ window.POSTS = [
     "title": "Meet Smokelexx: the Rulers Records star getting ready to drop \"Collabo\"",
     "cat": "Afrobeats",
     "by": "Hottest Gist GH",
-    "body": "Keep your eyes on Smokelexx 🔥\n\nBorn Emmanuel Nartey, the rising Afrobeats singer and songwriter is signed to Rulers Records, and he has built his name the hard way: performing on high school stages across Ghana and winning over crowds one campus at a time. That grind carried him into the mainstream with his debut single, and now he is ready for his next move.\n\nUp next is \"Collabo\", produced by BeatMasterNanaKay. The artwork sets the mood: Smokelexx sitting close with a lady in a sunflower field, drawn in warm cartoon style. It looks like a sweet, laid-back love song, the kind that lives on your soft-life playlist.\n\nHottest Gist GH is putting you on early. Turn on phone alerts so you know the moment \"Collabo\" drops, and tell us in the comments: are you ready for Smokelexx? 🇬🇭🎶",
+    "body": "Keep your eyes on Smokelexx 🔥\n\nBorn Emmanuel Nartey, the rising Afrobeats singer and songwriter is signed to Rulers Records, and he has built his name the hard way: performing on high school stages across Ghana and winning over crowds one campus at a time. That grind carried him into the mainstream with his debut single, and now he is ready for his next move.\n\nUp next is \"Collabo\", produced by BeatMasterNanaKay. The artwork sets the mood: Smokelexx sitting close with a lady in a sunflower field, drawn in warm cartoon style. It looks like a sweet, laid-back love song, the kind that lives on your soft-life playlist.\n\nThe teaser is out now on TikTok, so get your speakers ready 🔊 Tap \"Watch on TikTok\" below to hear it.\n\nHottest Gist GH is putting you on early. Turn on phone alerts so you know the moment \"Collabo\" drops, and tell us in the comments: are you ready for Smokelexx? 🇬🇭🎶",
     "ts": 1793643973735,
+    "link": "https://vt.tiktok.com/ZSpJeos2o/",
     "images": [
       "images/smokelexx-collabo-1.jpg",
       "images/smokelexx-collabo-2.jpg"
