@@ -106,6 +106,24 @@ input[type=search]{width:100%;background:var(--card);color:var(--text);border:1p
 .sb.wa{background:#25D366}.sb.fb{background:#1877F2}.sb.xx{background:#000}.sb.tg{background:#229ED9}.sb.cp{background:#6b7280}.sb.nat{background:#e11d48}
 .sb.cp svg,.sb.nat svg{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @media (prefers-reduced-motion:reduce){.pill.pop svg,.fl{animation:none}.sb,.pill{transition:none}}
+.locked header,.locked main,.locked footer{display:none}
+.who{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13px;color:var(--muted);font-weight:700}
+.who button{background:none;border:0;color:var(--red);font:inherit;font-weight:800;cursor:pointer;padding:0;text-decoration:underline}
+.gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.gate[hidden]{display:none}
+.gc{width:100%;max-width:400px}
+.gc h1{margin:0}
+.gc .sub{margin:6px 0 20px}
+.gc form{display:grid;gap:10px}
+.gc input{font:inherit;font-size:16px;padding:12px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box}
+.gc .go{font:inherit;font-weight:800;font-size:16px;background:var(--red);color:var(--on-red);border:0;border-radius:8px;padding:13px;cursor:pointer}
+.gc .go:disabled{opacity:.6}
+.gc .lnk{background:none;border:0;color:var(--red);font:inherit;font-weight:700;cursor:pointer;padding:6px 0;text-decoration:underline;justify-self:start}
+.gc .msg{font-size:14px;font-weight:700;min-height:20px;color:var(--red)}
+.gc .msg.ok{color:#15803d}
+.gc .tab{display:flex;gap:6px;margin-bottom:14px}
+.gc .tab button{flex:1;font:inherit;font-weight:800;padding:10px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);cursor:pointer}
+.gc .tab button[aria-pressed=true]{background:var(--red);color:var(--on-red);border-color:var(--red)}
 </style>
 </head>
 <body>
@@ -113,6 +131,7 @@ input[type=search]{width:100%;background:var(--card);color:var(--text);border:1p
 <header class="wrap">
   <h1>Hottest Gist<span>GH</span></h1>
   <p class="sub">Fresh music, movies and culture from Ghana and beyond.</p>
+  <div class="who" id="who" hidden></div>
 </header>
 <main class="wrap">
   <input id="q" type="search" placeholder="Search posts" aria-label="Search posts">
@@ -121,6 +140,7 @@ input[type=search]{width:100%;background:var(--card);color:var(--text);border:1p
 </main>
 <footer class="wrap foot">Hottest Gist GH · Fresh music, movies and culture from Ghana and beyond.</footer>
 
+<div class="gate" id="gate" hidden></div>
 <div class="lb" id="lb" hidden><button class="lbx" id="lbx" type="button" aria-label="Close photo">×</button><img id="lbimg" alt=""></div>
 <div class="toast" id="toast" role="status"></div>
 
@@ -187,13 +207,99 @@ var CFG=(window.GH_CFG&&window.GH_CFG.url&&window.GH_CFG.key)?window.GH_CFG:null
 var mem={};
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){if(v===undefined)return mem[k]||null;mem[k]=v}}
 function cid(){var c=ls("gh-cid");if(!c){c=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():Date.now()+"-"+Math.random().toString(36).slice(2);ls("gh-cid",c)}return c}
-function api(path,body){
-  var o={method:body?"POST":"GET",headers:{apikey:CFG.key,Authorization:"Bearer "+CFG.key,"Content-Type":"application/json"}};
+var SES=null;
+try{SES=JSON.parse(ls("gh-ses")||"null")}catch(e){SES=null}
+function saveSes(o){
+  if(o&&o.access_token){SES={access_token:o.access_token,refresh_token:o.refresh_token,expires_at:o.expires_at||(Math.floor(Date.now()/1000)+(o.expires_in||3600)),user:o.user||(SES&&SES.user)||{}};ls("gh-ses",JSON.stringify(SES))}
+  else{SES=null;ls("gh-ses","")}
+}
+function myName(){var m=SES&&SES.user&&SES.user.user_metadata;return (m&&m.name)||"Fan"}
+function authCall(path,body,method,tok){
+  var o={method:method||"POST",headers:{apikey:CFG.key,Authorization:"Bearer "+(tok||CFG.key),"Content-Type":"application/json"}};
   if(body)o.body=JSON.stringify(body);
-  return fetch(CFG.url.replace(/\/$/,"")+"/rest/v1/"+path,o).then(function(r){
-    if(!r.ok)throw new Error(r.status);
-    return r.text().then(function(t){return t?JSON.parse(t):null});
+  return fetch(CFG.url.replace(/\/$/,"")+"/auth/v1/"+path,o).then(function(r){
+    return r.text().then(function(t){
+      var j=null;try{j=t?JSON.parse(t):null}catch(e){}
+      if(!r.ok)throw new Error((j&&(j.msg||j.error_description||j.message))||"Something went wrong. Try again.");
+      return j;
+    });
   });
+}
+function token(){
+  if(!SES)return Promise.resolve(CFG.key);
+  if(SES.expires_at-30>Math.floor(Date.now()/1000))return Promise.resolve(SES.access_token);
+  return authCall("token?grant_type=refresh_token",{refresh_token:SES.refresh_token}).then(function(j){saveSes(j);return SES.access_token}).catch(function(e){saveSes(null);showGate();throw e});
+}
+function api(path,body){
+  return token().then(function(t){
+    var o={method:body?"POST":"GET",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"}};
+    if(body)o.body=JSON.stringify(body);
+    return fetch(CFG.url.replace(/\/$/,"")+"/rest/v1/"+path,o).then(function(r){
+      if(!r.ok)throw new Error(r.status);
+      return r.text().then(function(t2){return t2?JSON.parse(t2):null});
+    });
+  });
+}
+function field(type,ph,ac,label){var i=el("input");i.type=type;i.placeholder=ph;i.autocomplete=ac;i.setAttribute("aria-label",label||ph);return i}
+function showGate(mode,note){
+  document.body.classList.add("locked");
+  var g=$("gate");g.hidden=false;g.textContent="";
+  var c=el("div","gc");
+  var h=el("h1");h.appendChild(document.createTextNode("Hottest Gist"));h.appendChild(el("span",null,"GH"));c.appendChild(h);
+  var recovery=mode==="reset";
+  c.appendChild(el("p","sub",recovery?"Choose a new password.":"Log in to read the gist, like, comment and share."));
+  var msg=el("div","msg",note||"");msg.setAttribute("role","status");
+  if(note)msg.classList.add("ok");
+  function say(t,ok){msg.textContent=t;msg.classList.toggle("ok",!!ok)}
+  var signup=mode==="signup";
+  if(!recovery){
+    var tab=el("div","tab");
+    [["login","Log in"],["signup","Sign up"]].forEach(function(x){var b=el("button",null,x[1]);b.type="button";b.setAttribute("aria-pressed",String(x[0]===(signup?"signup":"login")));b.onclick=function(){showGate(x[0])};tab.appendChild(b)});
+    c.appendChild(tab);
+  }
+  var f=el("form");
+  var nm=signup?field("text","Your name (shown on comments)","nickname","Your name"):null;if(nm)nm.maxLength=40;
+  var em=recovery?null:field("email","Email","email");
+  var pw=field("password",recovery?"New password":(signup?"Create a password (6+ characters)":"Password"),signup||recovery?"new-password":"current-password");
+  if(nm)f.appendChild(nm);if(em)f.appendChild(em);f.appendChild(pw);
+  var go=el("button","go",recovery?"Save password":(signup?"Create my account":"Log in"));go.type="submit";f.appendChild(go);
+  f.appendChild(msg);
+  if(!signup&&!recovery){
+    var fg=el("button","lnk","Forgot password?");fg.type="button";fg.onclick=function(){
+      if(!em.value.trim()){say("Type your email above first.");em.focus();return}
+      authCall("recover",{email:em.value.trim()}).then(function(){say("Check your email for a reset link.",true)}).catch(function(e){say(e.message)});
+    };f.appendChild(fg);
+  }
+  f.onsubmit=function(e){
+    e.preventDefault();say("");go.disabled=true;
+    var done=function(){go.disabled=false};
+    if(recovery){
+      var rt=showGate.rt;
+      authCall("user",{password:pw.value},"PUT",rt.access_token).then(function(u){
+        saveSes({access_token:rt.access_token,refresh_token:rt.refresh_token,expires_in:rt.expires_in,user:u});
+        history.replaceState(null,"",location.pathname);start();
+      }).catch(function(er){done();say(er.message)});
+    }else if(signup){
+      var name=nm.value.trim();if(!name){done();say("Please enter your name.");nm.focus();return}
+      authCall("signup",{email:em.value.trim(),password:pw.value,data:{name:name}}).then(function(j){
+        if(j&&j.access_token){saveSes(j);start()}
+        else{done();showGate("login","Account created. Check your email to confirm, then log in.")}
+      }).catch(function(er){done();say(er.message)});
+    }else{
+      authCall("token?grant_type=password",{email:em.value.trim(),password:pw.value}).then(function(j){saveSes(j);start()}).catch(function(er){done();say(er.message)});
+    }
+  };
+  c.appendChild(f);g.appendChild(c);
+}
+function logout(){
+  var t=SES&&SES.access_token;saveSes(null);
+  if(t)authCall("logout",null,"POST",t).catch(function(){});
+  likeN={};comN={};showGate();
+}
+function renderWho(){
+  var w=$("who");if(!CFG||!SES){w.hidden=true;return}
+  w.hidden=false;w.textContent="";w.appendChild(el("span",null,"Hi, "+myName()));
+  var b=el("button",null,"Log out");b.type="button";b.onclick=logout;w.appendChild(b);
 }
 var likeN={},comN={},liked={};
 try{liked=JSON.parse(ls("gh-liked")||"{}")||{}}catch(e){liked={}}
@@ -215,7 +321,7 @@ function toggleLike(p){
   likeN[p.id]=Math.max(0,(likeN[p.id]||0)+(on?1:-1));
   ls("gh-liked",JSON.stringify(liked));paint();
   if(on){var bt=document.querySelector('[data-like="'+p.id.replace(/"/g,"")+'"]');if(bt){bt.classList.remove("pop");void bt.offsetWidth;bt.classList.add("pop");burst(bt)}}
-  api("rpc/toggle_like",{p_post:p.id,p_client:cid(),p_on:on}).catch(function(){
+  api("rpc/toggle_like_auth",{p_post:p.id,p_on:on}).catch(function(){
     if(on)delete liked[p.id];else liked[p.id]=1;
     likeN[p.id]=Math.max(0,(likeN[p.id]||0)+(on?-1:1));
     ls("gh-liked",JSON.stringify(liked));paint();toast("Couldn't save your like");
@@ -234,21 +340,19 @@ function openComments(p,box){
     else r.forEach(function(c){addComment(list,c)});
   }).catch(function(){list.textContent="";list.appendChild(el("div","none","Couldn't load comments right now."))});
   var f=el("form","cf");
-  var nm=el("input");nm.maxLength=40;nm.placeholder="Your name";nm.setAttribute("aria-label","Your name");nm.value=ls("gh-name")||"";
   var tx=el("textarea");tx.maxLength=500;tx.rows=3;tx.placeholder="Write a comment";tx.setAttribute("aria-label","Comment");
   var bt=el("button","","Post comment");bt.type="submit";
-  f.appendChild(nm);f.appendChild(tx);f.appendChild(bt);
+  f.appendChild(tx);f.appendChild(bt);
   f.onsubmit=function(e){
     e.preventDefault();
-    var name=nm.value.trim()||"Fan",text=tx.value.trim();
+    var name=myName(),text=tx.value.trim();
     if(!text){tx.focus();return}
     bt.disabled=true;
-    api("rpc/add_comment",{p_post:p.id,p_client:cid(),p_name:name,p_text:text}).then(function(){
-      ls("gh-name",name);
+    api("rpc/add_comment_auth",{p_post:p.id,p_text:text}).then(function(){
       var none=list.querySelector(".none");if(none)list.removeChild(none);
       addComment(list,{name:name,text:text,created_at:new Date().toISOString()});
       comN[p.id]=(comN[p.id]||0)+1;paint();tx.value="";bt.disabled=false;
-    }).catch(function(){bt.disabled=false;toast("Couldn't post. Wait a moment and try again.")});
+    }).catch(function(){bt.disabled=false;toast("Couldn't post. Wait a moment, or log in again.")});
   };
   box.appendChild(f);
 }
@@ -315,10 +419,23 @@ function render(){
 }
 
 $("q").oninput=function(e){term=e.target.value.toLowerCase();render()};
-renderChips();render();loadCounts();
-if(!all.length)$("q").hidden=true;
-var h=location.hash.slice(1);
-if(h){var t=document.getElementById("post-"+h);if(t){t.classList.add("flash");t.scrollIntoView()}}
+function start(){
+  document.body.classList.remove("locked");$("gate").hidden=true;
+  renderWho();renderChips();render();loadCounts();
+  $("q").hidden=!all.length;
+  var h=location.hash.slice(1);
+  if(h&&!/access_token|type=/.test(h)){var t=document.getElementById("post-"+h);if(t){t.classList.add("flash");t.scrollIntoView()}}
+}
+(function boot(){
+  if(!CFG){start();return}
+  var hs=location.hash.slice(1);
+  if(/type=recovery/.test(hs)&&/access_token=/.test(hs)){
+    var q=new URLSearchParams(hs);
+    showGate.rt={access_token:q.get("access_token"),refresh_token:q.get("refresh_token"),expires_in:+q.get("expires_in")||3600};
+    showGate("reset");return;
+  }
+  if(SES)start();else showGate("login");
+})();
 })();
 </script>
 </body>
