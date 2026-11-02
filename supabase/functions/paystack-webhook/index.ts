@@ -31,7 +31,24 @@ Deno.serve(async (req) => {
   const vj = await vr.json();
   const d = vj?.data;
   if (!vr.ok || d?.status !== "success" || d?.currency !== "GHS") return new Response("not paid", { status: 200 });
-  if (d?.metadata?.purpose !== "gold_tick" || !d?.metadata?.user_id) return new Response("not a gold tick", { status: 200 });
+  const purpose = d?.metadata?.purpose;
+  if (purpose === "feature_gig" && d?.metadata?.gig_id) {
+    const fr = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.feature&select=value`, {
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+    });
+    const fv = (await fr.json())?.[0]?.value || {};
+    const fprice = Number(fv.amount);
+    if (!(fprice > 0) || d.amount < Math.round(fprice * 100)) return new Response("amount too low", { status: 200 });
+    const days = Number(fv.days) || 7;
+    const fg = await fetch(`${SUPABASE_URL}/rest/v1/rpc/grant_feature`, {
+      method: "POST",
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_gig: Number(d.metadata.gig_id), p_ref: ref, p_amount: d.amount, p_currency: d.currency, p_days: days }),
+    });
+    if (!fg.ok) return new Response("grant failed", { status: 500 });
+    return new Response("ok", { status: 200 });
+  }
+  if (purpose !== "gold_tick" || !d?.metadata?.user_id) return new Response("not a gold tick", { status: 200 });
 
   // The amount must cover the current price
   const sr = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.verify&select=value`, {

@@ -26,14 +26,27 @@ Deno.serve(async (req) => {
     const user = await ur.json();
     if (!user?.id || !user?.email) return json({ error: "login required" }, 401);
 
+    let reqBody: any = {};
+    try { reqBody = await req.json(); } catch (_) { /* no body */ }
+    const gigId = reqBody?.gig_id ? Number(reqBody.gig_id) : 0;
+    const settingKey = gigId ? "feature" : "verify";
+
     // 2. Price from the site settings (saved in the Admin page)
-    const sr = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.verify&select=value`, {
+    const sr = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.${settingKey}&select=value`, {
       headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
     });
     const rows = await sr.json();
     const v = rows?.[0]?.value || {};
     const amount = Number(v.amount);
     if (!v.auto || !(amount > 0)) return json({ error: "payments not open" }, 400);
+
+    // 3a. A featured slot must be for the person's own, visible listing
+    if (gigId) {
+      const gr = await fetch(`${SUPABASE_URL}/rest/v1/gigs?id=eq.${gigId}&user_id=eq.${user.id}&hidden=eq.false&select=id`, {
+        headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+      });
+      if (!(await gr.json())?.length) return json({ error: "listing not found" }, 400);
+    }
 
     // 3. Make sure the person has a profile
     const pr = await fetch(`${SUPABASE_URL}/rest/v1/profiles?user_id=eq.${user.id}&select=user_id`, {
@@ -44,17 +57,17 @@ Deno.serve(async (req) => {
 
     // 4. Ask Paystack for a checkout page
     let origin = "";
-    try { const b = await req.json(); origin = String(b?.origin || ""); } catch (_) { /* no body */ }
+    origin = String(reqBody?.origin || "");
     if (!/^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(origin)) origin = "";
-    const reference = `gold_${user.id.slice(0, 8)}_${Date.now().toString(36)}`;
+    const reference = `${gigId ? "feat" : "gold"}_${user.id.slice(0, 8)}_${Date.now().toString(36)}`;
     const body: Record<string, unknown> = {
       email: user.email,
       amount: Math.round(amount * 100), // pesewas
       currency: "GHS",
       reference,
-      metadata: { user_id: user.id, purpose: "gold_tick", months: 1 },
+      metadata: gigId ? { user_id: user.id, purpose: "feature_gig", gig_id: gigId, days: Number(v.days) || 7 } : { user_id: user.id, purpose: "gold_tick", months: 1 },
     };
-    if (origin) body.callback_url = `${origin}/?paid=1`;
+    if (origin) body.callback_url = `${origin}/?paid=${gigId ? "gig" : "1"}`;
     const pk = await fetch("https://api.paystack.co/transaction/initialize", {
       method: "POST",
       headers: { Authorization: `Bearer ${PAYSTACK_SECRET}`, "Content-Type": "application/json" },
