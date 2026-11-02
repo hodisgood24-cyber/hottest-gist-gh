@@ -24,7 +24,8 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
   <label>Title</label><input id="t" required maxlength="140">
   <label>Category</label><select id="c"><option>News</option><option>Music</option><option>Event</option><option>Movies</option><option>Sports</option><option>Business</option><option>Tech</option><option>Lifestyle</option><option>Education</option><option>Trending</option></select>
   <label>Text</label><textarea id="b" rows="5" maxlength="2000"></textarea>
-  <label>Link (https, optional: YouTube, Spotify, tickets, article)</label><input id="l" type="url" placeholder="https://">
+  <label>Link (https, optional: YouTube, TikTok, Facebook, Spotify, tickets, article)</label><input id="l" type="url" placeholder="https://">
+  <label>Video (optional, mp4 up to 50 MB, short clips work best)</label><input id="v" type="file" accept="video/mp4,video/webm,video/quicktime"><div class="m" id="vs"></div>
   <label>Event date (optional, for the Events tab)</label><input id="e" type="date">
   <label>Photos (up to 3, they are shrunk for you)</label><input id="f" type="file" accept="image/*" multiple>
   <div class="thumbs" id="th"></div>
@@ -113,6 +114,13 @@ function init(){
   $("f").onchange=function(){
     var fs=[].slice.call(this.files).slice(0,3-imgs.length);if(!fs.length)return;$("sv").disabled=true;$("sv").textContent="Uploading...";
     fs.reduce(function(p,f){return p.then(function(){return shrink(f).then(upload).then(function(u){imgs.push(u);thumbs()})})},Promise.resolve()).catch(function(){alert("A photo couldn't upload")}).then(function(){$("sv").disabled=false;$("sv").textContent=editId?"Update":"Publish";$("f").value=""});
+  };
+  $("v").onchange=function(){
+    var f=this.files[0];if(!f)return;
+    if(f.size>50*1024*1024){alert("That video is over 50 MB. Upload it to YouTube and paste the link instead.");this.value="";return}
+    var ext=/webm$/i.test(f.name)?"webm":/mov$/i.test(f.name)?"mov":"mp4",name=Date.now().toString(36)+Math.random().toString(36).slice(2,7)+"."+ext;
+    $("sv").disabled=true;$("vs").textContent="Uploading video, please wait...";
+    tok().then(function(t){return fetch(CFG.url+"/storage/v1/object/post-images/"+name,{method:"POST",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":f.type||"video/mp4"},body:f})}).then(function(r){if(!r.ok)throw 0;$("l").value=CFG.url+"/storage/v1/object/public/post-images/"+name;$("vs").textContent="Video uploaded. It is in the Link box below."}).catch(function(){$("vs").textContent="Upload failed. Videos over 50 MB are refused. Try a shorter clip or use a YouTube link."}).then(function(){$("sv").disabled=false;$("v").value=""});
   };
   $("cl").onclick=clearForm;
   $("pf").onsubmit=function(e){

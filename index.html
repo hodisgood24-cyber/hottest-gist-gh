@@ -306,6 +306,9 @@ function linkLabel(u){
   var h="";try{h=new URL(u).hostname.replace(/^www\./,"")}catch(e){}
   if(/(^|\.)(youtube\.com|youtu\.be)$/.test(h))return "Watch on YouTube";
   if(/(^|\.)audiomack\.com$/.test(h))return "Listen on Audiomack";
+  if(/(^|\.)tiktok\.com$/.test(h))return "Watch on TikTok";
+  if(/(^|\.)(facebook\.com|fb\.watch)$/.test(h))return "Watch on Facebook";
+  if(/\.(mp4|webm|mov)$/i.test(u))return "Watch video";
   if(/(^|\.)spotify\.com$/.test(h))return "Listen on Spotify";
   if(/(^|\.)music\.apple\.com$/.test(h))return "Listen on Apple Music";
   if(/(^|\.)soundcloud\.com$/.test(h))return "Listen on SoundCloud";
@@ -532,7 +535,16 @@ function embedUrl(u){
   if(id&&/^[\w-]{6,20}$/.test(id))return{src:"https://www.youtube-nocookie.com/embed/"+id,ratio:"16/9"};
   if(h==="open.spotify.com"&&(m=x.pathname.match(/^\/(track|album|playlist|episode|show)\/(\w+)/)))return{src:"https://open.spotify.com/embed/"+m[1]+"/"+m[2],h:m[1]==="track"?152:352};
   if(h==="audiomack.com"&&(m=x.pathname.match(/^\/([\w.-]+)\/(song|album)\/([\w.-]+)/)))return{src:"https://audiomack.com/embed/"+m[2]+"/"+m[1]+"/"+m[3],h:m[2]==="song"?252:352};
+  if(/(^|\.)tiktok\.com$/.test(h)&&(m=x.pathname.match(/\/video\/(\d+)/)))return{src:"https://www.tiktok.com/embed/v2/"+m[1],h:720};
+  if(/(^|\.)(facebook\.com|fb\.watch)$/.test(h)&&(h==="fb.watch"||/\/(videos?|reel|watch|share\/[vr])/.test(x.pathname+x.search)))return{src:"https://www.facebook.com/plugins/video.php?show_text=false&href="+encodeURIComponent(u),ratio:"16/9"};
+  if(CFG&&/\.(mp4|webm|mov)$/i.test(x.pathname)&&x.href.indexOf(CFG.url.replace(/\/$/,"")+"/storage/v1/object/public/")===0)return{video:x.href};
   return null;
+}
+function buildPlayer(pl,emb){
+  var n;
+  if(emb.video){n=document.createElement("video");n.src=emb.video;n.controls=true;n.autoplay=true;n.playsInline=true;n.preload="metadata";n.style.cssText="display:block;width:100%;max-height:75vh;background:#000"}
+  else{n=document.createElement("iframe");n.src=emb.src;n.loading="lazy";n.allow="autoplay; encrypted-media; picture-in-picture; fullscreen";n.setAttribute("allowfullscreen","");n.referrerPolicy="strict-origin-when-cross-origin";n.title="Player";if(emb.ratio)n.style.aspectRatio=emb.ratio;else n.style.height=emb.h+"px"}
+  pl.appendChild(n);
 }
 function countdown(p){
   if(!p.eventAt)return null;
@@ -663,7 +675,7 @@ function makePlayer(emb){
   var pl=el("div","player");pl.hidden=true;
   var pp=pill("play","Play");
   pp.onclick=function(){
-    if(pl.hidden){pl.hidden=false;var fr=document.createElement("iframe");fr.src=emb.src;fr.loading="lazy";fr.allow="autoplay; encrypted-media; picture-in-picture; fullscreen";fr.setAttribute("allowfullscreen","");fr.referrerPolicy="strict-origin-when-cross-origin";fr.title="Player";if(emb.ratio)fr.style.aspectRatio=emb.ratio;else fr.style.height=emb.h+"px";pl.appendChild(fr)}
+    if(pl.hidden){pl.hidden=false;buildPlayer(pl,emb)}
     else{pl.hidden=true;pl.textContent=""}
   };
   return{btn:pp,box:pl};
@@ -858,8 +870,7 @@ function card(p){
   if(emb){
     var pp=pill("play","Play");pl=el("div","player");pl.hidden=true;
     pp.onclick=function(){
-      if(pl.hidden){pl.hidden=false;var fr=document.createElement("iframe");fr.src=emb.src;fr.loading="lazy";fr.allow="autoplay; encrypted-media; picture-in-picture; fullscreen";fr.setAttribute("allowfullscreen","");fr.referrerPolicy="strict-origin-when-cross-origin";fr.title="Player";
-        if(emb.ratio)fr.style.aspectRatio=emb.ratio;else fr.style.height=emb.h+"px";pl.appendChild(fr)}
+      if(pl.hidden){pl.hidden=false;buildPlayer(pl,emb)}
       else{pl.hidden=true;pl.textContent=""}
     };
     row.appendChild(pp);
