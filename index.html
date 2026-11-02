@@ -786,6 +786,7 @@ function avEl(c,size){
   else{a=el("span","av",((c&&c.name)||"F").charAt(0).toUpperCase())}
   a.style.width=a.style.height=size+"px";a.style.fontSize=Math.round(size*.45)+"px";return a;
 }
+function newPost(){setView("fans");setTimeout(function(){var t=document.querySelector("#vFans textarea");if(t){t.scrollIntoView({block:"center"});t.focus()}},50)}
 function openProfile(uid){profUid=uid;setView("profile")}
 function shrinkImg(file,max){return new Promise(function(res,rej){
   var im=new Image(),u=URL.createObjectURL(file);
@@ -886,6 +887,7 @@ function renderProfile(uid){
       body.appendChild(stt);
       var act=el("div","evb"),editBox=el("form","cf fc");editBox.hidden=true;
       if(mine){
+        var np=el("button",null,"\u270d\ufe0f New post");np.type="button";np.style.background="var(--red)";np.style.color="#fff";np.style.borderColor="var(--red)";np.onclick=newPost;act.appendChild(np);
         var ed=el("button",null,"Edit profile");ed.type="button";ed.onclick=function(){editBox.hidden=!editBox.hidden};act.appendChild(ed);
         var sh=el("button",null,"Share my page");sh.type="button";sh.onclick=function(){var u=location.origin+"/#u-"+me;if(navigator.share)navigator.share({title:c.name+" on Hottest Gist GH",url:u}).catch(function(){});else copyText(u)};act.appendChild(sh);
       }else{
@@ -1112,6 +1114,7 @@ function buildSettings(){
     };
     nm.appendChild(ni);nm.appendChild(sv);p.appendChild(nm);
     var mp=el("button","item","\ud83d\udc64 My profile");mp.type="button";mp.onclick=function(){closeSettings();openProfile(SES.user.id)};p.appendChild(mp);
+    var np2=el("button","item","\u270d\ufe0f New post");np2.type="button";np2.onclick=function(){closeSettings();newPost()};p.appendChild(np2);
     var sw=el("button","item","\ud83d\udd04 Switch account");sw.type="button";sw.onclick=function(){closeSettings();logout()};p.appendChild(sw);
     if(SES.user&&SES.user.email){var rs=el("button","item","\ud83d\udd11 Email me a password reset link");rs.type="button";rs.onclick=function(){authCall("recover",{email:SES.user.email}).then(function(){toast("Reset link sent. Check your email")}).catch(function(e){toast(/rate|limit/i.test(e.message)?"Too many emails. Try later":"Couldn't send")})};p.appendChild(rs)}
     var lo=el("button","item danger","Log out");lo.type="button";lo.onclick=function(){closeSettings();logout()};p.appendChild(lo);
