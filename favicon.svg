@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0142f"/><stop offset="1" stop-color="#8a0b20"/></linearGradient>
+<linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a00"/><stop offset="1" stop-color="#e0142f"/></linearGradient>
+<linearGradient id="fi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe45c"/><stop offset="1" stop-color="#ffb000"/></linearGradient>
+</defs>
+<clipPath id="rc"><rect width="512" height="512" rx="116"/></clipPath>
+<rect width="512" height="512" rx="116" fill="url(#bg)"/>
+<rect x="0" y="456" width="512" height="56" fill="#fcd116" clip-path="url(#rc)"/>
+<rect x="0" y="484" width="512" height="28" fill="#006b3f" clip-path="url(#rc)"/>
+<path d="M150 70h212a62 62 0 0 1 62 62v152a62 62 0 0 1-62 62H262l-92 70 20-70h-40a62 62 0 0 1-62-62V132a62 62 0 0 1 62-62z" fill="#fff" transform="translate(-6 -2) scale(1.0)"/>
+<path d="M256 112c8 52 66 78 66 148 0 52-30 90-66 90s-66-38-66-90c0-34 18-52 32-78 8 22 22 28 34-70z" fill="url(#fl)"/>
+<path d="M256 218c4 28 34 44 34 84 0 28-16 46-34 46s-34-18-34-46c0-22 12-32 20-46 6 12 12 16 14-38z" fill="url(#fi)"/>
+</svg>
