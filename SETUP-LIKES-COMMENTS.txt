@@ -1,0 +1,8 @@
+Turn on likes and comments (free, about 5 minutes)
+
+1. Go to supabase.com and create a free account, then "New project". Pick any name and a database password, and choose a region close to Ghana (for example Europe).
+2. When the project is ready, open "SQL Editor", paste everything from setup.sql in this repository, and press Run.
+3. Open Project Settings > API. Copy the "Project URL" and the "anon public" key.
+4. Send both to Claude, or paste them into config.js between the quotes.
+
+Moderation: open Table Editor > comments and tick "hidden" on any comment you want removed from the site.
