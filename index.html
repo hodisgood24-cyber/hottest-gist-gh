@@ -19,6 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Public+Sans:wght@400;600;700;800&display=swap">
+<script>(function(){try{var d=document.documentElement,t=localStorage.getItem("gh-theme"),z=localStorage.getItem("gh-size"),m=localStorage.getItem("gh-motion");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);if(z)d.setAttribute("data-size",z);if(m==="off")d.setAttribute("data-motion","off")}catch(e){}})()</script>
 <style>
 :root{
   --bg:#f2f2ee;--card:#ffffff;--text:#15140f;--muted:#5d5a51;--line:#dcdad1;
@@ -145,10 +146,35 @@ input[type=search]{width:100%;background:var(--card);color:var(--text);border:1p
 .gc .gbtn svg{width:20px;height:20px}
 .gc .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;font-weight:700;margin:0 0 12px}
 .gc .or:before,.gc .or:after{content:"";flex:1;height:1px;background:var(--line)}
+:root[data-theme="light"]{--bg:#f2f2ee;--card:#ffffff;--text:#15140f;--muted:#5d5a51;--line:#dcdad1;--red:#c8102e;--on-red:#ffffff;--green:#006b3f;--focus:#1a5fd0;color-scheme:light}
+:root[data-theme="dark"]{--bg:#0f0f0d;--card:#1a1916;--text:#f3f1ea;--muted:#a6a195;--line:#35332d;--red:#ff5c6c;--on-red:#1c0509;--green:#0a8650;--focus:#8bb5ff;color-scheme:dark}
+:root[data-size="sm"] .text{font-size:14px}
+:root[data-size="lg"] .text{font-size:18px}
+:root[data-size="xl"] .text{font-size:20px}
+:root[data-motion="off"] *,:root[data-motion="off"] *:before,:root[data-motion="off"] *:after{animation:none!important;transition:none!important}
+.gear{position:fixed;top:calc(16px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));z-index:60;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18);padding:0}
+.gear svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s}
+.gear:hover svg{transform:rotate(60deg)}
+.sp{position:fixed;top:calc(66px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:60;width:min(330px,calc(100vw - 24px));max-height:calc(100vh - 90px);overflow:auto;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 16px 48px rgba(0,0,0,.28)}
+.sp h3{margin:14px 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.sp h3:first-child{margin-top:0}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;font:inherit;font-size:14px;font-weight:800;padding:9px 4px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--red);color:var(--on-red);border-color:var(--red)}
+.sp .nm{display:flex;gap:6px}
+.sp .nm input{flex:1;min-width:0;font:inherit;font-size:16px;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+.sp .nm button,.sp .item{font:inherit;font-weight:800;font-size:14px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);cursor:pointer;padding:9px 12px}
+.sp .item{display:block;width:100%;text-align:left;margin-top:6px}
+.sp .item.danger{color:var(--red);border-color:var(--red)}
+.sp .who2{font-size:13px;color:var(--muted);margin-bottom:8px;overflow-wrap:anywhere}
+.sp .tg{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;font-weight:700;margin-top:6px}
+header.wrap{padding-right:64px}
 </style>
 </head>
 <body>
 <div class="flag"></div>
+<button class="gear" id="gear" type="button" aria-label="Settings" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+<div class="sp" id="sp" role="dialog" aria-label="Settings" hidden></div>
 <header class="wrap">
   <h1>Hottest Gist<span>GH</span></h1>
   <p class="sub">Fresh music, movies and culture from Ghana and beyond.</p>
@@ -292,7 +318,7 @@ function showGate(mode,note){
     var gb=el("button","gbtn");gb.type="button";
     gb.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
     gb.appendChild(el("span",null,"Continue with Google"));
-    gb.onclick=function(){location.href=CFG.url.replace(/\/$/,"")+"/auth/v1/authorize?provider=google&redirect_to="+encodeURIComponent(location.origin+location.pathname)};
+    gb.onclick=function(){location.href=CFG.url.replace(/\/$/,"")+"/auth/v1/authorize?provider=google&prompt=select_account&redirect_to="+encodeURIComponent(location.origin+location.pathname)};
     c.appendChild(gb);c.appendChild(el("div","or","or use email"));
     var tab=el("div","tab");
     [["magic","Email link"],["login","Password"],["signup","Sign up"]].forEach(function(x){var b=el("button",null,x[1]);b.type="button";b.setAttribute("aria-pressed",String(x[0]===(signup?"signup":magic?"magic":"login")));b.onclick=function(){showGate(x[0])};tab.appendChild(b)});
@@ -467,6 +493,52 @@ function render(){
 }
 
 $("q").oninput=function(e){term=e.target.value.toLowerCase();render()};
+var setOpen=false;
+function applyPref(attr,key,val,reset){
+  var d=document.documentElement;
+  if(reset)d.removeAttribute(attr);else d.setAttribute(attr,val);
+  ls(key,reset?"":val);
+}
+function seg(opts,cur,on){
+  var w=el("div","seg");
+  opts.forEach(function(o){var b=el("button",null,o[1]);b.type="button";b.setAttribute("aria-pressed",String(o[0]===cur));b.onclick=function(){on(o[0]);buildSettings()};w.appendChild(b)});
+  return w;
+}
+function buildSettings(){
+  var p=$("sp");p.textContent="";
+  var t=document.documentElement.getAttribute("data-theme")||"auto";
+  p.appendChild(el("h3",null,"Colour"));
+  p.appendChild(seg([["light","\u2600\ufe0f White"],["dark","\ud83c\udf19 Black"],["auto","Auto"]],t,function(v){if(v==="auto")applyPref("data-theme","gh-theme","",true);else applyPref("data-theme","gh-theme",v)}));
+  var z=document.documentElement.getAttribute("data-size")||"md";
+  p.appendChild(el("h3",null,"Text size"));
+  p.appendChild(seg([["sm","A-"],["md","A"],["lg","A+"],["xl","A++"]],z,function(v){if(v==="md")applyPref("data-size","gh-size","",true);else applyPref("data-size","gh-size",v)}));
+  var mo=document.documentElement.getAttribute("data-motion")!=="off";
+  p.appendChild(el("h3",null,"Animations"));
+  p.appendChild(seg([["on","On"],["off","Off"]],mo?"on":"off",function(v){if(v==="on")applyPref("data-motion","gh-motion","",true);else applyPref("data-motion","gh-motion","off")}));
+  if(CFG&&SES){
+    p.appendChild(el("h3",null,"Account"));
+    p.appendChild(el("div","who2","Signed in as "+myName()+(SES.user&&SES.user.email?" ("+SES.user.email+")":"")));
+    var nm=el("div","nm");var ni=el("input");ni.maxLength=40;ni.value=myName();ni.setAttribute("aria-label","Display name");
+    var sv=el("button",null,"Save");sv.type="button";
+    sv.onclick=function(){
+      var v=ni.value.trim();if(!v){ni.focus();return}
+      token().then(function(tk){return authCall("user",{data:{name:v}},"PUT",tk)}).then(function(u){saveSes({access_token:SES.access_token,refresh_token:SES.refresh_token,expires_at:SES.expires_at,user:u});renderWho();toast("Name updated")}).catch(function(){toast("Couldn't update name")});
+    };
+    nm.appendChild(ni);nm.appendChild(sv);p.appendChild(nm);
+    var sw=el("button","item","\ud83d\udd04 Switch account");sw.type="button";sw.onclick=function(){closeSettings();logout()};p.appendChild(sw);
+    if(SES.user&&SES.user.email){var rs=el("button","item","\ud83d\udd11 Email me a password reset link");rs.type="button";rs.onclick=function(){authCall("recover",{email:SES.user.email}).then(function(){toast("Reset link sent. Check your email")}).catch(function(e){toast(/rate|limit/i.test(e.message)?"Too many emails. Try later":"Couldn't send")})};p.appendChild(rs)}
+    var lo=el("button","item danger","Log out");lo.type="button";lo.onclick=function(){closeSettings();logout()};p.appendChild(lo);
+  }
+  p.appendChild(el("h3",null,"More"));
+  var sh=el("button","item","\ud83d\udce4 Share this site");sh.type="button";
+  sh.onclick=function(){var u=location.origin+location.pathname;if(navigator.share)navigator.share({title:"Hottest Gist GH",text:"Fresh music, movies and culture from Ghana",url:u}).catch(function(){});else copyText(u)};p.appendChild(sh);
+  var up=el("button","item","\u2b06\ufe0f Back to top");up.type="button";up.onclick=function(){closeSettings();window.scrollTo({top:0,behavior:"smooth"})};p.appendChild(up);
+}
+function openSettings(){setOpen=true;buildSettings();$("sp").hidden=false;$("gear").setAttribute("aria-expanded","true")}
+function closeSettings(){setOpen=false;$("sp").hidden=true;$("gear").setAttribute("aria-expanded","false")}
+$("gear").onclick=function(e){e.stopPropagation();setOpen?closeSettings():openSettings()};
+document.addEventListener("click",function(e){if(setOpen&&e.target.isConnected&&!$("sp").contains(e.target)&&e.target!==$("gear")&&!$("gear").contains(e.target))closeSettings()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&setOpen){closeSettings();$("gear").focus()}});
 function start(){
   document.body.classList.remove("locked");$("gate").hidden=true;
   renderWho();renderChips();render();loadCounts();
