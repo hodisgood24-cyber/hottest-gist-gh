@@ -124,6 +124,20 @@ input[type=search]{width:100%;background:var(--card);color:var(--text);border:1p
 .gc .tab{display:flex;gap:6px;margin-bottom:14px}
 .gc .tab button{flex:1;font:inherit;font-weight:800;font-size:14px;padding:10px 4px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);cursor:pointer}
 .gc .tab button[aria-pressed=true]{background:var(--red);color:var(--on-red);border-color:var(--red)}
+.gate{position:relative;overflow:hidden;background:radial-gradient(120% 60% at 50% 0%,rgba(206,17,38,.10),transparent 60%),radial-gradient(90% 50% at 100% 100%,rgba(0,107,63,.12),transparent 60%),radial-gradient(80% 40% at 0% 90%,rgba(252,209,22,.16),transparent 60%)}
+.fx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.fx span{position:absolute;bottom:-40px;font-size:26px;opacity:0;animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.85}85%{opacity:.85}100%{transform:translateY(-110vh) rotate(25deg);opacity:0}}
+.gc{position:relative;z-index:1;background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:24px 20px;box-shadow:0 12px 40px rgba(0,0,0,.12)}
+.gc .hi{font-weight:800;font-size:20px;margin:4px 0 2px}
+.gc .perks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 18px}
+.gc .perk{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border-radius:12px;background:rgba(0,0,0,.04);font-size:12px;font-weight:800;text-align:center}
+.gc .perk b{font-size:24px;line-height:1;display:inline-block;animation:wig 2.6s ease-in-out infinite}
+.gc .perk:nth-child(2) b{animation-delay:.3s}.gc .perk:nth-child(3) b{animation-delay:.6s}.gc .perk:nth-child(4) b{animation-delay:.9s}
+@keyframes wig{0%,70%,100%{transform:rotate(0) scale(1)}78%{transform:rotate(-12deg) scale(1.25)}86%{transform:rotate(10deg) scale(1.25)}94%{transform:rotate(-4deg) scale(1.1)}}
+.gc .tagl{display:flex;gap:6px;justify-content:center;margin-top:16px}
+.gc .tagl i{width:28px;height:5px;border-radius:3px;display:block}
+@media (prefers-reduced-motion:reduce){.fx span{animation:none;opacity:.35;bottom:auto}.gc .perk b{animation:none}}
 </style>
 </head>
 <body>
@@ -247,7 +261,17 @@ function showGate(mode,note){
   var c=el("div","gc");
   var h=el("h1");h.appendChild(document.createTextNode("Hottest Gist"));h.appendChild(el("span",null,"GH"));c.appendChild(h);
   var recovery=mode==="reset";
-  c.appendChild(el("p","sub",recovery?"Choose a new password.":"Log in to read the gist, like, comment and share."));
+  var bg=el("div","fx");bg.setAttribute("aria-hidden","true");
+  var em0=["\ud83d\udd25","\u2764\ufe0f","\ud83d\ude02","\ud83c\udfb6","\ud83c\udfa4","\ud83d\udcac","\ud83c\uddec\ud83c\udded","\ud83d\ude0d","\ud83c\udf89","\ud83d\udc83","\ud83e\udd41","\ud83d\udc4f"];
+  em0.forEach(function(e,i){var sp=el("span",null,e);sp.style.left=((i*8.3+Math.random()*4)%94)+"%";sp.style.animationDuration=(9+Math.random()*7)+"s";sp.style.animationDelay=(-Math.random()*14)+"s";sp.style.fontSize=(20+Math.random()*16)+"px";bg.appendChild(sp)});
+  g.appendChild(bg);
+  c.appendChild(el("p","hi",recovery?"Almost there":(mode==="signup"?"Join the gist \ud83c\uddec\ud83c\udded":"Welcome to the gist \ud83d\udc4b")));
+  c.appendChild(el("p","sub",recovery?"Choose a new password.":"Ghana's hottest music and entertainment news, all in one place."));
+  if(!recovery){
+    var pk=el("div","perks");
+    [["\u2764\ufe0f","Like"],["\ud83d\udcac","Comment"],["\ud83d\ude02","Laugh"],["\ud83d\udd25","Share"]].forEach(function(x){var d=el("div","perk");d.appendChild(el("b",null,x[0]));d.appendChild(el("span",null,x[1]));pk.appendChild(d)});
+    c.appendChild(pk);
+  }
   var msg=el("div","msg",note||"");msg.setAttribute("role","status");
   if(note)msg.classList.add("ok");
   function say(t,ok){msg.textContent=t;msg.classList.toggle("ok",!!ok)}
@@ -258,7 +282,7 @@ function showGate(mode,note){
     c.appendChild(tab);
   }
   var f=el("form");
-  var nm=(signup||magic)?field("text",magic?"Your name (new here? shown on comments)":"Your name (shown on comments)","nickname","Your name"):null;if(nm)nm.maxLength=40;
+  var nm=(signup||magic)?field("text",magic?"Your name (for new accounts)":"Your name (shown on comments)","nickname","Your name"):null;if(nm)nm.maxLength=40;
   var em=recovery?null:field("email","Email","email");
   var pw=magic?null:field("password",recovery?"New password":(signup?"Create a password (6+ characters)":"Password"),signup||recovery?"new-password":"current-password");
   if(nm)f.appendChild(nm);if(em)f.appendChild(em);if(pw)f.appendChild(pw);
@@ -294,7 +318,9 @@ function showGate(mode,note){
       authCall("token?grant_type=password",{email:em.value.trim(),password:pw.value}).then(function(j){saveSes(j);start()}).catch(function(er){done();say(er.message)});
     }
   };
-  c.appendChild(f);g.appendChild(c);
+  c.appendChild(f);
+  var fl=el("div","tagl");["#CE1126","#FCD116","#006B3F"].forEach(function(k){var i=document.createElement("i");i.style.background=k;fl.appendChild(i)});c.appendChild(fl);
+  g.appendChild(c);
 }
 function logout(){
   var t=SES&&SES.access_token;saveSes(null);
