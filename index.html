@@ -244,7 +244,7 @@ function authCall(path,body,method,tok){
 function token(){
   if(!SES)return Promise.resolve(CFG.key);
   if(SES.expires_at-30>Math.floor(Date.now()/1000))return Promise.resolve(SES.access_token);
-  return authCall("token?grant_type=refresh_token",{refresh_token:SES.refresh_token}).then(function(j){saveSes(j);return SES.access_token}).catch(function(e){saveSes(null);showGate("magic");throw e});
+  return authCall("token?grant_type=refresh_token",{refresh_token:SES.refresh_token}).then(function(j){saveSes(j);return SES.access_token}).catch(function(e){saveSes(null);showGate("signup");throw e});
 }
 function api(path,body){
   return token().then(function(t){
@@ -314,7 +314,7 @@ function showGate(mode,note){
     }else if(magic){
       var mn=nm.value.trim(),me=em.value.trim();if(!me){done();say("Please enter your email.");em.focus();return}
       var body={email:me,create_user:true};if(mn)body.data={name:mn};
-      authCall("otp",body).then(function(){done();say("Check your email and tap the link to log in.",true)}).catch(function(er){done();say(er.message)});
+      authCall("otp",body).then(function(){done();say("Check your email and tap the link to log in.",true)}).catch(function(er){done();say(/rate|limit|too many/i.test(er.message)?"Too many emails right now. Please use the Password or Sign up tab instead.":er.message)});
     }else if(signup){
       var name=nm.value.trim();if(!name){done();say("Please enter your name.");nm.focus();return}
       authCall("signup",{email:em.value.trim(),password:pw.value,data:{name:name}}).then(function(j){
@@ -332,7 +332,7 @@ function showGate(mode,note){
 function logout(){
   var t=SES&&SES.access_token;saveSes(null);
   if(t)authCall("logout",null,"POST",t).catch(function(){});
-  likeN={};comN={};showGate("magic");
+  likeN={};comN={};showGate("signup");
 }
 function renderWho(){
   var w=$("who");if(!CFG||!SES){w.hidden=true;return}
@@ -480,7 +480,7 @@ function start(){
     }).catch(function(){history.replaceState(null,"",location.pathname);showGate("magic","That link expired. Request a new one.")});
     return;
   }
-  if(SES)start();else showGate("magic");
+  if(SES)start();else showGate("signup");
 })();
 })();
 </script>
