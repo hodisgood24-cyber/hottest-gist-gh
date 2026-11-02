@@ -1,0 +1,10 @@
+.git
+.assetsignore
+wrangler.jsonc
+netlify.toml
+README.md
+tools
+brand
+*.sql
+SETUP-LIKES-COMMENTS.txt
+node_modules
