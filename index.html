@@ -270,6 +270,14 @@ body.locked .wfab,body.locked .bnav{display:none}
 body.hasnav{padding-bottom:78px}
 body.hasnav .wfab{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 body.hasnav .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+.snd{margin:14px 0;padding:14px;border-radius:16px;background:#111;color:#fff;border:1px solid #333;background-image:linear-gradient(135deg,rgba(37,244,238,.12),rgba(254,44,85,.14))}
+.snd .pk{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;opacity:.9}
+.snd h3{margin:4px 0 8px;font-size:19px}
+.snr{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.14)}
+.snr .n{width:26px;font:400 22px/1 var(--font-display);color:#25f4ee}
+.snr .t{flex:1;min-width:0;overflow-wrap:anywhere}.snr .t b{display:block}.snr .t small{opacity:.8}
+.snr a{flex:0 0 auto;background:#fe2c55;color:#fff;text-decoration:none;font-weight:800;font-size:12px;padding:7px 11px;border-radius:999px}
+.snd .more{display:inline-block;margin-top:8px;color:#25f4ee;font-size:13px;font-weight:800}
 .fl2{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:12px;font-weight:700;padding-top:6px}
 .fl2 a{color:var(--muted)}
 .gc .fl2{margin-top:10px}
@@ -706,10 +714,26 @@ function makePlayer(emb){
   };
   return{btn:pp,box:pl};
 }
+function soundsCard(){
+  var list=Array.isArray(cfgSet.sounds)?cfgSet.sounds:(cfgSet.sounds&&Array.isArray(cfgSet.sounds.items)?cfgSet.sounds.items:[]);
+  list=list.filter(function(x){return x&&x.title});
+  if(!list.length)return null;
+  var c=el("section","snd");c.appendChild(el("div","pk","\ud83d\udd25 Trending on TikTok in Ghana"));c.appendChild(el("h3",null,"Trending sounds"));
+  list.slice(0,10).forEach(function(x,i){
+    var r=el("div","snr");r.appendChild(el("div","n",String(i+1)));
+    var t=el("div","t");t.appendChild(el("b",null,x.title));if(x.artist)t.appendChild(el("small",null,x.artist));r.appendChild(t);
+    var l=safeLink(x.link);if(l){var a=el("a",null,"Use sound");a.href=l;a.target="_blank";a.rel="noopener noreferrer";r.appendChild(a)}
+    c.appendChild(r);
+  });
+  var ml=el("a","more","See the live Ghana list on TikTok \u2192");ml.href="https://ads.tiktok.com/business/creativecenter/inspiration/popular/music/pc/en?region=GH";ml.target="_blank";ml.rel="noopener noreferrer";c.appendChild(ml);
+  if(cfgSet.sounds&&cfgSet.sounds.updated){c.appendChild(el("div",null,""));var u=el("small",null,"Updated "+new Date(cfgSet.sounds.updated).toLocaleDateString("en-GB",{day:"numeric",month:"short"}));u.style.opacity=".7";c.appendChild(u)}
+  return c;
+}
 function renderExtras(){
   var x=$("extras");if(!x)return;x.textContent="";
   var sp=cfgSet.sponsor;
   if(sp&&sp.text){var a=el("a","sponsor","Sponsored \u00b7 "+sp.text);if(safeLink(sp.link)){a.href=safeLink(sp.link);a.target="_blank";a.rel="sponsored noopener noreferrer"}x.appendChild(a)}
+  var sc=soundsCard();if(sc)x.appendChild(sc);
   var so=cfgSet.song;
   if(so&&so.title){
     var c=el("section","song");c.appendChild(el("div","pk","\ud83c\udfb5 Song of the day"));
@@ -853,6 +877,7 @@ function renderFans(){
   var v=$("vFans");v.textContent="";
   v.appendChild(el("h2","vh","🌟 Fans"));
   v.appendChild(el("p","sub","Post your own gist, photos and videos. Follow people and grow your page."));
+  var snc=soundsCard();if(snc)v.appendChild(snc);
   var box=el("div");
   function loadFeed(){
     var q="fan_posts?select=id,user_id,text,images,link,video,created_at&hidden=eq.false&order=created_at.desc&limit=40";
