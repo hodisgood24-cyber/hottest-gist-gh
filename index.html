@@ -140,6 +140,11 @@ input[type=search]{width:100%;background:var(--card);color:var(--text);border:1p
 .gc .tagl{display:flex;gap:6px;justify-content:center;margin-top:16px}
 .gc .tagl i{width:28px;height:5px;border-radius:3px;display:block}
 @media (prefers-reduced-motion:reduce){.fx span{animation:none;opacity:.35;bottom:auto}.gc .perk b{animation:none}}
+.gc .gbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;font:inherit;font-weight:800;font-size:15px;background:#fff;color:#1f1f1f;border:1.5px solid #dadce0;border-radius:8px;padding:12px;cursor:pointer;margin-bottom:12px;box-sizing:border-box}
+.gc .gbtn:hover{background:#f6f7f8}
+.gc .gbtn svg{width:20px;height:20px}
+.gc .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;font-weight:700;margin:0 0 12px}
+.gc .or:before,.gc .or:after{content:"";flex:1;height:1px;background:var(--line)}
 </style>
 </head>
 <body>
@@ -229,7 +234,7 @@ function saveSes(o){
   if(o&&o.access_token){SES={access_token:o.access_token,refresh_token:o.refresh_token,expires_at:o.expires_at||(Math.floor(Date.now()/1000)+(o.expires_in||3600)),user:o.user||(SES&&SES.user)||{}};ls("gh-ses",JSON.stringify(SES))}
   else{SES=null;ls("gh-ses","")}
 }
-function myName(){var m=SES&&SES.user&&SES.user.user_metadata;return (m&&m.name)||"Fan"}
+function myName(){var m=SES&&SES.user&&SES.user.user_metadata;return (m&&(m.name||m.full_name))||"Fan"}
 function authCall(path,body,method,tok){
   var o={method:method||"POST",headers:{apikey:CFG.key,Authorization:"Bearer "+(tok||CFG.key),"Content-Type":"application/json"}};
   if(body)o.body=JSON.stringify(body);
@@ -284,6 +289,11 @@ function showGate(mode,note){
   function say(t,ok){msg.textContent=t;msg.classList.toggle("ok",!!ok)}
   var signup=mode==="signup",magic=mode==="magic";
   if(!recovery){
+    var gb=el("button","gbtn");gb.type="button";
+    gb.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+    gb.appendChild(el("span",null,"Continue with Google"));
+    gb.onclick=function(){location.href=CFG.url.replace(/\/$/,"")+"/auth/v1/authorize?provider=google&redirect_to="+encodeURIComponent(location.origin+location.pathname)};
+    c.appendChild(gb);c.appendChild(el("div","or","or use email"));
     var tab=el("div","tab");
     [["magic","Email link"],["login","Password"],["signup","Sign up"]].forEach(function(x){var b=el("button",null,x[1]);b.type="button";b.setAttribute("aria-pressed",String(x[0]===(signup?"signup":magic?"magic":"login")));b.onclick=function(){showGate(x[0])};tab.appendChild(b)});
     c.appendChild(tab);
