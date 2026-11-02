@@ -1,6 +1,35 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "martell-swift-academy-accra",
+    "title": "Gyakie, M.anifest and Juls to mentor Accra talent at Martell Swift Academy",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "Calling all upcoming artists, producers, songwriters and music business people in Accra 🎤\n\nThe Martell Swift Academy is coming to Accra, and Gyakie, M.anifest and Juls are among the mentors. Music executive Therese Ohemaa Akua Jones and iMullar founder Maxwell Adjevon complete the team.\n\nThe programme is free. Selected participants get mentorship, hands-on training, grants, professional tools and direct links into the industry, with workshops and networking sessions covering songwriting, production, branding and global distribution. It is run by Africa House with backing from Martell, after a first edition in Nairobi.\n\nApplications close on November 6, 2026. To apply, send your portfolio and details through the official Martell Swift Academy website before the deadline. Know someone talented? Share this with them 🔥\nSource: 3news",
+    "ts": 1793656925369,
+    "link": "https://3news.com/music/gyakie-m-anifest-and-juls-named-mentors-for-martell-swift-academy-in-accra",
+    "images": [
+      "images/martell-swift-academy-accra.jpg"
+    ],
+    "pin": false,
+    "status": "live",
+    "eventAt": 1794009540000
+  },
+  {
+    "id": "grace-nortey-farewell",
+    "title": "Grace Nortey laid to rest as stars gather at State House",
+    "cat": "News",
+    "by": "News desk",
+    "body": "Ghana's film family said goodbye to veteran actress Grace Nortey at a farewell service at the forecourt of the State House in Accra. Her body arrived under a Ghana Armed Forces escort, and mourners dressed in white at the family's request. The burial was private.\n\nMaame Dokono, Nana Ama McBrown, John Dumelo, Lydia Forson, Berla Mundi and members of the Ghana Actors Guild were among those who came to pay their respects.\n\nBorn Grace Naa Kwarley Sawyerr in 1937, she died on August 26, 2026, aged 89. Her career covered more than five decades, from radio to classics like Osofo Dadzie and Obra, and the international film Beasts of No Nation. She received a Lifetime Achievement Award at the Black Star International Film Festival in 2018.\n\nRest well, Mama Grace 🕊️\nSource: 3news",
+    "ts": 1793656924369,
+    "link": "https://3news.com/celebrities/mcbrown-maame-dokono-dumelo-and-other-actors-join-mourners-as-grace-nortey-is-laid-to-rest",
+    "images": [
+      "images/grace-nortey-farewell.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "smokelexx-collabo",
     "title": "Meet Smokelexx: the Rulers Records star getting ready to drop \"Collabo\"",
     "cat": "Afrobeats",
