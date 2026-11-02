@@ -53,6 +53,7 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
  <label>Payment link (optional, Paystack payment page, https)</label><input id="vl" type="url">
  <div class="row"><button>Save</button><button type="button" class="g" id="vx">Close sign-ups</button></div></form>
  <h2>Fan posts</h2><div id="fans" class="card">Loading...</div>
+ <h2>Services listings</h2><div id="gigs" class="card">Loading...</div>
  <h2>Creators (verified badge)</h2><div id="crt" class="card">Loading...</div>
  <h2>Email subscribers</h2><div id="subs" class="card">Loading...</div>
 </div></div>
@@ -169,8 +170,22 @@ function loadCreators(){
     });
   }).catch(function(){$("fans").textContent="Couldn't load. Did you run setup-creators.sql?";$("crt").textContent=""});
 }
+function loadGigs(){
+  rpc("admin_gigs").then(function(m){
+    var b=$("gigs");b.textContent="";
+    if(!(m||[]).length)b.textContent="No listings yet.";
+    (m||[]).forEach(function(c){
+      var d=el("div","it"),L=el("div");
+      L.appendChild(el("p",null,(c.name||"Fan")+" ("+(c.kind==="offer"?"for hire":"wanted")+"): "+c.title));
+      L.appendChild(el("p","m",c.category+" \u00b7 "+new Date(c.created_at).toLocaleString()+(c.reports?" \u00b7 "+c.reports+" report(s)":"")+(c.hidden?" \u00b7 HIDDEN":"")));d.appendChild(L);
+      var x=el("button",c.hidden?"":"d",c.hidden?"Show":"Hide");
+      x.onclick=function(){rpc("admin_set_hidden",{p_kind:"gig",p_id:c.id,p_hidden:!c.hidden}).then(loadGigs).catch(function(){alert("Failed")})};
+      d.appendChild(x);b.appendChild(d);
+    });
+  }).catch(function(){$("gigs").textContent="Couldn't load. Did you run setup-gigs.sql?"});
+}
 function init(){
-  loadPosts();loadMod();loadCreators();loadVer();loadPays();
+  loadPosts();loadMod();loadCreators();loadGigs();loadVer();loadPays();
   api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="sounds"){var it=Array.isArray(x.value)?x.value:(x.value&&x.value.items)||[];$("snd").value=it.map(function(i){return [i.title||"",i.artist||"",i.link||""].join(" | ")}).join("\n")}if(x.key==="verify"){$("vp").value=v.price||"";$("va").value=v.amount||"";$("vo").checked=!!v.auto;$("vh").value=v.how||"";$("vl").value=v.link||""}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
   $("f").onchange=function(){
     var fs=[].slice.call(this.files).slice(0,3-imgs.length);if(!fs.length)return;$("sv").disabled=true;$("sv").textContent="Uploading...";
