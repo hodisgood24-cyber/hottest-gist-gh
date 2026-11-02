@@ -929,7 +929,30 @@ function renderProfile(uid){
           api("rpc/toggle_follow",{p_user:uid,p_on:on}).catch(function(){toast("Couldn't update follow");if(on)delete fol[uid];else fol[uid]=1;fb.textContent=fol[uid]?"Following ✔":"Follow"})};
         act.appendChild(fb);
       }
+      if(mine){
+        var vcfg=cfgSet.verify||{};
+        var vb=el("button",null,c.verified?"\u2b50 Renew gold tick":"\u2b50 Get the gold tick");vb.type="button";act.appendChild(vb);
+        var vbox=el("div","fc");vbox.hidden=true;
+        vb.onclick=function(){vbox.hidden=!vbox.hidden};
+        if(c.verified){vbox.appendChild(el("div","none",c.verified_until?"Your gold tick is active until "+new Date(c.verified_until).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+".":"Your gold tick is active."))}
+        if(!vcfg.price){vbox.appendChild(el("p",null,"The gold tick is not open yet. Check back soon."))}
+        else{
+          vbox.appendChild(el("h3",null,"\u2b50 Gold tick: "+vcfg.price+" per month"));
+          vbox.appendChild(el("p",null,"A gold tick shows next to your name on your profile, posts and comments so people know your page is the real you."));
+          if(vcfg.how)vbox.appendChild(el("p",null,vcfg.how));
+          var pl=safeLink(vcfg.link);if(pl){var pa=el("a","linkbtn","Pay now");pa.href=pl;pa.target="_blank";pa.rel="noopener noreferrer";vbox.appendChild(pa)}
+          var vf=el("form","cf");var ri=document.createElement("input");ri.placeholder="Payment reference or MoMo number you paid from";ri.maxLength=80;ri.setAttribute("aria-label","Payment reference");
+          var ni2=document.createElement("input");ni2.placeholder="Note (optional)";ni2.maxLength=200;
+          var sb2=el("button",null,"I have paid, verify me");sb2.type="submit";vf.appendChild(ri);vf.appendChild(ni2);vf.appendChild(sb2);
+          var vs=el("div","none","");
+          api("verification_requests?select=status,created_at&order=created_at.desc&limit=1").then(function(r){if(r&&r[0]){vs.textContent=r[0].status==="pending"?"Your last request is waiting for approval. We check payments within 24 hours.":r[0].status==="rejected"?"Your last request was not approved. Check your payment details and try again.":""}}).catch(function(){});
+          vf.onsubmit=function(e){e.preventDefault();if(ri.value.trim().length<3){ri.focus();return}sb2.disabled=true;
+            api("rpc/request_verification",{p_ref:ri.value.trim(),p_note:ni2.value.trim()}).then(function(){ri.value="";ni2.value="";sb2.disabled=false;vs.textContent="Thanks! Your request was sent. We check payments within 24 hours.";toast("Request sent")}).catch(function(){sb2.disabled=false;toast("Couldn't send. You may already have requests waiting.")})};
+          vbox.appendChild(vf);vbox.appendChild(vs);
+        }
+      }
       body.appendChild(act);
+      if(vbox)body.appendChild(vbox);
       if(mine){
         var ni=document.createElement("input");ni.maxLength=40;ni.value=c.name;ni.setAttribute("aria-label","Display name");
         var bi=document.createElement("input");bi.maxLength=160;bi.value=c.bio||"";bi.placeholder="Short bio (no links)";bi.setAttribute("aria-label","Bio");

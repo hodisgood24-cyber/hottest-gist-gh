@@ -39,6 +39,12 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
  <h2>Sponsor strip</h2>
  <form id="pf2" class="card"><label>Text</label><input id="p1" maxlength="100"><label>Link</label><input id="p2" type="url"><div class="row"><button>Save</button><button type="button" class="g" id="px">Remove</button></div></form>
  <h2>Moderation</h2><div id="mod" class="card">Loading...</div>
+ <h2>Gold tick requests</h2><div id="vr" class="card">Loading...</div>
+ <h2>Gold tick price and payment details</h2>
+ <form id="vf2" class="card"><label>Price shown to fans (example: GH₵ 20)</label><input id="vp" maxlength="30">
+ <label>How to pay (example: Send MoMo to 024... name Kofi, then enter your MoMo number below)</label><textarea id="vh" rows="3" maxlength="400"></textarea>
+ <label>Payment link (optional, Paystack payment page, https)</label><input id="vl" type="url">
+ <div class="row"><button>Save</button><button type="button" class="g" id="vx">Close sign-ups</button></div></form>
  <h2>Fan posts</h2><div id="fans" class="card">Loading...</div>
  <h2>Creators (verified badge)</h2><div id="crt" class="card">Loading...</div>
  <h2>Email subscribers</h2><div id="subs" class="card">Loading...</div>
@@ -110,6 +116,24 @@ function loadMod(){
     if(em.length){var ta=el("textarea");ta.rows=4;ta.readOnly=true;ta.value=em.join(", ");s.appendChild(ta);var cb=el("button",null,"Copy emails");cb.onclick=function(){ta.select();try{navigator.clipboard.writeText(ta.value)}catch(e){document.execCommand("copy")}cb.textContent="Copied"};s.appendChild(cb)}
   }).catch(function(){$("mod").textContent="Couldn't load. Did you run setup-owner.sql?"});
 }
+function loadVer(){
+  rpc("admin_verifications").then(function(rows){
+    var b=$("vr");b.textContent="";
+    if(!rows.length){b.textContent="No requests waiting.";return}
+    rows.forEach(function(q){
+      var d=el("div","it"),L=el("div");
+      L.appendChild(el("b",null,q.name||"Fan"));L.appendChild(el("p",null,"Reference: "+q.reference));
+      if(q.note)L.appendChild(el("p","m","Note: "+q.note));
+      L.appendChild(el("p","m",new Date(q.created_at).toLocaleString()+(q.verified_until?" · tick until "+new Date(q.verified_until).toLocaleDateString():"")));d.appendChild(L);
+      var R=el("div","row"),a1=el("button",null,"Approve 1 month"),a3=el("button","g","3 months"),x=el("button","d","Reject");
+      function go(fn,args){rpc(fn,args).then(function(){loadVer();loadCreators()}).catch(function(){alert("Failed")})}
+      a1.onclick=function(){go("admin_approve_verification",{p_request:q.id,p_months:1})};
+      a3.onclick=function(){go("admin_approve_verification",{p_request:q.id,p_months:3})};
+      x.onclick=function(){go("admin_reject_verification",{p_request:q.id})};
+      R.appendChild(a1);R.appendChild(a3);R.appendChild(x);d.appendChild(R);b.appendChild(d);
+    });
+  }).catch(function(){$("vr").textContent="Couldn't load. Did you run setup-verify.sql?"});
+}
 function loadCreators(){
   rpc("admin_creators").then(function(m){
     var fb=$("fans");fb.textContent="";
@@ -134,8 +158,8 @@ function loadCreators(){
   }).catch(function(){$("fans").textContent="Couldn't load. Did you run setup-creators.sql?";$("crt").textContent=""});
 }
 function init(){
-  loadPosts();loadMod();loadCreators();
-  api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
+  loadPosts();loadMod();loadCreators();loadVer();
+  api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="verify"){$("vp").value=v.price||"";$("vh").value=v.how||"";$("vl").value=v.link||""}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
   $("f").onchange=function(){
     var fs=[].slice.call(this.files).slice(0,3-imgs.length);if(!fs.length)return;$("sv").disabled=true;$("sv").textContent="Uploading...";
     fs.reduce(function(p,f){return p.then(function(){return shrink(f).then(upload).then(function(u){imgs.push(u);thumbs()})})},Promise.resolve()).catch(function(){alert("A photo couldn't upload")}).then(function(){$("sv").disabled=false;$("sv").textContent=editId?"Update":"Publish";$("f").value=""});
@@ -162,6 +186,8 @@ function init(){
     $(form).onsubmit=function(e){e.preventDefault();rpc("admin_set_setting",{p_key:key,p_value:get()}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
     $(clr).onclick=function(){rpc("admin_set_setting",{p_key:key,p_value:{}}).then(function(){$(form).reset();say("Removed.");setTimeout(function(){say("")},2500)})};
   }
+  $("vf2").onsubmit=function(e){e.preventDefault();rpc("admin_set_setting",{p_key:"verify",p_value:{price:$("vp").value.trim(),how:$("vh").value.trim(),link:$("vl").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
+  $("vx").onclick=function(){rpc("admin_set_setting",{p_key:"verify",p_value:{}}).then(function(){$("vf2").reset();say("Sign-ups closed.");setTimeout(function(){say("")},2500)})};
   setting("sf","song",function(){return{title:$("s1").value.trim(),artist:$("s2").value.trim(),note:$("s3").value.trim(),link:$("s4").value.trim()}},"sx");
   setting("pf2","sponsor",function(){return{text:$("p1").value.trim(),link:$("p2").value.trim()}},"px");
 }
