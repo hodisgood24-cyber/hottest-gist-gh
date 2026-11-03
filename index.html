@@ -514,6 +514,10 @@ body.fullpage header,body.fullpage .tabs,body.fullpage .where,body.fullpage .gea
 .ofx{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:18px;cursor:pointer}
 @keyframes ofin{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.ofpop{animation:none}}
+
+.fyou{display:inline-block;margin-left:8px;font:800 11px/1 var(--font-body);letter-spacing:.04em;text-transform:uppercase;background:var(--card);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:4px 6px;vertical-align:middle}
+#vProfile .evb button.fbk{background:var(--red);border-color:var(--red);color:#fff}
+.offa>.frb{flex:1 1 100%;padding:11px 14px;font-size:15px}
 </style>
 </head>
 <body>
@@ -1073,8 +1077,7 @@ function drawOfficial(box){
     t.appendChild(el("small",null,"⭐ Official page · "+(o.followers||0)+" followers"));who.appendChild(t);who.onclick=function(){openProfile(o.user_id)};c.appendChild(who);
     var me=SES&&SES.user&&SES.user.id;
     if(me!==o.user_id){var a=el("div","offa");
-      var fb=el("button","frb go",fol[o.user_id]?"Following ✔":"Follow");fb.type="button";fb.disabled=!!fol[o.user_id];fb.onclick=function(){followOfficial(fb,function(){drawOfficial(box)})};a.appendChild(fb);
-      if(SES&&frLoaded)a.appendChild(friendBtns(o.user_id,o.name||"Hottest Gist GH",frState(o.user_id),function(){drawOfficial(box)}));
+      var fb=el("button","frb go",fol[o.user_id]?"Following ✔":"+ Follow");fb.type="button";fb.disabled=!!fol[o.user_id];fb.onclick=function(){followOfficial(fb,function(){drawOfficial(box)})};a.appendChild(fb);
       c.appendChild(a)}
     box.appendChild(c);
   });
@@ -1101,11 +1104,26 @@ function officialPopup(){
     m.appendChild(c);document.body.appendChild(m);f.focus();
   });
 }
+
+// ===== Follow back =====
+var followers={},followersList=[];
+function followLabel(uid){return fol[uid]?"Following ✔":(followers[uid]?"Follow back":"Follow")}
+function loadFollowers(cb){
+  if(!(CFG&&SES)){cb&&cb();return}
+  api("rpc/my_followers",{}).then(function(r){followersList=r||[];followers={};followersList.forEach(function(x){followers[x.user_id]=1})}).catch(function(){}).then(function(){cb&&cb()});
+}
+function followBackRow(p,after){
+  var r=el("div","frw");var who=el("button","who");who.type="button";who.appendChild(avEl(p,40));who.appendChild(el("span",null,p.name||"Fan"));if(p.verified)who.appendChild(vBadge(14));
+  who.onclick=function(){openProfile(p.user_id)};r.appendChild(who);
+  var w=el("div","acts");var b=el("button","frb go","Follow back");b.type="button";
+  b.onclick=function(){b.disabled=true;fol[p.user_id]=1;b.textContent="Following ✔";api("rpc/toggle_follow",{p_user:p.user_id,p_on:true}).then(function(){toast("You follow "+(p.name||"them")+" back 🤝");after&&after()}).catch(function(e){delete fol[p.user_id];b.disabled=false;b.textContent="Follow back";if(!e.login)toast("Couldn't follow. Try again.")})};
+  w.appendChild(b);r.appendChild(w);return r;
+}
 // ===== Friends =====
 var friends=[],frLoaded=false,frQ="",frRes=null,frTimer=null;
 function loadFriends(cb){
   if(!(CFG&&SES)){friends=[];cb&&cb();return}
-  api("rpc/my_friends",{}).then(function(r){friends=r||[];frLoaded=true}).catch(function(){friends=friends||[]}).then(function(){friendBadge();cb&&cb()});
+  Promise.all([api("rpc/my_friends",{}).then(function(r){friends=r||[]}).catch(function(){friends=friends||[]}),new Promise(function(res){loadFollowers(res)})]).then(function(){frLoaded=true;friendBadge();cb&&cb()});
 }
 function friendBadge(){var b=$("frBadge");if(!b)return;var n=friends.filter(function(f){return f.state==="incoming"}).length;b.hidden=!n;b.textContent=n>9?"9+":String(n)}
 function frState(uid){var f=friends.find(function(x){return x.user_id===uid});return f?f.state:"none"}
@@ -1145,6 +1163,8 @@ function renderFriends(){
   if(frQ.length>=2)search();
   var body=el("div");v.appendChild(body);
   if(!frLoaded){body.appendChild(el("div","none","Loading your friends..."));loadFriends(renderFriends);return}
+  var nf=followersList.filter(function(x){return !fol[x.user_id]&&!(OFFICIAL&&x.user_id===OFFICIAL.user_id)}).slice(0,10);
+  if(nf.length){body.appendChild(el("div","frh","New followers · follow them back ("+nf.length+")"));nf.forEach(function(p){body.appendChild(followBackRow(p,renderFriends))})}
   var inc=friends.filter(function(f){return f.state==="incoming"}),fr=friends.filter(function(f){return f.state==="friends"}),sent=friends.filter(function(f){return f.state==="sent"});
   if(inc.length){body.appendChild(el("div","frh","Friend requests ("+inc.length+")"));inc.forEach(function(p){body.appendChild(frRow(p,renderFriends))})}
   body.appendChild(el("div","frh","Your friends ("+fr.length+")"));
@@ -1154,7 +1174,7 @@ function renderFriends(){
   var sg=el("div");body.appendChild(sg);
   var me=SES.user.id,known={};friends.forEach(function(f){known[f.user_id]=1});
   loadOfficial(function(){api("creator_stats?select=user_id,name,avatar,verified,followers&order=followers.desc,posts.desc&limit=30").then(function(r){
-    var list=(r||[]).filter(function(p){return p.user_id!==me&&!known[p.user_id]&&!(OFFICIAL&&p.user_id===OFFICIAL.user_id)}).slice(0,8);
+    var list=(r||[]).filter(function(p){return p.user_id!==me&&!known[p.user_id]&&!(OFFICIAL&&p.user_id===OFFICIAL.user_id)&&!(followers[p.user_id]&&!fol[p.user_id])}).slice(0,8);
     if(list.length){sg.appendChild(el("div","frh","People you may know"));
     list.forEach(function(p){p.state="none";sg.appendChild(frRow(p,renderFriends))})}
     var inv=el("button","go2","📣 Invite friends to Hottest Gist");inv.type="button";inv.style.marginTop="14px";
@@ -1724,9 +1744,10 @@ function renderProfile(uid){
         var ed=el("button",null,"Edit profile");ed.type="button";ed.onclick=function(){editBox.hidden=!editBox.hidden};act.appendChild(ed);
         var sh=el("button",null,"Share my page");sh.type="button";sh.onclick=function(){var u=location.origin+"/#u-"+me;if(navigator.share)navigator.share({title:c.name+" on Hottest Gist GH",url:u}).catch(function(){});else copyText(u)};act.appendChild(sh);
       }else{
-        var fb=el("button",null,fol[uid]?"Following ✔":"Follow");fb.type="button";
-        fb.onclick=function(){var on=!fol[uid];if(on)fol[uid]=1;else delete fol[uid];fb.textContent=fol[uid]?"Following ✔":"Follow";c.followers=Math.max(0,(c.followers||0)+(on?1:-1));fcount.textContent=String(c.followers);
-          api("rpc/toggle_follow",{p_user:uid,p_on:on}).catch(function(){toast("Couldn't update follow");if(on)delete fol[uid];else fol[uid]=1;fb.textContent=fol[uid]?"Following ✔":"Follow"})};
+        var fb=el("button",null,followLabel(uid));fb.type="button";if(!fol[uid]&&followers[uid])fb.className="fbk";
+        if(followers[uid]){nm.appendChild(el("span","fyou","Follows you"))}
+        fb.onclick=function(){var on=!fol[uid];if(on)fol[uid]=1;else delete fol[uid];fb.textContent=followLabel(uid);fb.className=(!fol[uid]&&followers[uid])?"fbk":"";c.followers=Math.max(0,(c.followers||0)+(on?1:-1));fcount.textContent=String(c.followers);
+          api("rpc/toggle_follow",{p_user:uid,p_on:on}).catch(function(){toast("Couldn't update follow");if(on)delete fol[uid];else fol[uid]=1;fb.textContent=followLabel(uid)})};
         act.appendChild(fb);
         var fw=el("span");act.appendChild(fw);
         var drawF=function(){fw.textContent="";var bt=friendBtns(uid,c.name||"Fan",frState(uid),drawF);bt.style.display="inline-flex";fw.appendChild(bt)};
@@ -2035,7 +2056,7 @@ function buildNotes(){
   if(pushOk()){var pr=el("div","tg");pr.appendChild(el("span",null,"\ud83d\udcf2 Phone alerts for new stories"));var pbt=el("button","go2","\u2026");pbt.type="button";pbt.style.margin="0";pbt.style.padding="6px 12px";pr.appendChild(pbt);p.appendChild(pr);
     pushState().then(function(st){pbt.textContent=st==="on"?"Turn off":st==="blocked"?"Blocked":"Turn on";pbt.disabled=st==="blocked";pbt.onclick=function(){pbt.disabled=true;(st==="on"?pushOff():pushOn()).then(function(){if(npOpen)buildNotes()})}})}
   var ns=newStories(),any=false;
-  var W={like:["❤️"," liked your post"],comment:["💬"," commented on your post"],reply:["↩️"," replied to your comment"],follow:["🌟"," started following you"],friend_request:["👋"," sent you a friend request"],friend_accept:["🤝"," accepted your friend request"]};
+  var W={like:["❤️"," liked your post"],comment:["💬"," commented on your post"],reply:["↩️"," replied to your comment"],follow:["🌟"," started following you. Tap to follow back"],friend_request:["👋"," sent you a friend request"],friend_accept:["🤝"," accepted your friend request"]};
   function mine(n){any=true;var w=W[n.kind]||["🔔",""];
     var sub=(n.snippet?"“"+n.snippet+"” · ":"")+agoTxt(Date.parse(n.created_at));
     p.appendChild(noteRow(w[0],(n.actor_name||"A fan")+w[1],sub,!n.read,function(){if(n.kind==="friend_request"){frLoaded=false;setView("friends")}else if((n.kind==="follow"||n.kind==="friend_accept")&&n.actor)openProfile(n.actor);else if(n.post_id)goPost(n.post_id)}));
