@@ -71,7 +71,7 @@ declare
   s record; ev jsonb; c jsonb; h jsonb; a jsonb; st text; nm text; js jsonb; res record;
   d1 text := to_char((now() at time zone 'utc') - interval '1 day', 'YYYYMMDD');
   d2 text := to_char((now() at time zone 'utc') + interval '10 days', 'YYYYMMDD');
-  n int := 0; bad text := '';
+  n int := 0; bad text := ''; why text := '';
 begin
   if not pg_try_advisory_xact_lock(424242) then return 'busy'; end if;
   perform http_set_curlopt('CURLOPT_TIMEOUT', '6');
@@ -82,9 +82,16 @@ begin
            limit greatest(p_max, 1) loop
     update match_sources set last_at = now() where code = s.code;
     begin
-      select * into res from http_get('https://site.api.espn.com/apis/site/v2/sports/soccer/' || s.code || '/scoreboard?limit=300&dates=' || d1 || '-' || d2);
-      if res.status in (400, 404) then update match_sources set enabled = false where code = s.code; bad := bad || s.code || ' '; continue; end if;
-      if res.status <> 200 then bad := bad || s.code || ' '; continue; end if;
+      select * into res from http(('GET',
+        'https://site.api.espn.com/apis/site/v2/sports/soccer/' || s.code || '/scoreboard?limit=300&dates=' || d1 || '-' || d2,
+        array[http_header('User-Agent', 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36'),
+              http_header('Accept', 'application/json')],
+        null, null)::http_request);
+      if res.status <> 200 then
+        bad := bad || s.code || ' ';
+        if why = '' then why := s.code || ' answered ' || res.status || ': ' || left(regexp_replace(coalesce(res.content, ''), '\s+', ' ', 'g'), 120); end if;
+        continue;
+      end if;
       js := res.content::jsonb;
       for ev in select * from jsonb_array_elements(coalesce(js->'events', '[]'::jsonb)) loop
         c := ev->'competitions'->0;
@@ -113,10 +120,11 @@ begin
       end loop;
     exception when others then
       bad := bad || s.code || ' ';
+      if why = '' then why := s.code || ' error: ' || left(sqlerrm, 160); end if;
     end;
   end loop;
-  update match_sync set last_at = now(), last_note = n || ' matches' || case when bad <> '' then ', skipped: ' || bad else '' end where id = 1;
-  return n || ' matches' || case when bad <> '' then ', skipped: ' || bad else '' end;
+  update match_sync set last_at = now(), last_note = n || ' matches' || case when bad <> '' then ', skipped: ' || bad || ' | ' || why else '' end where id = 1;
+  return n || ' matches' || case when bad <> '' then ', skipped: ' || bad || ' | Reason: ' || why else '' end;
 end $$;
 
 -- Anyone opening Match day can ask for fresh scores: one competition per call, at most every 30 seconds
