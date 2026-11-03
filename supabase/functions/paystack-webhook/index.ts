@@ -32,6 +32,38 @@ Deno.serve(async (req) => {
   const d = vj?.data;
   if (!vr.ok || d?.status !== "success" || d?.currency !== "GHS") return new Response("not paid", { status: 200 });
   const purpose = d?.metadata?.purpose;
+  // --- Tips, ads and event tickets (new) ---
+  if (purpose === "tip" || purpose === "ad" || purpose === "ticket") {
+    const H2 = { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, "Content-Type": "application/json" };
+    const getSetting = async (k: string) => (await (await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.${k}&select=value`, { headers: H2 })).json())?.[0]?.value || {};
+    const rpc = (fn: string, args: unknown) => fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, { method: "POST", headers: H2, body: JSON.stringify(args) });
+    const uid = String(d?.metadata?.user_id || "");
+    if (!/^[0-9a-f-]{36}$/i.test(uid)) return new Response("bad user", { status: 200 });
+    if (purpose === "tip") {
+      const to = String(d.metadata.to || "");
+      if (!/^[0-9a-f-]{36}$/i.test(to) || to === uid) return new Response("bad recipient", { status: 200 });
+      const tv = await getSetting("tips");
+      if (d.amount < Math.round((Number(tv.min) || 2) * 100)) return new Response("amount too low", { status: 200 });
+      const r = await rpc("record_tip", { p_from: uid, p_to: to, p_ref: ref, p_amount: d.amount, p_currency: d.currency, p_msg: String(d.metadata.message || "").slice(0, 140), p_cut: Number(tv.cut_pct ?? 10) });
+      return new Response(r.ok ? "ok" : "grant failed", { status: r.ok ? 200 : 500 });
+    }
+    if (purpose === "ad") {
+      const av = await getSetting("ads");
+      const adId = Number(d.metadata.ad_id) || 0;
+      const ar = await (await fetch(`${SUPABASE_URL}/rest/v1/ads?id=eq.${adId}&select=kind`, { headers: H2 })).json();
+      const pkg = av?.[ar?.[0]?.kind] || {};
+      if (!(Number(pkg.amount) > 0) || d.amount < Math.round(Number(pkg.amount) * 100)) return new Response("amount too low", { status: 200 });
+      const r = await rpc("grant_ad", { p_ad: adId, p_ref: ref, p_amount: d.amount, p_currency: d.currency, p_days: Number(pkg.days) || 7 });
+      return new Response(r.ok ? "ok" : "grant failed", { status: r.ok ? 200 : 500 });
+    }
+    const evId = Number(d.metadata.event_id) || 0, qty = Math.min(5, Math.max(1, Number(d.metadata.qty) || 1));
+    const er = await (await fetch(`${SUPABASE_URL}/rest/v1/ticket_events?id=eq.${evId}&select=price`, { headers: H2 })).json();
+    const price = Number(er?.[0]?.price);
+    if (!(price > 0) || d.amount < price * qty) return new Response("amount too low", { status: 200 });
+    const tk = await getSetting("tickets");
+    const r = await rpc("issue_tickets", { p_event: evId, p_buyer: uid, p_qty: qty, p_ref: ref, p_amount: d.amount, p_currency: d.currency, p_fee_pct: Number(tk.fee_pct ?? 5) });
+    return new Response(r.ok ? "ok" : "grant failed", { status: r.ok ? 200 : 500 });
+  }
   if (purpose === "feature_gig" && d?.metadata?.gig_id) {
     const fr = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.feature&select=value`, {
       headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },

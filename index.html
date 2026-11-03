@@ -650,6 +650,17 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+.tipamts{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.ergrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.erc{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px}.erc.big{grid-column:1/-1;border-color:var(--red)}.erc b{font:400 26px/1.1 var(--font-display)}
+.adpk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+#adbar{margin:0 0 10px}.adban{position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:linear-gradient(135deg,#fff7e0,#ffe9a8);color:#222;border:1.5px solid #f3c34a;border-radius:14px;padding:10px 12px;font:inherit;cursor:pointer}
+.adimg{width:54px;height:54px;border-radius:10px;object-fit:cover;flex:none}.adtx{display:flex;flex-direction:column;min-width:0;flex:1}.adtx b{font-size:15px}.adtx span{font-size:13px;opacity:.8}
+.adtag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;background:rgba(0,0,0,.12);border-radius:99px;padding:2px 8px;align-self:flex-start}
+.adpost{position:relative;border:1.5px dashed #f3c34a}.adpimg{width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin:8px 0}
+.tixc{background:var(--card);border:1.5px dashed var(--red);border-radius:16px;padding:14px;margin:10px 0}.tixc.used{opacity:.55}
+.tixcode{font:400 34px/1.2 var(--font-display);letter-spacing:4px;margin:8px 0;word-break:break-all}
+.tixres{margin-top:8px;padding:10px;border-radius:10px;font-weight:800}.tixres.ok{background:#1f8a4c;color:#fff}.tixres.bad{background:#b3261e;color:#fff}
+
 .mvbar{margin:6px 0 10px}.mvchips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}.mvchips::-webkit-scrollbar{display:none}.mvchips .chip{flex:none}
 .mvgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin:10px 0}
 .mvc{display:flex;flex-direction:column;gap:4px;text-align:left;background:none;border:0;padding:0;font:inherit;color:var(--text);cursor:pointer}
@@ -1092,6 +1103,7 @@ body.biomode main.wrap{max-width:560px}
 <main class="wrap">
   <div id="vGist">
     <div id="stories" hidden aria-label="Stories"></div>
+    <div id="adbar" hidden></div>
     <section id="show" class="xp" aria-label="Explore Hottest Gist"></section>
     <div id="wach"></div>
     <aside class="side" id="side" aria-label="Highlights">
@@ -1125,6 +1137,9 @@ body.biomode main.wrap{max-width:560px}
   <div id="vQuiz" hidden></div>
   <div id="vPlay" hidden></div>
   <div id="vMovies" hidden></div>
+  <div id="vEarn" hidden></div>
+  <div id="vAds" hidden></div>
+  <div id="vTix" hidden></div>
 </main>
 <footer class="wrap foot">Hottest Gist GH · Fresh music, movies and culture from Ghana and beyond.<div class="fl2"><a href="/stories.html">All stories</a><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></footer>
 
@@ -1444,7 +1459,7 @@ function pollCard(pl){
 
 
 // ===== Remember the page in the address (refresh and Back keep you there) =====
-var V2H={gold:"gold",matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",market:"market",play:"play",movies:"movies",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
+var V2H={gold:"gold",matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",market:"market",play:"play",movies:"movies",earn:"earnings",ads:"advertise",tix:"tickets",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
 var H2V={};Object.keys(V2H).forEach(function(k){H2V[V2H[k]]=k});
 var routing=false;
 function isRouteHash(h){return !!H2V[h]||/^[um]-[0-9a-f-]{36}$/.test(h)||/^match-\d+$/.test(h)}
@@ -1468,7 +1483,7 @@ window.addEventListener("popstate",function(){
   try{if(!routeHash(h)&&(!h||isRouteHash(h)||viewName!=="gist"))setView("gist")}finally{routing=false}
 });
 // ===== "You are here" line and tap flash =====
-var VIEWNAMES={gold:"Gold tick",matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",market:"Market",play:"Play",movies:"Movies",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
+var VIEWNAMES={gold:"Gold tick",matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",market:"Market",play:"Play",movies:"Movies",earn:"Earnings",ads:"Advertise",tix:"Tickets",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
 function drawWhere(){
   var w=$("where");if(!w)return;w.textContent="";
   if(viewName==="search")return;
@@ -2868,6 +2883,164 @@ function submitFilm(){
   var rw=el("div","evb");rw.appendChild(go);rw.appendChild(cn);card.appendChild(rw);
   ov.onclick=function(e){if(e.target===ov)ov.remove()};document.body.appendChild(ov);
 }
+/* ===== Money: tips, earnings, ads, tickets ===== */
+function ghs(p){p=Number(p)||0;return "GH₵ "+(p%100?(p/100).toFixed(2):String(p/100))}
+function payNow(body,btn,label){
+  btn.disabled=true;btn.textContent="Opening payment…";body.origin=location.origin;
+  token().then(function(t){return fetch(CFG.url.replace(/\/$/,"")+"/functions/v1/paystack-init",{method:"POST",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify(body)})}).then(function(r){return r.json()}).then(function(j){if(j&&j.url)location.href=j.url;else throw new Error(j&&j.error||"failed")}).catch(function(er){btn.disabled=false;btn.textContent=label;toast("Couldn't open payment: "+(er&&er.message||"error"))});
+}
+function sheet(build){
+  var ov=el("div","stov"),card=el("div","stadd");ov.appendChild(card);
+  function close(){ov.remove()}
+  build(card,close);ov.onclick=function(e){if(e.target===ov)close()};document.body.appendChild(ov);return close;
+}
+function tipSheet(uid,name){
+  if(!SES){needLogin("Log in to send a tip.");return}
+  var tv=cfgSet.tips||{};if(!tv.auto){toast("Tips are opening soon");return}
+  var min=Number(tv.min)||2,max=Number(tv.max)||500,amt=10;
+  sheet(function(c,close){
+    c.appendChild(el("h3",null,"💛 Tip "+name));c.appendChild(el("p","none","Say thanks with Mobile Money or card. "+name+" gets "+(100-(tv.cut_pct==null?10:Number(tv.cut_pct)))+"% of every tip."));
+    var row=el("div","tipamts"),inp=el("input");inp.type="number";inp.min=min;inp.max=max;inp.step="1";inp.value=amt;inp.setAttribute("aria-label","Tip amount in cedis");
+    [5,10,20,50].forEach(function(n){var b=el("button","chip","GH₵ "+n);b.type="button";b.onclick=function(){inp.value=n;mark()};row.appendChild(b)});
+    function mark(){[].forEach.call(row.children,function(b){b.setAttribute("aria-pressed",String(b.textContent==="GH₵ "+inp.value))})}inp.oninput=mark;mark();
+    c.appendChild(row);var lb=el("label",null,"Or type an amount (GH₵ "+min+" to "+max+")");c.appendChild(lb);inp.style.cssText="width:100%;box-sizing:border-box;margin:4px 0";c.appendChild(inp);
+    var m=el("input");m.maxLength=140;m.placeholder="Add a message (optional)";m.style.cssText="width:100%;box-sizing:border-box;margin:4px 0";c.appendChild(m);
+    var go=el("button",null,"Send tip"),cn=el("button","g","Cancel");go.type=cn.type="button";cn.onclick=close;
+    go.onclick=function(){var a=Number(inp.value);if(!(a>=min&&a<=max)){toast("Tip must be GH₵ "+min+" to "+max);return}payNow({kind:"tip",to:uid,amount:a,message:m.value},go,"Send tip")};
+    var rw=el("div","evb");rw.appendChild(go);rw.appendChild(cn);c.appendChild(rw);
+  });
+}
+/* --- Earnings --- */
+function renderEarn(){
+  var v=$("vEarn");v.textContent="";
+  if(!(CFG&&SES)){v.appendChild(loginBox("Log in to see your earnings."));return}
+  v.appendChild(el("h2","vh","💰 Your earnings"));
+  var box=el("div");v.appendChild(box);box.appendChild(el("div","none","Loading..."));
+  api("rpc/my_earnings",{}).then(function(e){
+    box.textContent="";
+    var g=el("div","ergrid");[["Available",e.available],["Tips",e.tips],["Ticket sales",e.tickets],["Paid out",e.paid_out]].forEach(function(x,i){var c=el("div","erc"+(i===0?" big":""));c.appendChild(el("span","none",x[0]));c.appendChild(el("b",null,ghs(x[1])));g.appendChild(c)});box.appendChild(g);
+    if(e.pending>0)box.appendChild(el("p","none","Payout waiting to be sent: "+ghs(e.pending)));
+    var f=el("form","cf fc");f.appendChild(el("h3",null,"Cash out to Mobile Money"));f.appendChild(el("p","none","Smallest payout is GH₵ 20. We send it to your Mobile Money, usually within 1 to 2 days."));
+    var a=el("input");a.type="number";a.min="20";a.step="1";a.placeholder="Amount (GH₵)";a.value=e.available>=2000?Math.floor(e.available/100):"";
+    var n=el("select");["MTN","Telecel","AirtelTigo"].forEach(function(x){var o=el("option",null,x);o.value=x;n.appendChild(o)});
+    var m=el("input");m.type="tel";m.placeholder="Mobile Money number";m.maxLength=15;
+    var b=el("button",null,"Request payout");f.appendChild(a);f.appendChild(n);f.appendChild(m);f.appendChild(b);box.appendChild(f);
+    f.onsubmit=function(ev){ev.preventDefault();b.disabled=true;api("rpc/payout_request",{p_amount_ghs:Number(a.value),p_momo:m.value,p_network:n.value}).then(function(){toast("Payout requested");renderEarn()}).catch(function(er){b.disabled=false;toast((er&&er.detail)||"Couldn't request the payout")})};
+    box.appendChild(el("h3","vh2","Recent earnings"));
+    if(!(e.recent||[]).length)box.appendChild(el("div","none","Nothing yet. When fans tip you or buy your tickets, it shows here."));
+    (e.recent||[]).forEach(function(r){var row=el("div","lbr");var tx=el("div");tx.style.flex="1";tx.appendChild(el("b",null,(r.source==="tip"?"💛 Tip":"🎟️ Tickets")+(r.from_name?" from "+r.from_name:"")));tx.appendChild(el("div","none",(r.note?r.note+" · ":"")+new Date(r.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"})));row.appendChild(tx);row.appendChild(el("b",null,"+"+ghs(r.net)));box.appendChild(row)});
+    if((e.payouts||[]).length){box.appendChild(el("h3","vh2","Payouts"));e.payouts.forEach(function(p){var row=el("div","lbr");var tx=el("div");tx.style.flex="1";tx.appendChild(el("b",null,ghs(p.amount)));tx.appendChild(el("div","none",p.momo+" · "+new Date(p.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"})));row.appendChild(tx);row.appendChild(el("span","gtag",p.status==="paid"?"Paid":p.status==="rejected"?"Declined":"Waiting"));box.appendChild(row)})}
+  }).catch(function(){box.textContent="";box.appendChild(el("div","none","Earnings aren't ready yet. Did you run setup-money.sql?"))});
+}
+/* --- Ads --- */
+var adRows=[],adSeen={};
+function loadAds(){if(!CFG)return;api("rpc/ad_active",{}).then(function(r){adRows=r||[]}).catch(function(){adRows=[]}).then(function(){drawBanner()})}
+function adOpen(a){api("rpc/ad_click",{p_id:a.id}).catch(function(){});var l=safeLink(a.link);if(l)window.open(l,"_blank","noopener,noreferrer")}
+function adSeenOnce(a){if(adSeen[a.id])return;adSeen[a.id]=1;api("rpc/ad_view",{p_id:a.id}).catch(function(){})}
+var bannerI=0,bannerT=null;
+function drawBanner(){
+  var box=$("adbar");if(!box)return;clearInterval(bannerT);box.textContent="";
+  var list=adRows.filter(function(a){return a.kind==="banner"});if(!list.length){box.hidden=true;return}
+  box.hidden=false;
+  function show(){
+    var a=list[bannerI%list.length];box.textContent="";var b=el("button","adban");b.type="button";b.setAttribute("aria-label","Sponsored: "+a.title);
+    var im=safeLink(a.image);if(im){var i=document.createElement("img");i.src=im;i.alt="";i.className="adimg";b.appendChild(i)}
+    var t=el("div","adtx");t.appendChild(el("b",null,a.title));if(a.body)t.appendChild(el("span",null,a.body));b.appendChild(t);b.appendChild(el("span","adtag","Sponsored"));
+    b.onclick=function(){adOpen(a)};box.appendChild(b);adSeenOnce(a)}
+  show();if(list.length>1)bannerT=setInterval(function(){if(viewName==="gist"){bannerI++;show()}},6000);
+}
+function adCard(f){
+  var list=adRows.filter(function(a){return a.kind==="post"});if(!list.length)return;
+  var a=list[Math.floor(Date.now()/60000)%list.length],c=el("article","fc adpost");
+  c.appendChild(el("span","adtag","Sponsored"));
+  var im=safeLink(a.image);if(im){var i=document.createElement("img");i.src=im;i.alt="";i.className="adpimg";c.appendChild(i)}
+  c.appendChild(el("h3",null,a.title));if(a.body)c.appendChild(el("p",null,a.body));
+  var b=el("button","go2","Learn more");b.type="button";b.onclick=function(){adOpen(a)};c.appendChild(b);f.appendChild(c);adSeenOnce(a);
+}
+function renderAds(){
+  var v=$("vAds");v.textContent="";
+  v.appendChild(el("h2","vh","📣 Advertise with us"));
+  var av=cfgSet.ads||{};
+  v.appendChild(el("p","sub","Put your business, event or song in front of Ghana's entertainment fans. Banners show at the top of Home. Sponsored posts show inside the story feed."));
+  var pk=el("div","adpk");
+  [["banner","📰 Banner"],["post","⭐ Sponsored post"]].forEach(function(x){var p=av[x[0]]||{};var c=el("div","erc");c.appendChild(el("b",null,x[1]));c.appendChild(el("span","none",p.amount?ghs(p.amount*100)+" for "+(p.days||7)+" days":"Price coming soon"));pk.appendChild(c)});v.appendChild(pk);
+  if(!SES){v.appendChild(loginBox("Log in to create your ad."));return}
+  var f=el("form","cf fc");f.appendChild(el("h3",null,"Create your ad"));f.appendChild(el("p","none","We check every ad before it goes live. Ads for scams, adult content or anything illegal are refused."));
+  var k=el("select");[["banner","Banner (top of Home)"],["post","Sponsored post (in the feed)"]].forEach(function(x){var o=el("option",null,x[1]);o.value=x[0];k.appendChild(o)});
+  var t=el("input");t.placeholder="Headline (up to 80 characters)";t.maxLength=80;t.required=true;
+  var d=el("textarea");d.rows=2;d.maxLength=300;d.placeholder="A line or two about what you offer";
+  var l=el("input");l.type="url";l.placeholder="Link people open (https://...)";l.required=true;
+  var fi=el("input");fi.type="file";fi.accept="image/*";var fl=el("label",null,"Picture (optional)");
+  var b=el("button",null,"Save and continue to payment");[k,t,d,l,fl,fi,b].forEach(function(e){f.appendChild(e)});v.appendChild(f);
+  f.onsubmit=function(ev){ev.preventDefault();b.disabled=true;b.textContent="Saving…";
+    var p=fi.files[0]?shrinkImg(fi.files[0],1000).then(function(bl){return upFan(bl,"jpg","image/jpeg","ad-")}):Promise.resolve(null);
+    p.then(function(url){return api("rpc/ad_create",{p_kind:k.value,p_title:t.value,p_body:d.value,p_image:url,p_link:l.value})}).then(function(id){
+      var pr=av[k.value]||{};if(!av.auto||!pr.amount){toast("Saved. Payments open soon, we'll tell you.");b.disabled=false;b.textContent="Save and continue to payment";renderAds();return}
+      payNow({kind:"ad",ad_id:id},b,"Save and continue to payment")}).catch(function(er){b.disabled=false;b.textContent="Save and continue to payment";toast((er&&er.detail)||"Couldn't save your ad. Did you run setup-money.sql?")})};
+  v.appendChild(el("h3","vh2","Your ads"));var my=el("div");v.appendChild(my);
+  api("rpc/ad_mine",{}).then(function(rows){rows=rows||[];if(!rows.length){my.appendChild(el("div","none","No ads yet."));return}
+    rows.forEach(function(a){var row=el("div","lbr");var tx=el("div");tx.style.flex="1";tx.appendChild(el("b",null,a.title));
+      var st={draft:"Not paid yet",review:"Paid, waiting for our check",live:"Live until "+(a.ends_at?new Date(a.ends_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"}):""),rejected:"Refused",expired:"Finished"}[a.status]||a.status;
+      tx.appendChild(el("div","none",st+" · "+a.views+" views · "+a.clicks+" clicks"));row.appendChild(tx);
+      if(a.status==="draft"){var pb=el("button",null,"Pay");pb.type="button";pb.onclick=function(){if(!av.auto||!(av[a.kind]||{}).amount){toast("Payments open soon");return}payNow({kind:"ad",ad_id:a.id},pb,"Pay")};row.appendChild(pb)}
+      my.appendChild(row)})}).catch(function(){});
+}
+/* --- Tickets --- */
+var tixTab="events";
+function fmtWhen(s){return new Date(s).toLocaleString("en-GB",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}
+function renderTix(){
+  var v=$("vTix");v.textContent="";
+  v.appendChild(el("h2","vh","🎟️ Event tickets"));
+  var tabs=el("div","mvchips");[["events","Events"],["mine","My tickets"],["host","Sell tickets"]].forEach(function(x){var b=el("button","chip",x[1]);b.type="button";b.setAttribute("aria-pressed",String(tixTab===x[0]));b.onclick=function(){tixTab=x[0];renderTix()};tabs.appendChild(b)});v.appendChild(tabs);
+  var box=el("div");v.appendChild(box);
+  if(tixTab!=="events"&&!SES){box.appendChild(loginBox("Log in to see your tickets or sell tickets."));return}
+  if(tixTab==="events")tixEvents(box);else if(tixTab==="mine")tixMine(box);else tixHost(box);
+}
+function tixEvents(box){
+  var tk=cfgSet.tickets||{};box.appendChild(el("div","none","Loading..."));
+  api("rpc/event_list",{}).then(function(rows){
+    box.textContent="";rows=rows||[];if(!rows.length){box.appendChild(el("div","none","No events on sale yet."));return}
+    rows.forEach(function(e){
+      var c=el("article","gcard");var im=safeLink(e.image);if(im){var th=el("div","gart");var i=document.createElement("img");i.src=im;i.alt="";i.style.cssText="width:100%;height:100%;object-fit:cover";th.appendChild(i);c.appendChild(th)}
+      var bd=el("div","gbody");bd.appendChild(el("h3",null,e.title));bd.appendChild(el("div","none","📅 "+fmtWhen(e.starts_at)+" · 📍 "+e.venue));
+      if(e.description)bd.appendChild(el("p","gdesc",e.description));
+      bd.appendChild(el("div","gstats",ghs(e.price)+" per ticket · "+(e.remaining>0?e.remaining+" left":"Sold out")));
+      if(e.remaining>0){var q=el("select");for(var n=1;n<=Math.min(5,e.remaining);n++){var o=el("option",null,n+(n===1?" ticket":" tickets"));o.value=n;q.appendChild(o)}
+        var b=el("button","gplay","Buy ticket");b.type="button";b.onclick=function(){if(!SES){needLogin("Log in to buy a ticket.");return}if(!tk.auto){toast("Ticket sales open soon");return}payNow({kind:"ticket",event_id:e.id,qty:Number(q.value)},b,"Buy ticket")};
+        var rw=el("div","evb");rw.appendChild(q);rw.appendChild(b);bd.appendChild(rw)}
+      c.appendChild(bd);box.appendChild(c)});
+  }).catch(function(){box.textContent="";box.appendChild(el("div","none","Tickets aren't ready yet. Did you run setup-money.sql?"))});
+}
+function tixMine(box){
+  box.appendChild(el("div","none","Loading..."));
+  api("rpc/my_tickets",{}).then(function(rows){
+    box.textContent="";rows=rows||[];if(!rows.length){box.appendChild(el("div","none","You have no tickets yet."));return}
+    rows.forEach(function(t){var c=el("div","tixc"+(t.used?" used":""));c.appendChild(el("b",null,t.title));c.appendChild(el("div","none","📅 "+fmtWhen(t.starts_at)+" · 📍 "+t.venue));
+      c.appendChild(el("div","tixcode",t.code));c.appendChild(el("div","none",t.used?"Already used":"Show this code at the door"));box.appendChild(c)});
+  }).catch(function(){box.textContent=""});
+}
+function tixHost(box){
+  var tk=cfgSet.tickets||{};
+  box.appendChild(el("p","sub","Selling an event? List it here. Fans pay by Mobile Money or card and get a ticket code. We take "+(tk.fee_pct==null?5:Number(tk.fee_pct))+"% and you cash out the rest from Earnings. We check every event first."));
+  var f=el("form","cf fc");f.appendChild(el("h3",null,"New event"));
+  var t=el("input");t.placeholder="Event name";t.maxLength=100;t.required=true;
+  var vn=el("input");vn.placeholder="Venue";vn.maxLength=100;vn.required=true;
+  var w=el("input");w.type="datetime-local";w.required=true;
+  var pr=el("input");pr.type="number";pr.min="1";pr.max="5000";pr.step="1";pr.placeholder="Ticket price (GH₵)";pr.required=true;
+  var cp=el("input");cp.type="number";cp.min="1";cp.max="20000";cp.placeholder="How many tickets";cp.required=true;
+  var d=el("textarea");d.rows=3;d.maxLength=800;d.placeholder="About the event (optional)";
+  var fi=el("input");fi.type="file";fi.accept="image/*";var fl=el("label",null,"Poster (optional)");
+  var b=el("button",null,"Submit event");[t,vn,w,pr,cp,d,fl,fi,b].forEach(function(e){f.appendChild(e)});box.appendChild(f);
+  f.onsubmit=function(ev){ev.preventDefault();b.disabled=true;
+    var p=fi.files[0]?shrinkImg(fi.files[0],1200).then(function(bl){return upFan(bl,"jpg","image/jpeg","ev-")}):Promise.resolve(null);
+    p.then(function(url){return api("rpc/event_create",{p_title:t.value,p_venue:vn.value,p_when:new Date(w.value).toISOString(),p_desc:d.value,p_image:url,p_price_ghs:Number(pr.value),p_capacity:Number(cp.value)})}).then(function(){toast("Event sent. We'll check it and put it live.");renderTix()}).catch(function(er){b.disabled=false;toast((er&&er.detail)||"Couldn't save. Did you run setup-money.sql?")})};
+  box.appendChild(el("h3","vh2","Check tickets at the door"));
+  var cf=el("form","cf fc"),ci=el("input");ci.placeholder="Enter the ticket code";ci.maxLength=12;ci.style.textTransform="uppercase";var cb=el("button",null,"Check"),cr2=el("div","tixres");cf.appendChild(ci);cf.appendChild(cb);cf.appendChild(cr2);box.appendChild(cf);
+  cf.onsubmit=function(ev){ev.preventDefault();api("rpc/ticket_check",{p_code:ci.value}).then(function(r){cr2.className="tixres "+(r.result==="ok"?"ok":"bad");cr2.textContent=r.result==="ok"?"✅ Valid ticket for "+r.event+(r.holder?" ("+r.holder+")":""):r.result==="used"?"⚠️ Already used":"❌ Not a valid ticket for your events";ci.value="";if(r.result==="ok")GSND.play("goal")}).catch(function(){cr2.textContent="Couldn't check"})};
+  box.appendChild(el("h3","vh2","Your events"));var my=el("div");box.appendChild(my);
+  api("rpc/event_mine",{}).then(function(rows){rows=rows||[];if(!rows.length){my.appendChild(el("div","none","No events yet."));return}
+    rows.forEach(function(e){var row=el("div","lbr");var tx=el("div");tx.style.flex="1";tx.appendChild(el("b",null,e.title));tx.appendChild(el("div","none",fmtWhen(e.starts_at)+" · "+e.sold+"/"+e.capacity+" sold · "+e.checked_in+" checked in"));row.appendChild(tx);row.appendChild(el("span","gtag",{review:"Checking",live:"Live",closed:"Closed",rejected:"Refused"}[e.status]||e.status));my.appendChild(row)})}).catch(function(){});
+}
 function renderQuiz(reset){
   var v=$("vQuiz");v.textContent="";
   v.appendChild(el("h2","vh","🧠 Ghana music quiz"));
@@ -3006,6 +3179,8 @@ function buildShowcase(){
    ["gigs","💼","Services","Hire a CapCut editor or a promo creator","#0e7490,#164e63"],
    ["events","📅","Events",evSub,"#d97706,#92400e"],
    ["polls","📊","Poll of the day",pl,"#2563eb,#1e3a8a"],
+   ["tix","🎟️","Event tickets","Buy tickets to shows, or sell tickets to your own event","#0f766e,#134e4a"],
+   ["ads","📣","Advertise","Put your business in front of Ghana's fans","#b45309,#78350f"],
    ["movies","🎬","Free movies","Watch full movies for free, picked for you","#7c2d12,#431407"],
    ["play","🎮","Play with a friend","Challenge a friend to a penalty shootout, each on your own phone","#0f766e,#134e4a"],
    ["quiz","🧠","Quiz","Test your Ghana music and football knowledge","#db2777,#831843"],
@@ -3513,6 +3688,7 @@ function renderProfile(uid){
       info.appendChild(stt);body.appendChild(info);
       var editBox=el("form","cf fc pedit");editBox.hidden=true;
       if(mine){
+        var erb=el("button","pbtn","💰 Earnings");erb.type="button";erb.onclick=function(){setView("earn")};act.appendChild(erb);
         var ed=el("button","pbtn","\u270f\ufe0f Edit profile");ed.type="button";ed.onclick=function(){editBox.hidden=!editBox.hidden};act.appendChild(ed);
         var sh=el("button","pbtn","\ud83d\udce4 Share");sh.type="button";sh.onclick=function(){var u=location.origin+"/#u-"+me;if(navigator.share)navigator.share({title:c.name+" on Hottest Gist GH",url:u}).catch(function(){});else copyText(u)};act.appendChild(sh);
       }else{
@@ -3521,6 +3697,7 @@ function renderProfile(uid){
         fb.onclick=function(){var on=!fol[uid];if(on)fol[uid]=1;else delete fol[uid];fb.textContent=followLabel(uid);fb.className=(!fol[uid]&&followers[uid])?"fbk":"";c.followers=Math.max(0,(c.followers||0)+(on?1:-1));fcount.textContent=String(c.followers);
           api("rpc/toggle_follow",{p_user:uid,p_on:on}).catch(function(){toast("Couldn't update follow");if(on)delete fol[uid];else fol[uid]=1;fb.textContent=followLabel(uid)})};
         act.appendChild(fb);
+        var tpb=el("button","pbtn","💛 Tip");tpb.type="button";tpb.onclick=function(){tipSheet(uid,c.name||"this creator")};act.appendChild(tpb);
         var fw=el("span");act.appendChild(fw);
         var drawF=function(){fw.textContent="";var bt=friendBtns(uid,c.name||"Fan",frState(uid),drawF);bt.style.display="inline-flex";fw.appendChild(bt)};
         if(frLoaded)drawF();else loadFriends(drawF);
@@ -3564,9 +3741,9 @@ function renderProfile(uid){
 function setView(v){
   viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="gold"||v==="profile"||v==="friends"||v==="messages"||v==="chat"||v==="match");document.body.classList.toggle("inchat",v==="chat"||v==="match");document.body.classList.toggle("biomode",v==="bio");
   setTimeout(navMark,0);syncHash(v);
-  ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","market","play","movies","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","market","play","movies","earn","ads","tix","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   if($("tabs")&&!$("tabs").hidden)buildTabs();
-  if(v==="gist")loadStories();if(v==="movies")renderMovies();if(v!=="play")stopPlay();if(v==="play")renderPlay();if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="gist"){loadStories();loadAds()}if(v==="earn")renderEarn();if(v==="ads")renderAds();if(v==="tix")renderTix();if(v==="movies")renderMovies();if(v!=="play")stopPlay();if(v==="play")renderPlay();if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 var TCATS=[
@@ -3574,7 +3751,7 @@ var TCATS=[
  ["music","Music & Sport","#7c3aed",'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',[["matchday","⚽ Match day"],["chart","🎵 Top 10"],["events","📅 Events"]]],
  ["community","Community","#2563eb",'<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><path d="M16 4.500a3.500 3.500 0 0 1 0 7M18 14.500a6.500 6.500 0 0 1 3.500 5.500"/>',[["fans","🌟 Fans"],["wall","💬 Wall"],["top","🏆 Top fans"]]],
  ["fun","Fun & Games","#d97706",'<path d="M7 7h10a4 4 0 0 1 4 4v3a3 3 0 0 1-5.500 1.600L14.800 14H9.200l-.7 1.600A3 3 0 0 1 3 14v-3a4 4 0 0 1 4-4z"/><path d="M8 10v3M6.500 11.500h3"/><circle cx="15.500" cy="10.500" r=".6"/><circle cx="17.500" cy="12.500" r=".6"/>',[["play","🎮 Play"],["movies","🎬 Movies"],["polls","📊 Polls"],["quiz","🧠 Quiz"]]],
- ["biz","Business","#15803d",'<path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/>',[["market","🛍️ Market"],["gigs","💼 Services"]]]
+ ["biz","Business","#15803d",'<path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/>',[["market","🛍️ Market"],["gigs","💼 Services"],["tix","🎟️ Tickets"],["ads","📣 Advertise"],["earn","💰 Earnings"]]]
 ];
 var tLastCat="home",tCatView={};
 function catOf(v){for(var i=0;i<TCATS.length;i++)for(var k=0;k<TCATS[i][4].length;k++)if(TCATS[i][4][k][0]===v)return TCATS[i][0];return null}
@@ -3872,7 +4049,7 @@ function render(){
     return (filter==="All"||(filter==="\u2605 Saved"?saved[p.id]:p.cat===filter))&&((p.title||"")+" "+(p.body||"")+" "+(p.by||"")).toLowerCase().indexOf(term)>-1;
   }).sort(function(a,b){return (b.pin?1:0)-(a.pin?1:0)||(b.ts||0)-(a.ts||0)});
   if(!list.length){f.appendChild(el("div","empty",all.length?"Nothing matches that search.":"No posts yet. Check back soon."));return}
-  list.forEach(function(p){f.appendChild(card(p))});
+  list.forEach(function(p,i){f.appendChild(card(p));if(i===2)adCard(f)});
   paint();
 }
 
@@ -4006,6 +4183,9 @@ function start(){
   if(CFG&&CFG.whatsapp&&!document.querySelector(".wfab")){var wl=el("a","wfab");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wl.setAttribute("aria-label","Join our WhatsApp channel");wl.appendChild(svg("wa"));wl.appendChild(el("span",null,"Join our channel"));document.body.appendChild(wl)}
   try{
     var qp=new URLSearchParams(location.search);
+    if(qp.get("paid")==="tip"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Tip sent. Thank you! \ud83d\udc9b");setView("gist");return}
+    if(qp.get("paid")==="ad"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your ad goes live after our quick check.");setView("ads");return}
+    if(qp.get("paid")==="ticket"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your tickets will show in a moment.");tixTab="mine";setView("tix");return}
     if(qp.get("paid")==="song"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your song will show as Featured within a minute.");mySubs=null;setView("submit");return}
     if(qp.get("paid")==="plan"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your seller plan turns on within a minute.");mPlansOpen=true;setView("market");return}
     if(qp.get("paid")==="gig"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your listing will show as Featured within a minute.");setView("gigs");return}

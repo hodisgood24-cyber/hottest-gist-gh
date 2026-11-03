@@ -28,6 +28,68 @@ Deno.serve(async (req) => {
 
     let reqBody: any = {};
     try { reqBody = await req.json(); } catch (_) { /* no body */ }
+    // --- Tips, ads and event tickets (new) ---
+    const kind = String(reqBody?.kind || "");
+    if (kind === "tip" || kind === "ad" || kind === "ticket") {
+      const H = { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` };
+      const setting = async (k: string) => {
+        const r = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.${k}&select=value`, { headers: H });
+        return (await r.json())?.[0]?.value || {};
+      };
+      let origin2 = String(reqBody?.origin || "");
+      if (!/^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(origin2)) origin2 = "";
+      let amountGhs = 0;
+      let meta: Record<string, unknown> = {};
+      let paid = "";
+      if (kind === "tip") {
+        const tv = await setting("tips");
+        const min = Number(tv.min) || 2, max = Number(tv.max) || 500;
+        const to = String(reqBody?.to || "");
+        amountGhs = Math.round(Number(reqBody?.amount) * 100) / 100;
+        if (!tv.auto) return json({ error: "tips are not open" }, 400);
+        if (!/^[0-9a-f-]{36}$/i.test(to) || to === user.id) return json({ error: "bad recipient" }, 400);
+        if (!(amountGhs >= min && amountGhs <= max)) return json({ error: `tip must be between ${min} and ${max}` }, 400);
+        const pr3 = await (await fetch(`${SUPABASE_URL}/rest/v1/profiles?user_id=eq.${to}&select=user_id`, { headers: H })).json();
+        if (!pr3?.length) return json({ error: "creator not found" }, 400);
+        meta = { user_id: user.id, purpose: "tip", to, message: String(reqBody?.message || "").slice(0, 140) };
+        paid = "tip";
+      } else if (kind === "ad") {
+        const av = await setting("ads");
+        const adId = Number(reqBody?.ad_id) || 0;
+        const ar = await (await fetch(`${SUPABASE_URL}/rest/v1/ads?id=eq.${adId}&owner=eq.${user.id}&status=eq.draft&select=id,kind`, { headers: H })).json();
+        if (!ar?.length) return json({ error: "ad not found" }, 400);
+        const pkg = av?.[ar[0].kind] || {};
+        amountGhs = Number(pkg.amount);
+        if (!av.auto || !(amountGhs > 0)) return json({ error: "payments not open" }, 400);
+        meta = { user_id: user.id, purpose: "ad", ad_id: adId, days: Number(pkg.days) || 7 };
+        paid = "ad";
+      } else {
+        const tk = await setting("tickets");
+        const evId = Number(reqBody?.event_id) || 0;
+        const qty = Math.min(5, Math.max(1, Math.floor(Number(reqBody?.qty) || 1)));
+        if (!tk.auto) return json({ error: "ticket sales are not open" }, 400);
+        const er = await (await fetch(`${SUPABASE_URL}/rest/v1/ticket_events?id=eq.${evId}&status=eq.live&select=id,price,capacity,sold,starts_at`, { headers: H })).json();
+        const ev = er?.[0];
+        if (!ev || new Date(ev.starts_at).getTime() < Date.now() - 6 * 3600 * 1000) return json({ error: "event not found" }, 400);
+        if (ev.capacity - ev.sold < qty) return json({ error: "sold out" }, 400);
+        amountGhs = (ev.price * qty) / 100;
+        meta = { user_id: user.id, purpose: "ticket", event_id: evId, qty };
+        paid = "ticket";
+      }
+      const prof2 = await (await fetch(`${SUPABASE_URL}/rest/v1/profiles?user_id=eq.${user.id}&select=user_id`, { headers: H })).json();
+      if (!prof2?.length) return json({ error: "no profile" }, 400);
+      const reference2 = `${paid}_${user.id.slice(0, 8)}_${Date.now().toString(36)}`;
+      const body2: Record<string, unknown> = { email: user.email, amount: Math.round(amountGhs * 100), currency: "GHS", reference: reference2, metadata: meta };
+      if (origin2) body2.callback_url = `${origin2}/?paid=${paid}`;
+      const pk2 = await fetch("https://api.paystack.co/transaction/initialize", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${PAYSTACK_SECRET}`, "Content-Type": "application/json" },
+        body: JSON.stringify(body2),
+      });
+      const pj2 = await pk2.json();
+      if (!pk2.ok || !pj2?.status) return json({ error: "paystack", detail: pj2?.message || "failed" }, 502);
+      return json({ url: pj2.data.authorization_url, reference: reference2 });
+    }
     const gigId = reqBody?.gig_id ? Number(reqBody.gig_id) : 0;
     const songId = !gigId && reqBody?.song_id ? Number(reqBody.song_id) : 0;
     const planName = !gigId && !songId && ["standard", "premium", "star"].includes(String(reqBody?.plan)) ? String(reqBody.plan) : "";
