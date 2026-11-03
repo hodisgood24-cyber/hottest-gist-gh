@@ -664,7 +664,8 @@ body.inchat footer{display:none}
 .stprev{height:150px;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-weight:800;font-size:20px;padding:14px;margin:8px 0;overflow:hidden;word-break:break-word}
 .stview{padding:0;background:#000}
 .stview .stbody{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.stbody img{width:100%;height:100%;object-fit:contain}
+.stview{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}.stview.paused .sthd,.stview.paused .stbars{opacity:.55}
+.stbody img{-webkit-user-drag:none;width:100%;height:100%;object-fit:contain}
 .sttxt{color:#fff;font:400 30px/1.2 var(--font-display);text-align:center;padding:30px;word-break:break-word}.sttxt.cap{position:absolute;left:0;right:0;bottom:70px;font:700 17px/1.3 inherit;background:linear-gradient(transparent,rgba(0,0,0,.7))}
 .stbars{position:absolute;top:8px;left:8px;right:8px;display:flex;gap:4px;z-index:3}
 .stbars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.35);overflow:hidden}.stbars b{display:block;height:100%;width:0;background:#fff}.stbars b.run{animation:stfill 5s linear forwards}
@@ -2598,10 +2599,13 @@ function addStory(){
   ov.onclick=function(e){if(e.target===ov)ov.remove()};document.body.appendChild(ov);
 }
 function openStory(items){
-  var i=0,t=null,ov=el("div","stov stview");
+  var i=0,t=null,ov=el("div","stov stview"),started=0,left=5000,held=false,heldAt=0,wasHeld=false;
   function close(){clearTimeout(t);document.removeEventListener("keydown",key);ov.remove()}
-  function key(e){if(e.key==="Escape")close();if(e.key==="ArrowRight")nx();if(e.key==="ArrowLeft"){i=Math.max(0,i-1);show()}}
-  function nx(){if(i<items.length-1){i++;show()}else close()}
+  function key(e){if(e.key==="Escape")close();if(e.key==="ArrowRight"){wasHeld=false;nx()}if(e.key==="ArrowLeft"){wasHeld=false;prv()}}
+  function nx(){if(wasHeld){wasHeld=false;return}if(i<items.length-1){i++;show()}else close()}
+  function prv(){if(wasHeld){wasHeld=false;return}i=Math.max(0,i-1);show()}
+  function hold(){if(held)return;held=true;heldAt=Date.now();left=Math.max(300,left-(heldAt-started));clearTimeout(t);var b=ov.querySelector(".stbars b.run");if(b)b.style.animationPlayState="paused";ov.classList.add("paused")}
+  function free(){if(!held)return;held=false;if(Date.now()-heldAt>250)wasHeld=true;started=Date.now();var b=ov.querySelector(".stbars b.run");if(b)b.style.animationPlayState="running";ov.classList.remove("paused");t=setTimeout(nx,left);setTimeout(function(){wasHeld=false},60)}
   function show(){
     clearTimeout(t);ov.textContent="";var s=items[i],me=SES&&SES.user&&SES.user.id===s.user_id;
     var bars=el("div","stbars");items.forEach(function(_,k){var b=el("i");var f=el("b");if(k<i)f.style.width="100%";if(k===i)f.className="run";b.appendChild(f);bars.appendChild(b)});ov.appendChild(bars);
@@ -2612,12 +2616,16 @@ function openStory(items){
     if(s.media&&safeLink(s.media)){var im=document.createElement("img");im.src=s.media;im.alt="";bd.appendChild(im)}
     if(s.body)bd.appendChild(el("div","sttxt"+(s.media?" cap":""),s.body));
     ov.appendChild(bd);
-    var l=el("button","stnav l");l.type="button";l.setAttribute("aria-label","Previous");l.onclick=function(){i=Math.max(0,i-1);show()};
+    var l=el("button","stnav l");l.type="button";l.setAttribute("aria-label","Previous");l.onclick=prv;
     var r=el("button","stnav r");r.type="button";r.setAttribute("aria-label","Next");r.onclick=nx;ov.appendChild(l);ov.appendChild(r);
     if(me){var d=el("button","stdel","🗑 Delete");d.type="button";d.onclick=function(){clearTimeout(t);api("rpc/story_delete",{p_id:s.id}).then(function(){stRows=stRows.filter(function(z){return z.id!==s.id});items.splice(i,1);drawStories();if(!items.length)close();else{i=Math.min(i,items.length-1);show()}}).catch(function(){toast("Couldn't delete")})};ov.appendChild(d)}
     else if(s.user_id){var pv=el("button","stdel","View profile");pv.type="button";pv.onclick=function(){close();openProfile(s.user_id)};ov.appendChild(pv)}
-    t=setTimeout(nx,5000);
+    left=5000;started=Date.now();held=false;t=setTimeout(nx,5000);
   }
+  var holdT=null;
+  ov.addEventListener("pointerdown",function(e){if(e.target.closest(".stx,.stdel"))return;clearTimeout(holdT);holdT=setTimeout(hold,220)});
+  ["pointerup","pointercancel","pointerleave"].forEach(function(n){ov.addEventListener(n,function(){clearTimeout(holdT);free()})});
+  ov.addEventListener("contextmenu",function(e){e.preventDefault()});
   document.addEventListener("keydown",key);document.body.appendChild(ov);show();
 }
 function renderQuiz(reset){
