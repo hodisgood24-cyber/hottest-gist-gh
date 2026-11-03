@@ -650,6 +650,10 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+.gdock{margin:6px 0}.gch{width:100%;background:var(--card);border:1.5px dashed var(--line);border-radius:12px;padding:8px;font:inherit;font-weight:700;color:var(--text);cursor:pointer}
+.gbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--card);border:1.5px solid var(--red);border-radius:12px;padding:8px 10px}.gbar b{flex:1;min-width:120px}
+.gdock .pen{margin:0 auto;padding:6px;background:var(--card);border-radius:14px}.gdock .ppitch{height:170px}
+
 /* ===== Stories ===== */
 #stories{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px;margin-bottom:4px;scrollbar-width:none}#stories::-webkit-scrollbar{display:none}
 .stc{flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;width:64px;border:0;background:none;color:var(--text);font:inherit;cursor:pointer;padding:0}
@@ -1731,6 +1735,30 @@ function renderChat(){
   if(!(CFG&&SES)){v.appendChild(loginBox("Log in to read your messages."));return}
   if(!cr[uid])api("creator_stats?select=*&user_id=eq."+uid).then(function(r){if(r&&r[0]){cr[uid]=r[0];nm.textContent=r[0].name;var a=who.firstChild;who.replaceChild(avEl(r[0],38),a)}}).catch(function(){});
   var box=el("div","chbox");box.setAttribute("aria-live","polite");v.appendChild(box);
+  var dock=el("div","gdock");v.insertBefore(dock,box);
+  var dockT=null,dockOpen=null,dockOpts=null;
+  function dockAlive(){return viewName==="chat"&&chatUid===uid}
+  function drawDock(){
+    api("rpc/game_list",{}).then(function(rows){
+      if(!dockAlive()){clearInterval(dockT);return}
+      if(dockOpts&&dockOpts.stop&&dockOpen){return}
+      var g=(rows||[]).filter(function(x){var o2=x.mine===1?x.p2:x.p1;return o2===uid&&(x.status==="invited"||x.status==="active")})[0];
+      dock.textContent="";
+      if(!g){var cb=el("button","gch","\u26bd Challenge to a penalty shootout");cb.type="button";cb.onclick=function(){cb.disabled=true;api("rpc/game_invite",{p_to:uid,p_kind:"penalty"}).then(function(){toast("Challenge sent!");drawDock()}).catch(function(er){cb.disabled=false;toast(er.detail||"Couldn't send the challenge")})};dock.appendChild(cb);return}
+      var me=g.mine,r=el("div","gbar");
+      var txt=g.status==="invited"?(me===2?"\u26bd Penalty challenge!":"\u26bd Waiting for them to accept"):"\u26bd Penalty shootout \u00b7 "+g.score1+" - "+g.score2;
+      r.appendChild(el("b",null,txt));
+      function open(){dock.textContent="";dockOpen=g.id;dockOpts={embed:true,alive:dockAlive,done:function(){dockOpen=null;dockOpts=null;drawDock()}};roomView(dock,g.id,dockOpts)}
+      if(g.status==="invited"&&me===2){
+        var ok=el("button",null,"Accept & play");ok.type="button";ok.onclick=function(){api("rpc/game_respond",{p_id:g.id,p_accept:true}).then(open).catch(function(){toast("Couldn't accept")})};
+        var no=el("button","g","Decline");no.type="button";no.onclick=function(){api("rpc/game_respond",{p_id:g.id,p_accept:false}).then(drawDock).catch(function(){})};
+        r.appendChild(ok);r.appendChild(no);
+      }else if(g.status==="active"){var pl=el("button",null,"Play");pl.type="button";pl.onclick=open;r.appendChild(pl)}
+      dock.appendChild(r);
+    }).catch(function(){})
+  }
+  drawDock();dockT=setInterval(drawDock,4000);
+
   var WALLS=[["none","Default",""],["night","Night","linear-gradient(160deg,#0f1b2d,#243b6b)"],["sunset","Sunset","linear-gradient(160deg,#ff9a5a,#c2185b)"],["ocean","Ocean","linear-gradient(160deg,#0e7c86,#0b3d62)"],["forest","Forest","linear-gradient(160deg,#1f7a4c,#0b3b2a)"],["grape","Grape","linear-gradient(160deg,#8e44ad,#2c1654)"],["gold","Gold","linear-gradient(160deg,#f6d365,#b8860b)"],["rose","Rose","linear-gradient(160deg,#ffd1dc,#f48fb1)"],["dots","Dots","radial-gradient(rgba(128,128,128,.28) 1.5px,transparent 1.5px) 0 0/18px 18px"],["ghana","Ghana","linear-gradient(180deg,#ce1126 0 33%,#fcd116 33% 66%,#006b3f 66%)"]];
   function wallCss(w){
     if(!w)return"";
@@ -2444,7 +2472,7 @@ function pAv(st,i,sz){return avEl({name:pName(st,i),avatar:st["p"+i+"_avatar"]},
 function renderPlay(){
   var v=$("vPlay");stopPlay();v.textContent="";
   if(!(CFG&&SES)){v.appendChild(el("div","empty","Log in to play with friends."));return}
-  if(playId){roomView(v);return}
+  if(playId){roomView(v,playId);return}
   v.appendChild(el("h2","vh","🎮 Play with a friend"));
   v.appendChild(el("p","sub","Challenge a friend. You each play on your own phone, wherever you are."));
   var gc=el("div","fc");gc.appendChild(el("h3",null,"⚽ Penalty shootout"));gc.appendChild(el("p","none","Five kicks each. Pick where to shoot, or where to dive. Nobody sees the other's choice until both have picked. Most goals wins."));v.appendChild(gc);
@@ -2483,18 +2511,20 @@ function renderPlay(){
   }
   if(frLoaded)drawFriends();else{fl.appendChild(el("div","none","Loading..."));loadFriends(drawFriends)}
 }
-function roomView(v){
-  var back=el("button","rl","← Back to Play");back.type="button";back.onclick=function(){playId=null;renderPlay()};v.appendChild(back);
+function roomView(v,gid,o){
+  o=o||{};var sig0="",len0=null,tm=null;
+  if(!o.embed){var back=el("button","rl","← Back to Play");back.type="button";back.onclick=function(){leave()};v.appendChild(back)}
   var wrap=el("div","pen");v.appendChild(wrap);wrap.appendChild(el("div","none","Loading..."));
+  function leave(){if(o.embed){clearInterval(tm);o.done&&o.done()}else{playId=null;renderPlay()}}
   function pull(){
-    api("rpc/game_state",{p_id:playId}).then(draw).catch(function(){wrap.textContent="";wrap.appendChild(el("div","none","Couldn't open this game."))});
+    api("rpc/game_state",{p_id:gid}).then(draw).catch(function(){wrap.textContent="";wrap.appendChild(el("div","none","Couldn't open this game."))});
   }
-  function move(d){api("rpc/game_move",{p_id:playId,p_dir:d}).then(draw).catch(function(er){toast(er.detail||"Couldn't send your move")})}
-  function end(how){api("rpc/game_end",{p_id:playId,p_how:how}).then(draw).catch(function(er){toast("Not yet. Try again in a moment.")})}
+  function move(d){api("rpc/game_move",{p_id:gid,p_dir:d}).then(draw).catch(function(er){toast(er.detail||"Couldn't send your move")})}
+  function end(how){api("rpc/game_end",{p_id:gid,p_how:how}).then(draw).catch(function(er){toast("Not yet. Try again in a moment.")})}
   function draw(st){
     var hl=(st.history||[]).length,sig=[st.status,st.round,hl,st.my_pick,st.opp_picked,st.winner,st.score1,st.score2].join("|");
-    if(sig===playSig)return;
-    var fresh=playLen!==null&&hl>playLen;playLen=hl;playSig=sig;
+    if(sig===sig0)return;
+    var fresh=len0!==null&&hl>len0;len0=hl;sig0=sig;
     var me=st.mine,opp=me===1?2:1,myId=SES.user.id;
     wrap.textContent="";
     // scoreboard
@@ -2514,10 +2544,10 @@ function roomView(v){
     // status and controls
     if(st.status==="invited"){
       if(me===2){wrap.appendChild(el("div","pmsg",pName(st,1)+" challenged you to a penalty shootout!"));
-        var ok=el("button",null,"Accept");ok.type="button";ok.onclick=function(){api("rpc/game_respond",{p_id:playId,p_accept:true}).then(draw).catch(function(){toast("Couldn't accept")})};
-        var no=el("button","g","Decline");no.type="button";no.onclick=function(){api("rpc/game_respond",{p_id:playId,p_accept:false}).then(function(){playId=null;renderPlay()})};
+        var ok=el("button",null,"Accept");ok.type="button";ok.onclick=function(){api("rpc/game_respond",{p_id:gid,p_accept:true}).then(draw).catch(function(){toast("Couldn't accept")})};
+        var no=el("button","g","Decline");no.type="button";no.onclick=function(){api("rpc/game_respond",{p_id:gid,p_accept:false}).then(function(){leave()})};
         var rw=el("div","evb");rw.appendChild(ok);rw.appendChild(no);wrap.appendChild(rw)}
-      else{wrap.appendChild(el("div","pmsg","Waiting for "+pName(st,2)+" to accept… They got a message from you."));var cn=el("button","g","Cancel challenge");cn.type="button";cn.onclick=function(){end("resign");playId=null;renderPlay()};wrap.appendChild(cn)}
+      else{wrap.appendChild(el("div","pmsg","Waiting for "+pName(st,2)+" to accept… They got a message from you."));var cn=el("button","g","Cancel challenge");cn.type="button";cn.onclick=function(){end("resign");leave()};wrap.appendChild(cn)}
     }else if(st.status==="active"){
       var shooter=st.round%2===1?1:2,amS=shooter===me;
       var kickNo=Math.ceil(st.round/2);
@@ -2534,8 +2564,8 @@ function roomView(v){
       var mt=st.winner===myId?"🏆 You win!":st.winner?"😔 "+pName(st,opp)+" wins":"🤝 It's a draw";
       if(st.status==="declined")mt="Challenge declined";
       wrap.appendChild(el("div","pwin",mt));
-      var rm=el("button",null,"🔁 Rematch");rm.type="button";rm.onclick=function(){api("rpc/game_invite",{p_to:st["p"+opp],p_kind:"penalty"}).then(function(id){toast("Rematch sent!");playId=id;playLen=null;playSig="";renderPlay()}).catch(function(er){toast(er.detail||"Couldn't send the rematch")})};
-      var bk=el("button","g","Back to Play");bk.type="button";bk.onclick=function(){playId=null;renderPlay()};
+      var rm=el("button",null,"🔁 Rematch");rm.type="button";rm.onclick=function(){api("rpc/game_invite",{p_to:st["p"+opp],p_kind:"penalty"}).then(function(id){toast("Rematch sent!");if(o.embed){clearInterval(tm);o.done&&o.done(id)}else{playId=id;playLen=null;playSig="";renderPlay()}}).catch(function(er){toast(er.detail||"Couldn't send the rematch")})};
+      var bk=el("button","g",o.embed?"Close":"Back to Play");bk.type="button";bk.onclick=function(){leave()};
       var rw2=el("div","evb");rw2.appendChild(rm);rw2.appendChild(bk);wrap.appendChild(rw2);
     }
     // kicks record
@@ -2550,7 +2580,7 @@ function roomView(v){
     wrap.appendChild(hist);
     if(st.status==="active"){var gu=el("button","pgiv","Give up");gu.type="button";gu.onclick=function(){if(confirm("Give up this game?"))end("resign")};wrap.appendChild(gu)}
   }
-  pull();playTimer=setInterval(function(){if(viewName!=="play"||!playId){stopPlay();return}pull()},1500);
+  pull();tm=setInterval(function(){if(o.alive?!o.alive():(viewName!=="play"||!playId)){clearInterval(tm);return}pull()},1500);if(o.embed)o.stop=function(){clearInterval(tm)};if(!o.embed)playTimer=tm;
 }
 
 /* ===== 24-hour Stories ===== */
