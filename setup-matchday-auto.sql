@@ -1,7 +1,7 @@
 -- Hottest Gist GH: bring in real matches automatically (fixtures, live scores and results).
 -- Run AFTER setup-matchday.sql. Paste all into Supabase > SQL Editor > Run. Safe to run again.
 -- Matches come from ESPN's public scoreboard feed: about 30 leagues, from yesterday to 10 days ahead.
--- Everything updates every 5 minutes, and live games also update while people have Match day open.
+-- Everything updates every 10 minutes, and live games also update while people have Match day open.
 -- The first run can take a minute.
 
 create extension if not exists http with schema extensions;
@@ -63,68 +63,112 @@ insert into match_sync (id) values (1) on conflict do nothing;
 alter table match_sync enable row level security;
 revoke all on match_sync from anon, authenticated;
 
--- Fetch the next 7 days (and yesterday) for every competition and save them
+alter table match_sources add column if not exists how text;
+alter table match_sources add column if not exists full_at timestamptz;
+update match_sources set how = null, full_at = null;
+
+-- Ask ESPN for one address; returns the JSON, or null and the reason
+create or replace function espn_get(p_url text, out js jsonb, out why text)
+language plpgsql security definer set search_path = public, extensions as $$
+declare res record;
+begin
+  select * into res from http(('GET', p_url,
+    array[http_header('User-Agent', 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36'),
+          http_header('Accept', 'application/json')],
+    null, null)::http_request);
+  if res.status = 200 then js := res.content::jsonb; why := null;
+  else js := null; why := 'answered ' || res.status || ': ' || left(regexp_replace(coalesce(res.content, ''), '\s+', ' ', 'g'), 100); end if;
+exception when others then
+  js := null; why := 'error: ' || left(sqlerrm, 120);
+end $$;
+
+-- Save the matches from one ESPN answer
+create or replace function espn_save(js jsonb, p_code text, p_label text, p_ghana boolean) returns int
+language plpgsql security definer set search_path = public as $$
+declare ev jsonb; c jsonb; h jsonb; a jsonb; st text; nm text; n int := 0;
+begin
+  for ev in select * from jsonb_array_elements(coalesce(js->'events', '[]'::jsonb)) loop
+    c := ev->'competitions'->0;
+    h := null; a := null;
+    select x into h from jsonb_array_elements(c->'competitors') x where x->>'homeAway' = 'home' limit 1;
+    select x into a from jsonb_array_elements(c->'competitors') x where x->>'homeAway' = 'away' limit 1;
+    if h is null or a is null then continue; end if;
+    if p_ghana and not (h->'team'->>'displayName' ilike 'Ghana%' or a->'team'->>'displayName' ilike 'Ghana%') then continue; end if;
+    nm := ev->'status'->'type'->>'name';
+    st := case
+      when nm in ('STATUS_POSTPONED', 'STATUS_CANCELED', 'STATUS_SUSPENDED', 'STATUS_ABANDONED') then 'postponed'
+      when ev->'status'->'type'->>'state' = 'in' then 'live'
+      when ev->'status'->'type'->>'state' = 'post' then 'finished'
+      else 'upcoming' end;
+    insert into matches (ext_id, home, away, competition, kickoff, status, home_score, away_score, home_logo, away_logo)
+    values (p_code || ':' || (ev->>'id'),
+            left(h->'team'->>'displayName', 40), left(a->'team'->>'displayName', 40), p_label,
+            (ev->>'date')::timestamptz, st,
+            case when st in ('live', 'finished') then nullif(h->>'score', '')::int end,
+            case when st in ('live', 'finished') then nullif(a->>'score', '')::int end,
+            h->'team'->>'logo', a->'team'->>'logo')
+    on conflict (ext_id) do update set
+      home = excluded.home, away = excluded.away, kickoff = excluded.kickoff, status = excluded.status,
+      home_score = excluded.home_score, away_score = excluded.away_score,
+      home_logo = excluded.home_logo, away_logo = excluded.away_logo;
+    n := n + 1;
+  end loop;
+  return n;
+end $$;
+
+-- Fetch yesterday to 10 days ahead for each competition and save them.
+-- Tries several ways of asking ESPN and remembers which one works for each league.
 drop function if exists sync_matches();
 create or replace function sync_matches(p_max int default 100) returns text
 language plpgsql security definer set search_path = public, extensions as $$
 declare
-  s record; ev jsonb; c jsonb; h jsonb; a jsonb; st text; nm text; js jsonb; res record;
-  d1 text := to_char((now() at time zone 'utc') - interval '1 day', 'YYYYMMDD');
-  d2 text := to_char((now() at time zone 'utc') + interval '10 days', 'YYYYMMDD');
-  n int := 0; bad text := ''; why text := '';
+  s record; r record; i int; ok boolean; full_ boolean;
+  base text; web text; d0 date := (now() at time zone 'utc')::date;
+  rng text := to_char(d0 - 1, 'YYYYMMDD') || '-' || to_char(d0 + 10, 'YYYYMMDD');
+  n int := 0; bad text := ''; why text := ''; lw text;
 begin
   if not pg_try_advisory_xact_lock(424242) then return 'busy'; end if;
   perform http_set_curlopt('CURLOPT_TIMEOUT', '6');
   for s in select * from match_sources ms where enabled
+             and not (coalesce(how, '') = 'dead' and full_at > now() - interval '12 hours')
            order by exists (select 1 from matches m where m.ext_id like ms.code || ':%' and (m.status = 'live'
                      or (m.status = 'upcoming' and m.kickoff < now()))) desc,
                     ms.last_at nulls first, ms.prio
            limit greatest(p_max, 1) loop
     update match_sources set last_at = now() where code = s.code;
-    begin
-      select * into res from http(('GET',
-        'https://site.api.espn.com/apis/site/v2/sports/soccer/' || s.code || '/scoreboard?limit=300&dates=' || d1 || '-' || d2,
-        array[http_header('User-Agent', 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36'),
-              http_header('Accept', 'application/json')],
-        null, null)::http_request);
-      if res.status <> 200 then
-        bad := bad || s.code || ' ';
-        if why = '' then why := s.code || ' answered ' || res.status || ': ' || left(regexp_replace(coalesce(res.content, ''), '\s+', ' ', 'g'), 120); end if;
-        continue;
-      end if;
-      js := res.content::jsonb;
-      for ev in select * from jsonb_array_elements(coalesce(js->'events', '[]'::jsonb)) loop
-        c := ev->'competitions'->0;
-        select x into h from jsonb_array_elements(c->'competitors') x where x->>'homeAway' = 'home' limit 1;
-        select x into a from jsonb_array_elements(c->'competitors') x where x->>'homeAway' = 'away' limit 1;
-        if h is null or a is null then continue; end if;
-        if s.ghana_only and not (h->'team'->>'displayName' ilike 'Ghana%' or a->'team'->>'displayName' ilike 'Ghana%') then continue; end if;
-        nm := ev->'status'->'type'->>'name';
-        st := case
-          when nm in ('STATUS_POSTPONED', 'STATUS_CANCELED', 'STATUS_SUSPENDED', 'STATUS_ABANDONED') then 'postponed'
-          when ev->'status'->'type'->>'state' = 'in' then 'live'
-          when ev->'status'->'type'->>'state' = 'post' then 'finished'
-          else 'upcoming' end;
-        insert into matches (ext_id, home, away, competition, kickoff, status, home_score, away_score, home_logo, away_logo)
-        values (s.code || ':' || (ev->>'id'),
-                left(h->'team'->>'displayName', 40), left(a->'team'->>'displayName', 40), s.label,
-                (ev->>'date')::timestamptz, st,
-                case when st in ('live', 'finished') then nullif(h->>'score', '')::int end,
-                case when st in ('live', 'finished') then nullif(a->>'score', '')::int end,
-                h->'team'->>'logo', a->'team'->>'logo')
-        on conflict (ext_id) do update set
-          home = excluded.home, away = excluded.away, kickoff = excluded.kickoff, status = excluded.status,
-          home_score = excluded.home_score, away_score = excluded.away_score,
-          home_logo = excluded.home_logo, away_logo = excluded.away_logo;
-        n := n + 1;
+    base := 'https://site.api.espn.com/apis/site/v2/sports/soccer/' || s.code || '/scoreboard';
+    web := 'https://site.web.api.espn.com/apis/site/v2/sports/soccer/' || s.code || '/scoreboard';
+    ok := false; lw := null;
+    -- 1) the whole range in one go
+    s.how := nullif(s.how, 'dead');
+    if coalesce(s.how, 'range') = 'range' then
+      r := espn_get(base || '?dates=' || rng);
+      if r.js is null then r := espn_get(web || '?dates=' || rng || '&limit=500'); end if;
+      if r.js is not null then n := n + espn_save(r.js, s.code, s.label, s.ghana_only); ok := true;
+        update match_sources set how = 'range' where code = s.code;
+      elsif lw is null then lw := r.why; end if;
+    end if;
+    -- 2) one day at a time (the full week every 2 hours, otherwise just today)
+    if not ok and coalesce(s.how, 'days') = 'days' then
+      full_ := p_max > 1 and (s.how is null or s.full_at is null or s.full_at < now() - interval '2 hours');
+      for i in (case when full_ then -1 else 0 end)..(case when full_ then 7 else 0 end) loop
+        r := espn_get(base || '?dates=' || to_char(d0 + i, 'YYYYMMDD'));
+        if r.js is not null then n := n + espn_save(r.js, s.code, s.label, s.ghana_only); ok := true;
+        elsif lw is null then lw := r.why; end if;
       end loop;
-    exception when others then
-      bad := bad || s.code || ' ';
-      if why = '' then why := s.code || ' error: ' || left(sqlerrm, 160); end if;
-    end;
+      if ok then update match_sources set how = 'days', full_at = case when full_ then now() else full_at end where code = s.code; end if;
+    end if;
+    -- 3) whatever ESPN shows by default (this week's games)
+    if not ok then
+      r := espn_get(base);
+      if r.js is not null then n := n + espn_save(r.js, s.code, s.label, s.ghana_only); ok := true;
+        update match_sources set how = 'plain' where code = s.code;
+      elsif lw is null then lw := r.why; end if;
+    end if;
+    if not ok then bad := bad || s.code || ' '; if why = '' then why := s.code || ' ' || coalesce(lw, ''); end if; update match_sources set how = 'dead', full_at = now() where code = s.code; end if;
   end loop;
   update match_sync set last_at = now(), last_note = n || ' matches' || case when bad <> '' then ', skipped: ' || bad || ' | ' || why else '' end where id = 1;
-  return n || ' matches' || case when bad <> '' then ', skipped: ' || bad || ' | Reason: ' || why else '' end;
+  return n || ' matches updated' || case when bad <> '' then ', skipped: ' || bad || ' | Reason: ' || why else '' end;
 end $$;
 
 -- Anyone opening Match day can ask for fresh scores: one competition per call, at most every 30 seconds
@@ -142,10 +186,10 @@ create or replace function admin_sync_matches() returns text
 language plpgsql security definer set search_path = public as $$
 begin
   if not is_admin() then raise exception 'not allowed'; end if;
-  return sync_matches(4);
+  return sync_matches(2);
 end $$;
 
-revoke execute on function sync_matches(int) from public, anon, authenticated;
+revoke execute on function sync_matches(int), espn_get(text), espn_save(jsonb, text, text, boolean) from public, anon, authenticated;
 revoke execute on function refresh_matches(), admin_sync_matches() from public;
 grant execute on function refresh_matches() to anon, authenticated;
 grant execute on function admin_sync_matches() to authenticated;
@@ -155,7 +199,7 @@ do $$
 begin
   create extension if not exists pg_cron;
   perform cron.unschedule('sync-matches') where exists (select 1 from cron.job where jobname = 'sync-matches');
-  perform cron.schedule('sync-matches', '*/5 * * * *', 'select public.sync_matches(100)');
+  perform cron.schedule('sync-matches', '*/10 * * * *', 'select public.sync_matches(100)');
 exception when others then
   raise notice 'Auto timer not set up (%). Scores will still update when people open Match day.', sqlerrm;
 end $$;
