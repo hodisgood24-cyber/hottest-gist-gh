@@ -836,6 +836,29 @@ function pollCard(pl){
 
 
 
+
+// ===== Remember the page in the address (refresh and Back keep you there) =====
+var V2H={search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
+var H2V={};Object.keys(V2H).forEach(function(k){H2V[V2H[k]]=k});
+var routing=false;
+function isRouteHash(h){return !!H2V[h]||/^u-[0-9a-f-]{36}$/.test(h)}
+function syncHash(v){
+  if(routing)return;
+  var want=v==="profile"&&profUid?"u-"+profUid:(V2H[v]||"");
+  var cur=location.hash.slice(1);
+  if(cur===want)return;
+  if(!want&&cur&&!isRouteHash(cur))return;
+  try{history.pushState(null,"",want?"#"+want:location.pathname+location.search)}catch(e){}
+}
+function routeHash(h){
+  if(H2V[h]){setView(H2V[h]);return true}
+  if(/^u-[0-9a-f-]{36}$/.test(h)){if(CFG&&SES){openProfile(h.slice(2))}else{setView("gist");needLogin("Log in to see profiles and add friends.")}return true}
+  return false;
+}
+window.addEventListener("popstate",function(){
+  var h=location.hash.slice(1);routing=true;
+  try{if(!routeHash(h)&&(!h||isRouteHash(h)||viewName!=="gist"))setView("gist")}finally{routing=false}
+});
 // ===== "You are here" line and tap flash =====
 var VIEWNAMES={gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
 function drawWhere(){
@@ -1689,7 +1712,7 @@ function renderProfile(uid){
 
 function setView(v){
   viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="profile");
-  setTimeout(navMark,0);
+  setTimeout(navMark,0);syncHash(v);
   ["gist","search","submit","fans","friends","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
   if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
@@ -1968,7 +1991,7 @@ function startNotes(){
   document.addEventListener("visibilitychange",function(){if(!document.hidden)loadNotes()});
 }
 function start(){
-  started=true;
+  started=true;routing=true;setTimeout(function(){routing=false},0);
   document.body.classList.remove("locked");$("gate").hidden=true;
   renderWho();buildTabs();buildNav();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();loadMusicExtras();startNotes();
   var wa=$("wach");wa.textContent="";
@@ -1988,9 +2011,7 @@ function start(){
     }
   }catch(e){}
   var h=location.hash.slice(1);
-  if(h==="top10"){setView("chart");return}
-  if(h==="submit"){setView("submit");return}
-  if(/^u-[0-9a-f-]{36}$/.test(h)&&CFG&&SES){openProfile(h.slice(2));return}
+  if(routeHash(h))return;
   if(h&&!/access_token|type=/.test(h)){var t=document.getElementById("post-"+h);if(t){t.classList.add("flash");t.scrollIntoView()}}
 }
 if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})});
