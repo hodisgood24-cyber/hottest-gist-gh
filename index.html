@@ -812,6 +812,14 @@ body.biomode main.wrap{max-width:560px}
 .cpvw span{flex:1}
 .cpvx{width:30px;height:30px;border-radius:50%;border:0;background:var(--card);color:var(--text);cursor:pointer}
 .cfst{font-size:13px;font-weight:700;color:var(--muted)}
+
+.cmau{display:inline-block;margin-left:6px;font-size:11px;font-weight:800;color:#15140f;background:var(--gold);border-radius:999px;padding:1px 8px;vertical-align:1px}
+.cmab{display:inline-flex;align-items:center;gap:6px;margin:6px 0 0 2px;font-size:12px;font-weight:800;color:var(--text);background:rgba(252,209,22,.12);border:1px solid rgba(252,209,22,.35);border-radius:999px;padding:3px 10px 3px 4px}
+.cmab i{font-style:normal}
+.cmlk{display:inline-flex;align-items:center;gap:4px;background:none;border:0;color:var(--muted);font:inherit;font-size:12px;font-weight:800;cursor:pointer;padding:2px 0}
+.cmlk .h{font-size:15px;line-height:1}
+.cmlk.on{color:#ff5a6e}
+.cmlk.pop2 .h{display:inline-block;animation:rxpop .55s cubic-bezier(.2,1.6,.4,1)}
 </style>
 </head>
 <body>
@@ -961,7 +969,7 @@ function token(){
   return authCall("token?grant_type=refresh_token",{refresh_token:SES.refresh_token}).then(function(j){saveSes(j);return SES.access_token}).catch(function(e){saveSes(null);showGate("signup");throw e});
 }
 function api(path,body){
-  if(!SES&&body&&!/^rpc\/(is_admin|save_push|remove_push|bio_view|official_account|refresh_matches)$/.test(path)){needLogin();var le=new Error("login");le.login=true;return Promise.reject(le)}
+  if(!SES&&body&&!/^rpc\/(is_admin|save_push|remove_push|bio_view|official_account|refresh_matches|comment_likes_for)$/.test(path)){needLogin();var le=new Error("login");le.login=true;return Promise.reject(le)}
   return token().then(function(t){
     var o={method:body?"POST":"GET",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"}};
     if(body)o.body=JSON.stringify(body);
@@ -2671,9 +2679,15 @@ function toggleLike(p){
   });
 }
 function fmtT(t){try{return new Date(t).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}catch(e){return""}}
+function postAuthor(id){
+  if(/^fp-/.test(id)){var x=(typeof all!=="undefined"&&all||[]).find(function(q){return q.id===id});return x&&x.fan?x.fan.uid:null}
+  return OFFICIAL?OFFICIAL.user_id:null;
+}
 function openComments(p,box){
   box.textContent="";
-  var replyTo=null,file=null,fileUrl=null,openThreads={};
+  var replyTo=null,file=null,fileUrl=null,openThreads={},likes={};
+  var authorId=postAuthor(p.id);
+  if(!authorId&&!p.fan)loadOfficial(function(){authorId=postAuthor(p.id);if(last)draw(last)});
   var list=el("div","cml");list.appendChild(el("div","none","Loading comments..."));box.appendChild(list);
   var f=el("form","cf2");
   var rb=el("div","rb");rb.hidden=true;
@@ -2720,20 +2734,38 @@ function openComments(p,box){
     var av=el("button","cmav");av.type="button";av.setAttribute("aria-label",(c.name||"Fan")+"'s profile");av.appendChild(avEl({name:c.name||"Fan",avatar:u.avatar},child?28:34));
     if(/^[0-9a-f-]{36}$/.test(c.client_id))av.onclick=function(){openProfile(c.client_id)};d.appendChild(av);
     var b=el("div","cmb");var bub=el("div","cmbub");
-    bub.appendChild(nameEl(c.name||"Fan",c.client_id));
+    var nmw=nameEl(c.name||"Fan",c.client_id);if(authorId&&c.client_id===authorId)nmw.appendChild(el("span","cmau","\u270d\ufe0f Author"));bub.appendChild(nmw);
     if(c.text){var t=c.text,mm=t.match(/^@(\S[^\n]{0,39}?)\s/);var pp=el("p");
       if(mm&&child){pp.appendChild(el("span","cmat","@"+mm[1]));pp.appendChild(document.createTextNode(t.slice(mm[0].length-1)))}else pp.textContent=t;bub.appendChild(pp)}
     var mdx=media(c);if(mdx)bub.appendChild(mdx);
     b.appendChild(bub);
+    var L=likes[c.id]||{n:0,mine:false,by_author:false};
+    var auReplied=!child&&authorId&&c.client_id!==authorId&&(kidsOf[c.id]||[]).some(function(k){return k.client_id===authorId});
+    var auLiked=L.by_author&&c.client_id!==authorId;
+    if(auLiked||auReplied){var ab=el("div","cmab");var aa=cr[authorId]||OFFICIAL||{name:"Author"};ab.appendChild(avEl(aa,18));
+      ab.appendChild(el("span",null,(aa.name||"The author")+" "+(auLiked&&auReplied?"liked and replied":auLiked?"liked this":"replied")));
+      if(auLiked)ab.appendChild(el("i",null,"\u2764\ufe0f"));b.appendChild(ab)}
     var ac=el("div","cmac");ac.appendChild(el("small",null,fmtT(c.created_at)));
+    var lb=el("button","cmlk"+(L.mine?" on":""));lb.type="button";lb.setAttribute("aria-pressed",String(!!L.mine));lb.setAttribute("aria-label",(L.mine?"Unlike":"Like")+" comment");
+    lb.appendChild(el("span","h",L.mine?"\u2764\ufe0f":"\u2661"));var lc=el("span","n",L.n?String(L.n):"");lb.appendChild(lc);
+    lb.onclick=function(){
+      if(!SES){needLogin("Create a free account to like comments.");return}
+      var on=!L.mine;L.mine=on;L.n=Math.max(0,(L.n||0)+(on?1:-1));if(authorId&&SES.user&&SES.user.id===authorId)L.by_author=on;likes[c.id]=L;
+      lb.classList.toggle("on",on);lb.setAttribute("aria-pressed",String(on));lb.firstChild.textContent=on?"\u2764\ufe0f":"\u2661";lc.textContent=L.n?String(L.n):"";
+      lb.classList.remove("pop2");void lb.offsetWidth;lb.classList.add("pop2");if(on&&typeof rxBurst==="function")rxBurst(lb,"\u2764\ufe0f");
+      api("rpc/like_comment",{p_id:c.id,p_on:on}).then(function(n){if(typeof n==="number"){L.n=n;lc.textContent=n?String(n):""}}).catch(function(er){
+        L.mine=!on;L.n=Math.max(0,L.n+(on?-1:1));lb.classList.toggle("on",!on);lb.firstChild.textContent=!on?"\u2764\ufe0f":"\u2661";lc.textContent=L.n?String(L.n):"";
+        if(!(er&&er.login))toast(/function|like_comment/i.test(String(er&&(er.detail||er.message)||""))?"Comment likes need setup-comment-likes.sql in Supabase.":"Couldn't like. Try again.")});
+    };
+    ac.appendChild(lb);
     var rp=el("button","rl","Reply");rp.type="button";rp.onclick=function(){if(!SES){needLogin("Create a free account to reply.");return}setReply(c)};ac.appendChild(rp);
     var rep1=el("button","rl","Report");rep1.type="button";rep1.onclick=function(){reportItem("comment",c.id,rep1)};ac.appendChild(rep1);
     b.appendChild(ac);d.appendChild(b);
     return d;
   }
-  var last=null;
+  var last=null,kidsOf={};
   function draw(r){
-    list.textContent="";
+    list.textContent="";kidsOf={};(r||[]).forEach(function(c){if(c.parent_id)(kidsOf[c.parent_id]=kidsOf[c.parent_id]||[]).push(c)});
     if(!r||!r.length){list.appendChild(el("div","none","No comments yet. Be the first."));return}
     var kids={};r.forEach(function(c){if(c.parent_id){(kids[c.parent_id]=kids[c.parent_id]||[]).push(c)}});
     r.forEach(function(c){if(c.parent_id)return;
@@ -2748,7 +2780,9 @@ function openComments(p,box){
   function load(focusId){
     api("comments?post_id=eq."+encodeURIComponent(p.id)+"&hidden=eq.false&order=created_at.asc&limit=300&select=*").then(function(r){
       r=r||[];last=r;var ids=[];r.forEach(function(c){if(/^[0-9a-f-]{36}$/.test(c.client_id)&&ids.indexOf(c.client_id)<0)ids.push(c.client_id)});
+      if(authorId&&ids.indexOf(authorId)<0&&!cr[authorId])ids.push(authorId);
       draw(r);
+      api("rpc/comment_likes_for",{p_post:p.id}).then(function(x){likes={};(x||[]).forEach(function(k){likes[k.comment_id]=k});draw(last)}).catch(function(){});
       if(ids.length&&typeof fetchCreators==="function")fetchCreators(ids).then(function(){draw(last);flash(focusId)}).catch(function(){});
       flash(focusId);
     }).catch(function(){list.textContent="";list.appendChild(el("div","none","Couldn't load comments right now."))});
@@ -2982,9 +3016,12 @@ function buildNotes(){
   if(pushOk()){var pr=el("div","tg");pr.appendChild(el("span",null,"\ud83d\udcf2 Phone alerts for new stories"));var pbt=el("button","go2","\u2026");pbt.type="button";pbt.style.margin="0";pbt.style.padding="6px 12px";pr.appendChild(pbt);p.appendChild(pr);
     pushState().then(function(st){pbt.textContent=st==="on"?"Turn off":st==="blocked"?"Blocked":"Turn on";pbt.disabled=st==="blocked";pbt.onclick=function(){pbt.disabled=true;(st==="on"?pushOff():pushOn()).then(function(){if(npOpen)buildNotes()})}})}
   var ns=newStories(),any=false;
-  var W={like:["❤️"," liked your post"],comment:["💬"," commented on your post"],reply:["↩️"," replied to your comment"],follow:["🌟"," started following you. Tap to follow back"],friend_request:["👋"," sent you a friend request"],friend_accept:["🤝"," accepted your friend request"]};
-  function mine(n){any=true;var w=W[n.kind]||["🔔",""];
-    var sub=(n.snippet?"“"+n.snippet+"” · ":"")+agoTxt(Date.parse(n.created_at));
+  var W={like:["❤️"," liked your post"],comment:["💬"," commented on your post"],reply:["↩️"," replied to your comment"],follow:["🌟"," started following you. Tap to follow back"],friend_request:["👋"," sent you a friend request"],friend_accept:["🤝"," accepted your friend request"],comment_like:["❤️"," liked your comment"]};
+  function mine(n){any=true;var w=W[n.kind]||["🔔",""],snip=n.snippet||"",au=false;
+    if(/^\[author\] /.test(snip)){au=true;snip=snip.slice(9)}
+    if(n.kind==="reply"&&n.actor&&n.post_id&&postAuthor(n.post_id)===n.actor)au=true;
+    if(au)w=[w[0]==="\u2764\ufe0f"?"\ud83d\udc96":"\u2b50",w[1].replace(" liked"," (the author) liked").replace(" replied"," (the author) replied")];
+    var sub=(snip?"\u201c"+snip+"\u201d \u00b7 ":"")+agoTxt(Date.parse(n.created_at));
     p.appendChild(noteRow(w[0],(n.actor_name||"A fan")+w[1],sub,!n.read,function(){if(n.kind==="friend_request"){frLoaded=false;setView("friends")}else if((n.kind==="follow"||n.kind==="friend_accept")&&n.actor)openProfile(n.actor);else if(n.post_id)goPost(n.post_id)}));
   }
   notes.filter(function(n){return!n.read}).forEach(mine);
