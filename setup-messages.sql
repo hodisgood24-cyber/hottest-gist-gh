@@ -21,19 +21,19 @@ grant select on messages to authenticated;
 -- Send a message (friends only)
 create or replace function send_message(p_to uuid, p_body text) returns bigint
 language plpgsql security definer set search_path = public as $$
-declare u uuid := auth.uid(); b text := trim(coalesce(p_body, '')); nid bigint;
+declare v_me uuid := auth.uid(); v_text text := trim(coalesce(p_body, '')); v_id bigint;
 begin
-  if u is null then raise exception 'login required'; end if;
-  if b = '' then raise exception 'Type a message first'; end if;
-  if length(b) > 1000 then raise exception 'Messages can be up to 1000 characters'; end if;
-  if not exists (select 1 from friendships where a = least(u, p_to) and b = greatest(u, p_to) and status = 'accepted') then
+  if v_me is null then raise exception 'login required'; end if;
+  if v_text = '' then raise exception 'Type a message first'; end if;
+  if length(v_text) > 1000 then raise exception 'Messages can be up to 1000 characters'; end if;
+  if not exists (select 1 from friendships f where f.a = least(v_me, p_to) and f.b = greatest(v_me, p_to) and f.status = 'accepted') then
     raise exception 'You can only message your friends';
   end if;
-  if (select count(*) from messages where sender = u and created_at > now() - interval '1 minute') >= 20 then
+  if (select count(*) from messages m where m.sender = v_me and m.created_at > now() - interval '1 minute') >= 20 then
     raise exception 'Slow down a little, then try again';
   end if;
-  insert into messages (sender, recipient, body) values (u, p_to, b) returning id into nid;
-  return nid;
+  insert into messages (sender, recipient, body) values (v_me, p_to, v_text) returning id into v_id;
+  return v_id;
 end $$;
 
 -- One conversation (newer than p_after)
