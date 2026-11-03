@@ -1816,13 +1816,14 @@ function renderChat(){
     if(!m.mine){var av=avEl(c,28);av.className+=" mav";row.appendChild(av)}
     var wrap=el("div","mwrap");wrap.appendChild(b);
     var pill=el("button","mrx");pill.type="button";pill.hidden=true;wrap.appendChild(pill);
-    var rb=el("button","mrb","\u263a");rb.type="button";rb.setAttribute("aria-label","React to this message");
-    row.appendChild(wrap);row.appendChild(rb);box.appendChild(row);
-    rb.onclick=function(e){e.stopPropagation();pickRx(wrap,m.id)};
+    row.appendChild(wrap);box.appendChild(row);
     pill.onclick=function(e){e.stopPropagation();var r=rxs[m.id]||{};if(r.mine)setRx(m.id,r.mine);else pickRx(wrap,m.id)};
     b.onmousedown=function(e){if(e.detail>1)e.preventDefault()};b.ondblclick=function(){setRx(m.id,QR[0])};
-    var lp=null;b.addEventListener("touchstart",function(){lp=setTimeout(function(){pickRx(wrap,m.id)},450)},{passive:true});
-    ["touchend","touchmove","touchcancel"].forEach(function(ev){b.addEventListener(ev,function(){clearTimeout(lp)},{passive:true})});
+    var lp=null,sx=0,sy=0;b.style.webkitTouchCallout="none";b.style.userSelect="none";b.style.webkitUserSelect="none";
+    b.addEventListener("pointerdown",function(e){sx=e.clientX;sy=e.clientY;clearTimeout(lp);lp=setTimeout(function(){lp=null;if(navigator.vibrate)try{navigator.vibrate(15)}catch(x){}pickRx(wrap,m.id)},420)});
+    b.addEventListener("pointermove",function(e){if(lp&&(Math.abs(e.clientX-sx)>8||Math.abs(e.clientY-sy)>8)){clearTimeout(lp);lp=null}});
+    ["pointerup","pointercancel","pointerleave"].forEach(function(ev){b.addEventListener(ev,function(){clearTimeout(lp)})});
+    b.addEventListener("contextmenu",function(e){e.preventDefault()});
     if(rxs[m.id])paintRx(m.id);
   }
   var rxs={},lastRow=null,lastMeta=null;
@@ -1837,11 +1838,11 @@ function renderChat(){
     var r=rxs[id]=rxs[id]||{},same=r.mine===emoji;r.mine=same?null:emoji;paintRx(id);
     api("rpc/react_message",{p_id:id,p_emoji:same?"":emoji}).catch(function(){toast("Couldn't react. Did you run setup-message-reactions.sql?")});
   }
-  function closeRx(){var o=document.querySelector(".rxpick");if(o)o.remove();document.removeEventListener("click",closeRx)}
+  var rxGuard=null;function closeRx(){var o=document.querySelector(".rxpick");if(o)o.remove();if(rxGuard)document.removeEventListener("click",rxGuard)}
   function pickRx(wrap,id){
     closeRx();var pk=el("div","rxpick");pk.setAttribute("role","menu");
     QR.forEach(function(e){var bt=el("button",null,e);bt.type="button";bt.onclick=function(ev){ev.stopPropagation();closeRx();setRx(id,e)};pk.appendChild(bt)});
-    wrap.appendChild(pk);setTimeout(function(){document.addEventListener("click",closeRx)},0);
+    wrap.appendChild(pk);var t0=Date.now();rxGuard=function(){if(Date.now()-t0>500)closeRx()};setTimeout(function(){document.addEventListener("click",rxGuard)},0);
   }
   function pullRx(){
     api("rpc/chat_reactions",{p_user:uid}).then(function(rows){
