@@ -1969,6 +1969,7 @@ function start(){
   }catch(e){}
   var h=location.hash.slice(1);
   if(h==="top10"){setView("chart");return}
+  if(h==="submit"){setView("submit");return}
   if(/^u-[0-9a-f-]{36}$/.test(h)&&CFG&&SES){openProfile(h.slice(2));return}
   if(h&&!/access_token|type=/.test(h)){var t=document.getElementById("post-"+h);if(t){t.classList.add("flash");t.scrollIntoView()}}
 }
