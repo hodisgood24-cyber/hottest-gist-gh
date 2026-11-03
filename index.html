@@ -650,6 +650,9 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+.tk{letter-spacing:-3px;font-weight:800;opacity:.7}.tk.seen{color:#34b7f1;opacity:1}
+.bub.me .tk{background:rgba(255,255,255,.92);color:#8a8a8a;border-radius:8px;padding:0 5px 0 3px;font-size:12px;margin-left:2px;opacity:1}
+.bub.me .tk.seen{color:#1d9bf0}
 .hgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));box-sizing:border-box;width:100%;gap:8px;margin:10px 0;background:#c08a4b;padding:10px;border-radius:16px;border:2px solid #92400e}
 .hs{position:relative;min-width:0;aspect-ratio:1;border:0;border-radius:12px;background:rgba(255,255,255,.25);font-size:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .hs:disabled{cursor:default}.hs:not(:disabled):hover{background:rgba(255,255,255,.5)}
@@ -1846,7 +1849,7 @@ function renderChat(){
     else if(m.kind==="voice"&&md){var au=document.createElement("audio");au.src=md;au.controls=true;au.preload="metadata";au.className="baud";b.appendChild(au)}
     if(m.body)b.appendChild(el("span",null,m.body));
     if(!m.mine&&/Penalty Shootout/.test(m.body||"")&&Date.now()-Date.parse(m.created_at)<172800000){var gb=el("button","gbub","\u26bd Accept & play");gb.type="button";gb.onclick=function(){gb.disabled=true;playFromChat().then(function(ok){gb.disabled=false;if(!ok)toast("This challenge has ended")})};b.appendChild(el("br"));b.appendChild(gb)}
-    var meta=el("small",null,new Date(m.created_at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})+(m.mine&&m.read_at?" \u00b7 Seen":""));b.appendChild(meta);
+    var meta=el("small",null,new Date(m.created_at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}));if(m.mine){var tk=el("span","tk"+(m.read_at?" seen":""),m.read_at?"\u2713\u2713":"\u2713");tk.setAttribute("data-tk",m.id);tk.setAttribute("aria-label",m.read_at?"Seen":"Sent");meta.appendChild(document.createTextNode(" "));meta.appendChild(tk)}b.appendChild(meta);
     var row=el("div","mrow"+(m.mine?" me":"")),t=Date.parse(m.created_at);row.setAttribute("data-id",m.id);
     if(lastRow&&lastMeta.mine===m.mine&&!newDay&&t-lastMeta.t<300000)lastRow.classList.add("cont");
     lastRow=row;lastMeta={mine:!!m.mine,t:t};
@@ -1891,8 +1894,10 @@ function renderChat(){
   function down(){window.scrollTo({top:document.body.scrollHeight})}
   function pull(first){
     if(viewName!=="chat"||chatUid!==uid)return;
-    api("rpc/chat_with",{p_user:uid,p_after:chatLast}).then(function(r){
-      r=r||[];if(first){box.textContent="";if(!r.length)box.appendChild(el("div","snone","Say hi \ud83d\udc4b Your messages are private between you and "+(c.name||"your friend")+"."))}
+    var after=chatLast;if(!first){var un=chatMsgs.filter(function(x){return x.mine&&!x.read_at}).map(function(x){return x.id});if(un.length)after=Math.min(after,Math.min.apply(null,un)-1)}
+    api("rpc/chat_with",{p_user:uid,p_after:after}).then(function(r){
+      r=r||[];var fresh=[];r.forEach(function(m){if(m.id>chatLast)fresh.push(m);else if(m.mine&&m.read_at){var cm=chatMsgs.filter(function(x){return x.id===m.id})[0];if(cm&&!cm.read_at){cm.read_at=m.read_at;var t=box.querySelector('[data-tk="'+m.id+'"]');if(t){t.textContent="\u2713\u2713";t.classList.add("seen");t.setAttribute("aria-label","Seen")}}}});r=fresh;
+      if(first){box.textContent="";if(!r.length)box.appendChild(el("div","snone","Say hi \ud83d\udc4b Your messages are private between you and "+(c.name||"your friend")+"."))}
       if(r.length){var stick=first||atBottom();if(first===false&&box.querySelector(".snone"))box.textContent="";r.forEach(function(m){chatMsgs.push(m);bubble(m)});chatLast=r[r.length-1].id;if(stick)down();
         if(r.some(function(m){return !m.mine}))api("rpc/mark_chat_read",{p_user:uid}).then(loadUnread).catch(function(){})}
       pullRx();
