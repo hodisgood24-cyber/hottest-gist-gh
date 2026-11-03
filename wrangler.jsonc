@@ -1,5 +1,6 @@
 {
   "name": "hottest-gist-gh",
   "compatibility_date": "2026-11-01",
-  "assets": { "directory": "." }
+  // Unknown addresses (like /@yourname link pages) open the app, which shows the right page.
+  "assets": { "directory": ".", "not_found_handling": "single-page-application" }
 }

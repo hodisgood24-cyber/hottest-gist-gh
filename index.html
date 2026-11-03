@@ -660,6 +660,48 @@ body.inchat footer{display:none}
 .cpvbot textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:16px;line-height:1.4;padding:11px 14px;border-radius:22px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;max-height:120px}
 .cpvbot textarea::placeholder{color:rgba(255,255,255,.6)}
 .cpvbot textarea:focus{outline:none;border-color:var(--red)}
+
+/* ===== Link-in-bio ===== */
+body.biomode header,body.biomode .tabs,body.biomode .where,body.biomode .gear,body.biomode .bell,body.biomode .wfab,body.biomode .bnav,body.biomode footer,body.biomode .flag{display:none!important}
+body.biomode{padding-left:0!important;padding-bottom:0!important}
+body.biomode main.wrap{max-width:560px}
+.bio{position:relative;text-align:center;padding:0 0 40px}
+.biocov{height:150px;margin:0 -16px;background:radial-gradient(circle at 20% 30%,rgba(255,255,255,.25),transparent 40%),linear-gradient(120deg,#ce1126,#e8a10f 50%,#006b3f);background-size:cover;background-position:center}
+@media (min-width:560px){.biocov{margin:16px 0 0;border-radius:20px}}
+.bioshare{position:absolute;top:12px;right:0;z-index:2;background:rgba(0,0,0,.55);color:#fff;border:0;border-radius:999px;padding:8px 14px;font:inherit;font-weight:800;cursor:pointer;backdrop-filter:blur(4px)}
+@media (min-width:560px){.bioshare{top:28px;right:12px}}
+.bioav{display:flex;justify-content:center;margin-top:-56px}.bioav .av,.bioav img{border:5px solid var(--bg);border-radius:50%;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.bio h1{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0 0;font:400 34px/1.05 var(--font-display);text-transform:uppercase}
+.biohandle{color:var(--muted);font-weight:800;margin-top:2px}
+.biobio{max-width:42ch;margin:10px auto 0;font-size:16px}
+.biostat{color:var(--muted);font-size:14px;font-weight:700;margin-top:8px}
+.biofollow{display:block;width:100%;max-width:420px;margin:16px auto 0;padding:13px;border-radius:999px;border:0;background:var(--red);color:#fff;font:inherit;font-weight:800;font-size:16px;cursor:pointer}
+.biofollow.alt{background:var(--card);color:var(--text);border:1.5px solid var(--line)}
+.biolinks{display:flex;flex-direction:column;gap:10px;max-width:420px;margin:22px auto 0}
+.biolink{display:flex;align-items:center;gap:12px;padding:15px 18px;border-radius:16px;background:var(--card);border:1.5px solid var(--line);color:var(--text);text-decoration:none;font-size:16px}
+.biolink b{flex:1;text-align:center}.bli{font-size:20px;width:24px}.bla{color:var(--muted);width:24px}
+.biolink:hover{border-color:var(--red);transform:translateY(-2px)}
+.biolatest{max-width:420px;margin:26px auto 0;text-align:left}.biolatest h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.biogrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.biopost{aspect-ratio:1;border-radius:14px;overflow:hidden;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:10px;color:var(--text);text-decoration:none;font-size:13px;font-weight:700;text-align:center}
+.biopost img{width:calc(100% + 20px);height:calc(100% + 20px);object-fit:cover;margin:-10px}
+.biofoot{margin-top:30px;font-size:14px;color:var(--muted)}.biofoot a{color:var(--red);font-weight:800;text-decoration:none}
+.bionf{padding:60px 0;text-align:center}.bionf h2{font:400 32px var(--font-display)}
+.biocard{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:16px;margin:0 0 16px}
+.biocard h3{margin:0 0 6px;font-size:18px}.biocard h4{margin:14px 0 8px;font-size:14px;color:var(--muted)}
+.biof{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px}
+.biopre{color:var(--muted);font-weight:700;font-size:14px;overflow-wrap:anywhere}
+.biof input{flex:1 1 140px;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--text)}
+.biof .go2{margin:0}
+.biourl a{display:block;font-weight:800;font-size:16px;color:var(--red);overflow-wrap:anywhere;margin:4px 0 8px}
+.bioacts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.bior{display:grid;grid-template-columns:1fr 1.4fr 36px;gap:6px;margin-bottom:6px}
+.bior input{min-width:0;font:inherit;font-size:15px;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+@media (max-width:420px){.bior{grid-template-columns:1fr 36px}.bior input[type=url]{grid-column:1/2;grid-row:2}}
+.biorm{border:0;border-radius:10px;background:var(--bg);color:var(--muted);font-size:18px;cursor:pointer}
+.bioq{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 10px;font-size:13px;color:var(--muted);font-weight:700}
+.bioq button{font:inherit;font-size:13px;font-weight:800;border-radius:99px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);padding:6px 10px;cursor:pointer}
+.biomsg{font-size:14px;font-weight:700;color:#ff7a8a;margin-top:6px}.biomsg.ok{color:#3fbf7f}.biomsg:empty{display:none}
 </style>
 </head>
 <body>
@@ -690,6 +732,7 @@ body.inchat footer{display:none}
   </div>
   <div id="vFans" hidden></div>
   <div id="vFriends" hidden></div>
+  <div id="vBio" hidden></div>
   <div id="vMessages" hidden></div>
   <div id="vChat" hidden></div>
   <div id="vSearch" hidden></div>
@@ -711,10 +754,10 @@ body.inchat footer{display:none}
 <nav class="bnav" id="bnav" aria-label="Main" hidden></nav>
 <div class="toast" id="toast" role="status"></div>
 
-<script src="config.js"></script>
+<script src="/config.js"></script>
 <script>(function(){var t=window.GH_CFG&&window.GH_CFG.analytics;if(!t)return;var s=document.createElement("script");s.defer=true;s.src="https://static.cloudflareinsights.com/beacon.min.js";s.setAttribute("data-cf-beacon",JSON.stringify({token:t}));document.head.appendChild(s)})();</script>
-<script src="posts.js"></script>
-<script src="polls.js"></script>
+<script src="/posts.js"></script>
+<script src="/polls.js"></script>
 <script>
 (function(){
 "use strict";
@@ -806,7 +849,7 @@ function token(){
   return authCall("token?grant_type=refresh_token",{refresh_token:SES.refresh_token}).then(function(j){saveSes(j);return SES.access_token}).catch(function(e){saveSes(null);showGate("signup");throw e});
 }
 function api(path,body){
-  if(!SES&&body&&!/^rpc\/(is_admin|save_push|remove_push)$/.test(path)){needLogin();var le=new Error("login");le.login=true;return Promise.reject(le)}
+  if(!SES&&body&&!/^rpc\/(is_admin|save_push|remove_push|bio_view|official_account)$/.test(path)){needLogin();var le=new Error("login");le.login=true;return Promise.reject(le)}
   return token().then(function(t){
     var o={method:body?"POST":"GET",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"}};
     if(body)o.body=JSON.stringify(body);
@@ -1423,6 +1466,77 @@ function renderChat(){
 
 
 
+
+// ===== Free link-in-bio pages: /@name =====
+var BIOH=((location.pathname||"").match(/^\/@([A-Za-z0-9_.]{3,24})\/?$/)||[])[1]||null;
+function bioUrl(h){return location.origin+"/@"+h}
+var LINKPRESETS=[["TikTok","https://www.tiktok.com/@"],["Instagram","https://www.instagram.com/"],["YouTube","https://www.youtube.com/@"],["Spotify","https://open.spotify.com/artist/"],["Audiomack","https://audiomack.com/"],["Boomplay","https://www.boomplay.com/artists/"],["X","https://x.com/"],["Facebook","https://www.facebook.com/"],["WhatsApp","https://wa.me/233"]];
+function linkIcon(u){var h="";try{h=new URL(u).hostname.replace(/^www\./,"")}catch(e){}
+  return /tiktok/.test(h)?"🎵":/instagram/.test(h)?"📸":/youtu/.test(h)?"▶️":/spotify/.test(h)?"🎧":/audiomack|boomplay|soundcloud|apple/.test(h)?"🎶":/wa\.me|whatsapp/.test(h)?"💬":/x\.com|twitter/.test(h)?"𝕏":/facebook/.test(h)?"👍":/^mailto:/.test(u)?"✉️":/^tel:/.test(u)?"📞":"🔗"}
+function renderBio(){
+  var v=$("vBio");v.textContent="";var h=(BIOH||"").toLowerCase();
+  var wrap=el("div","bio");v.appendChild(wrap);wrap.appendChild(el("div","none","Loading…"));
+  if(!CFG){wrap.textContent="This page isn't available.";return}
+  api("creator_stats?select=*&handle=eq."+encodeURIComponent(h)).then(function(r){
+    var c=r&&r[0];wrap.textContent="";
+    if(!c){var nf=el("div","bionf");nf.appendChild(el("h2",null,"@"+h));nf.appendChild(el("p",null,"This page doesn't exist yet."));var cl=el("a","go2","🔥 Get your own free link page");cl.href="/";nf.appendChild(cl);wrap.appendChild(nf);return}
+    cr[c.user_id]=c;document.title=(c.name||"@"+h)+" | Hottest Gist GH";
+    try{var k="gh-bv-"+h;if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,"1");api("rpc/bio_view",{p_handle:h}).catch(function(){})}}catch(e){}
+    var sh=el("button","bioshare","↗️ Share");sh.type="button";sh.onclick=function(){var u=bioUrl(h);if(navigator.share)navigator.share({title:c.name+" on Hottest Gist GH",url:u}).catch(function(){});else copyText(u)};wrap.appendChild(sh);
+    var cov=el("div","biocov");var cs=safeLink(c.cover);if(cs)cov.style.backgroundImage="url(\""+cs.replace(/"/g,"")+"\")";wrap.appendChild(cov);
+    var av=el("div","bioav");av.appendChild(avEl(c,104));wrap.appendChild(av);
+    var nm=el("h1",null,c.name||"@"+h);if(c.verified)nm.appendChild(vBadge(22));wrap.appendChild(nm);
+    wrap.appendChild(el("div","biohandle","@"+h));
+    if(c.bio)wrap.appendChild(el("p","biobio",c.bio));
+    wrap.appendChild(el("div","biostat",(c.followers||0)+" followers · "+(c.posts||0)+" posts"));
+    var me=SES&&SES.user&&SES.user.id;
+    if(me!==c.user_id){var fb=el("button","biofollow",fol[c.user_id]?"Following ✔":(followers[c.user_id]?"Follow back":"Follow"));fb.type="button";
+      fb.onclick=function(){if(!SES){needLogin("Create a free account to follow "+(c.name||"them")+".");return}if(fol[c.user_id])return;fol[c.user_id]=1;fb.textContent="Following ✔";
+        api("rpc/toggle_follow",{p_user:c.user_id,p_on:true}).then(function(){toast("You're following "+c.name+" 🔥")}).catch(function(){delete fol[c.user_id];fb.textContent="Follow"})};wrap.appendChild(fb)}
+    else{var ed=el("button","biofollow alt","✏️ Edit my page");ed.type="button";ed.onclick=function(){location.href="/#u-"+me};wrap.appendChild(ed)}
+    var ls2=el("div","biolinks");(Array.isArray(c.links)?c.links:[]).forEach(function(l){var u=/^(https:\/\/|mailto:|tel:)/i.test(l.url||"")?l.url:null;if(!u)return;
+      var a=el("a","biolink");a.href=u;a.target="_blank";a.rel="noopener noreferrer";a.appendChild(el("span","bli",linkIcon(u)));a.appendChild(el("b",null,l.label||u));a.appendChild(el("span","bla","↗"));ls2.appendChild(a)});
+    if(ls2.children.length)wrap.appendChild(ls2);
+    var lp=el("div","biolatest");wrap.appendChild(lp);
+    api("fan_posts?select=*&hidden=eq.false&user_id=eq."+c.user_id+"&order=created_at.desc&limit=4").then(function(ps){
+      if(!ps||!ps.length)return;lp.appendChild(el("h3",null,"Latest posts"));var g=el("div","biogrid");
+      ps.forEach(function(f){var a=el("a","biopost");a.href="/#u-"+c.user_id;var im=(f.images||[])[0];
+        if(im){var i=document.createElement("img");i.src=im;i.alt="";i.loading="lazy";a.appendChild(i)}else a.appendChild(el("span",null,(f.video?"🎬 ":"")+(f.text||"").slice(0,90)||"Post"));g.appendChild(a)});
+      lp.appendChild(g)}).catch(function(){});
+    var ft=el("div","biofoot");var fa=el("a",null,"🔥 Hottest Gist GH");fa.href="/";ft.appendChild(fa);ft.appendChild(el("span",null," · Get your free link page"));wrap.appendChild(ft);
+  }).catch(function(){wrap.textContent="";wrap.appendChild(el("div","bionf","This page isn't ready yet. (setup-bio.sql)"))});
+}
+function bioCard(c){
+  var box=el("section","biocard");box.appendChild(el("h3",null,"🔗 Your free link page"));
+  if(!c.handle){
+    box.appendChild(el("p","sub","Get one link for your TikTok and Instagram bio, with all your links, your latest posts and a follow button."));
+    var f=el("form","biof");var pre=el("span","biopre",location.host+"/@");var inp=el("input");inp.id="bioh";inp.maxLength=24;inp.autocomplete="off";inp.setAttribute("aria-label","Your page name");
+    inp.value=(c.name||"").toLowerCase().replace(/[^a-z0-9_.]+/g,"").slice(0,24);var b=el("button","go2","Claim it");b.type="submit";
+    f.appendChild(pre);f.appendChild(inp);f.appendChild(b);box.appendChild(f);var msg=el("div","biomsg");box.appendChild(msg);
+    f.onsubmit=function(e){e.preventDefault();b.disabled=true;api("rpc/set_handle",{p_handle:inp.value}).then(function(h){toast("Your page is ready: @"+h+" 🎉");delete cr[c.user_id];renderProfile(c.user_id)}).catch(function(er){b.disabled=false;msg.textContent=er.detail||"Couldn't save. Did you run setup-bio.sql?"})};
+    return box;
+  }
+  var url=bioUrl(c.handle);var row=el("div","biourl");var a=el("a",null,url.replace(/^https?:\/\//,""));a.href="/@"+c.handle;a.target="_blank";row.appendChild(a);box.appendChild(row);
+  var acts=el("div","bioacts");
+  [["📋 Copy",function(){copyText(url)}],["↗️ Share",function(){if(navigator.share)navigator.share({title:"My Hottest Gist page",url:url}).catch(function(){});else copyText(url)}],["👀 Open",function(){window.open("/@"+c.handle,"_blank")}]].forEach(function(x){var b=el("button","frb",x[0]);b.type="button";b.onclick=x[1];acts.appendChild(b)});
+  box.appendChild(acts);box.appendChild(el("div","sub",(c.bio_views||0)+" visits · Put this link in your TikTok, Instagram and WhatsApp bio"));
+  var links=(Array.isArray(c.links)?c.links:[]).map(function(l){return{label:l.label||"",url:l.url||""}});
+  var ed=el("div","bioed");box.appendChild(ed);var msg2=el("div","biomsg");
+  function draw(){
+    ed.textContent="";ed.appendChild(el("h4",null,"Your links ("+links.length+"/8)"));
+    links.forEach(function(l,i){var r=el("div","bior");var la=el("input");la.placeholder="Name, e.g. My TikTok";la.maxLength=30;la.value=l.label;la.setAttribute("aria-label","Link name");la.oninput=function(){l.label=la.value};
+      var ua=el("input");ua.type="url";ua.placeholder="https://…";ua.maxLength=300;ua.value=l.url;ua.setAttribute("aria-label","Link address");ua.oninput=function(){l.url=ua.value.trim()};
+      var rm=el("button","biorm","×");rm.type="button";rm.setAttribute("aria-label","Remove link");rm.onclick=function(){links.splice(i,1);draw()};
+      r.appendChild(la);r.appendChild(ua);r.appendChild(rm);ed.appendChild(r)});
+    if(links.length<8){var qp=el("div","bioq");qp.appendChild(el("span",null,"Quick add:"));LINKPRESETS.forEach(function(p){var b=el("button",null,p[0]);b.type="button";b.onclick=function(){links.push({label:"My "+p[0],url:p[1]});draw();var ins=ed.querySelectorAll(".bior input[type=url]");var last=ins[ins.length-1];if(last){last.focus();var n=last.value.length;try{last.setSelectionRange(n,n)}catch(e){}}};qp.appendChild(b)});
+      var cu=el("button",null,"+ Other");cu.type="button";cu.onclick=function(){links.push({label:"",url:"https://"});draw()};qp.appendChild(cu);ed.appendChild(qp)}
+    var sv=el("button","go2","Save links");sv.type="button";sv.onclick=function(){var clean=links.filter(function(l){return l.label.trim()&&l.url.trim()&&l.url.trim()!=="https://"}).map(function(l){return{label:l.label.trim(),url:l.url.trim()}});
+      sv.disabled=true;api("rpc/save_links",{p_links:clean}).then(function(){links=clean;msg2.textContent="Saved ✔";msg2.className="biomsg ok";draw()}).catch(function(er){msg2.textContent=er.detail||"Couldn't save.";msg2.className="biomsg"}).then(function(){sv.disabled=false})};
+    ed.appendChild(sv);ed.appendChild(msg2);
+  }
+  draw();
+  return box;
+}
 // ===== Edit your own post =====
 function editPost(p,cardEl){
   var m=el("div","cmp");m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","Edit post");
@@ -2261,6 +2375,7 @@ function renderProfile(uid){
       }
       body.appendChild(act);
       if(vbox)body.appendChild(vbox);
+      if(mine)body.appendChild(bioCard(c));
       if(mine){
         var ni=document.createElement("input");ni.maxLength=40;ni.value=c.name;ni.setAttribute("aria-label","Display name");
         var bi=document.createElement("input");bi.maxLength=160;bi.value=c.bio||"";bi.placeholder="Short bio (no links)";bi.setAttribute("aria-label","Bio");
@@ -2282,11 +2397,11 @@ function renderProfile(uid){
 }
 
 function setView(v){
-  viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="profile"||v==="friends"||v==="messages"||v==="chat");document.body.classList.toggle("inchat",v==="chat");
+  viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="profile"||v==="friends"||v==="messages"||v==="chat");document.body.classList.toggle("inchat",v==="chat");document.body.classList.toggle("biomode",v==="bio");
   setTimeout(navMark,0);syncHash(v);
-  ["gist","search","submit","fans","friends","messages","chat","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","bio","search","submit","fans","friends","messages","chat","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
-  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 function buildTabs(){
@@ -2583,6 +2698,7 @@ function start(){
       setTimeout(chk,2500);return;
     }
   }catch(e){}
+  if(BIOH){setView("bio");return}
   var h=location.hash.slice(1);
   if(routeHash(h))return;
   if(h&&!/access_token|type=/.test(h)){var t=document.getElementById("post-"+h);if(t){t.classList.add("flash");t.scrollIntoView()}}
