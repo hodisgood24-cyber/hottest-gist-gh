@@ -63,6 +63,22 @@ Deno.serve(async (req) => {
     if (!sg.ok) return new Response("grant failed", { status: 500 });
     return new Response("ok", { status: 200 });
   }
+  if (purpose === "seller_plan" && d?.metadata?.user_id && ["standard", "premium", "star"].includes(String(d?.metadata?.plan))) {
+    const pr2 = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.plans&select=value`, {
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+    });
+    const pv = (await pr2.json())?.[0]?.value || {};
+    const plan = String(d.metadata.plan);
+    const pprice = Number(pv?.[plan]?.amount);
+    if (!(pprice > 0) || d.amount < Math.round(pprice * 100)) return new Response("amount too low", { status: 200 });
+    const pg = await fetch(`${SUPABASE_URL}/rest/v1/rpc/grant_plan`, {
+      method: "POST",
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_user: d.metadata.user_id, p_ref: ref, p_amount: d.amount, p_currency: d.currency, p_plan: plan, p_days: Number(pv.days) || 30 }),
+    });
+    if (!pg.ok) return new Response("grant failed", { status: 500 });
+    return new Response("ok", { status: 200 });
+  }
   if (purpose !== "gold_tick" || !d?.metadata?.user_id) return new Response("not a gold tick", { status: 200 });
 
   // The amount must cover the current price

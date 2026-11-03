@@ -59,6 +59,15 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
  <label>Days featured per payment</label><input id="fd" type="number" min="1" max="30" value="7">
  <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="fo" style="width:auto"> Paid featuring is on</label>
  <div class="row"><button>Save</button></div></form>
+ <h2>Seller plans (Market)</h2>
+ <form id="pf" class="card">
+ <label>Standard: price shown (example: GH₵ 30) and number (example: 30)</label><div class="row"><input id="pp1" maxlength="30"><input id="pa1" type="number" min="1" step="0.5"></div>
+ <label>Premium: price shown and number</label><div class="row"><input id="pp2" maxlength="30"><input id="pa2" type="number" min="1" step="0.5"></div>
+ <label>Star: price shown and number</label><div class="row"><input id="pp3" maxlength="30"><input id="pa3" type="number" min="1" step="0.5"></div>
+ <label>Days per payment</label><input id="pd" type="number" min="1" max="365" value="30">
+ <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="po" style="width:auto"> Paid plans are on (turn on after the Paystack functions are updated)</label>
+ <div class="row"><button>Save</button></div></form>
+ <h2>Market items and sellers</h2><div id="mkt" class="card">Loading...</div>
  <h2>Services listings</h2><div id="gigs" class="card">Loading...</div>
  <h2>⚽ Match day</h2>
  <form id="mdf" class="card"><label>Home team</label><input id="mh" maxlength="40" placeholder="Ghana" required>
@@ -188,9 +197,26 @@ function loadCreators(){
       L.appendChild(el("b",null,c.name+(c.verified?" \u2714":"")));L.appendChild(el("p","m",c.posts+" posts · "+c.followers+" followers"));d.appendChild(L);
       var b=el("button",c.verified?"d":"",c.verified?"Remove badge":"Verify");
       b.onclick=function(){rpc("admin_set_verified",{p_user:c.user_id,p_on:!c.verified}).then(loadCreators).catch(function(){alert("Failed")})};
-      d.appendChild(b);cb.appendChild(d);
+      var pl=el("button","g","Give plan");pl.onclick=function(){var p=prompt("Which seller plan for "+c.name+"? Type standard, premium, star, or free to remove.","star");if(!p)return;p=p.trim().toLowerCase();var days=p==="free"?0:Number(prompt("How many days?","30"))||0;rpc("admin_grant_plan",{p_user:c.user_id,p_plan:p,p_days:days}).then(function(){alert("Done");loadMarket()}).catch(function(){alert("Failed. Did you run setup-market.sql?")})};
+      d.appendChild(pl);d.appendChild(b);cb.appendChild(d);
     });
   }).catch(function(){$("fans").textContent="Couldn't load. Did you run setup-creators.sql?";$("crt").textContent=""});
+}
+function loadMarket(){
+  rpc("admin_market").then(function(m){
+    var b=$("mkt");b.textContent="";
+    var S=m.sellers||[];b.appendChild(el("b",null,"Active seller plans: "+S.length));
+    S.forEach(function(c){var d=el("div","it"),L=el("div");L.appendChild(el("p",null,(c.name||"Seller")+": "+c.plan));L.appendChild(el("p","m","until "+new Date(c.until).toLocaleDateString()));d.appendChild(L);var x=el("button","d","Remove");x.onclick=function(){rpc("admin_grant_plan",{p_user:c.user_id,p_plan:"free",p_days:0}).then(loadMarket).catch(function(){alert("Failed")})};d.appendChild(x);b.appendChild(d)});
+    b.appendChild(el("b",null,"Items"));
+    if(!(m.items||[]).length)b.appendChild(el("p","m","No items yet."));
+    (m.items||[]).forEach(function(c){
+      var d=el("div","it"),L=el("div");
+      L.appendChild(el("p",null,(c.name||"Seller")+": "+c.title+(c.price!=null?" (GH₵ "+c.price+")":"")));
+      L.appendChild(el("p","m",c.category+" · "+new Date(c.created_at).toLocaleString()+(c.reports?" · "+c.reports+" report(s)":"")+(c.sold?" · SOLD":"")+(c.hidden?" · HIDDEN":"")));d.appendChild(L);
+      var x=el("button",c.hidden?"":"d",c.hidden?"Show":"Hide");x.onclick=function(){rpc("admin_set_hidden",{p_kind:"item",p_id:c.id,p_hidden:!c.hidden}).then(loadMarket).catch(function(){alert("Failed")})};
+      d.appendChild(x);b.appendChild(d);
+    });
+  }).catch(function(){$("mkt").textContent="Couldn't load. Did you run setup-market.sql?"});
 }
 function loadGigs(){
   rpc("admin_gigs").then(function(m){
@@ -258,11 +284,11 @@ function loadMatches(){
   }).catch(function(){$("mdl").textContent="Couldn't load. Did you run setup-matchday.sql?"});
 }
 function init(){
-  loadPosts();loadMod();loadCreators();loadGigs();loadVer();loadPays();loadSubm();loadMatches();
+  loadPosts();loadMod();loadCreators();loadGigs();loadMarket();loadVer();loadPays();loadSubm();loadMatches();
   $("mdsync").onclick=function(){var b=$("mdsync");b.disabled=true;b.textContent="Getting matches…";rpc("admin_sync_matches").then(function(r){say("Done: "+r);loadMatches()}).catch(function(){alert("Failed. Did you run setup-matchday-auto.sql?")}).then(function(){b.disabled=false;b.textContent="Get latest matches now"})};
   $("mdf").onsubmit=function(e){e.preventDefault();var k=new Date($("mk").value);if(isNaN(k)){alert("Pick the kick-off date and time");return}
     rpc("admin_save_match",{p:{home:$("mh").value.trim(),away:$("ma").value.trim(),competition:$("mc").value.trim(),kickoff:k.toISOString()}}).then(function(){$("mh").value="";$("ma").value="";$("mk").value="";say("Match added. Fans can predict now ⚽");loadMatches()}).catch(function(){alert("Failed. Did you run setup-matchday.sql?")})};
-  api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="sounds"){var it=Array.isArray(x.value)?x.value:(x.value&&x.value.items)||[];$("snd").value=it.map(function(i){return [i.title||"",i.artist||"",i.link||""].join(" | ")}).join("\n")}if(x.key==="verify"){$("vp").value=v.price||"";$("va").value=v.amount||"";$("vo").checked=!!v.auto;$("vh").value=v.how||"";$("vl").value=v.link||""}if(x.key==="spotlight"){$("spp").value=v.price||"";$("spa").value=v.amount||"";$("spd").value=v.days||7;$("spo").checked=!!v.auto;$("sph").value=v.how||""}if(x.key==="feature"){$("fp").value=v.price||"";$("fa").value=v.amount||"";$("fd").value=v.days||7;$("fo").checked=!!v.auto}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
+  api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="sounds"){var it=Array.isArray(x.value)?x.value:(x.value&&x.value.items)||[];$("snd").value=it.map(function(i){return [i.title||"",i.artist||"",i.link||""].join(" | ")}).join("\n")}if(x.key==="verify"){$("vp").value=v.price||"";$("va").value=v.amount||"";$("vo").checked=!!v.auto;$("vh").value=v.how||"";$("vl").value=v.link||""}if(x.key==="spotlight"){$("spp").value=v.price||"";$("spa").value=v.amount||"";$("spd").value=v.days||7;$("spo").checked=!!v.auto;$("sph").value=v.how||""}if(x.key==="plans"){["standard","premium","star"].forEach(function(k,i){var o=v[k]||{};$("pp"+(i+1)).value=o.price||"";$("pa"+(i+1)).value=o.amount||""});$("pd").value=v.days||30;$("po").checked=!!v.auto}if(x.key==="feature"){$("fp").value=v.price||"";$("fa").value=v.amount||"";$("fd").value=v.days||7;$("fo").checked=!!v.auto}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
   $("f").onchange=function(){
     var fs=[].slice.call(this.files).slice(0,3-imgs.length);if(!fs.length)return;$("sv").disabled=true;$("sv").textContent="Uploading...";
     fs.reduce(function(p,f){return p.then(function(){return shrink(f).then(upload).then(function(u){imgs.push(u);thumbs()})})},Promise.resolve()).catch(function(){alert("A photo couldn't upload")}).then(function(){$("sv").disabled=false;$("sv").textContent=editId?"Update":"Publish";$("f").value=""});
@@ -296,6 +322,7 @@ function init(){
   $("sndx").onclick=function(){rpc("admin_set_setting",{p_key:"sounds",p_value:{}}).then(function(){$("snd").value="";say("Cleared.");setTimeout(function(){say("")},2500)})};
   $("vf2").onsubmit=function(e){e.preventDefault();rpc("admin_set_setting",{p_key:"verify",p_value:{price:$("vp").value.trim(),amount:Number($("va").value)||0,auto:$("vo").checked&&Number($("va").value)>0,how:$("vh").value.trim(),link:$("vl").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("spf").onsubmit=function(e){e.preventDefault();var a=Number($("spa").value)||0;rpc("admin_set_setting",{p_key:"spotlight",p_value:{price:$("spp").value.trim(),amount:a,days:Math.min(30,Math.max(1,Number($("spd").value)||7)),auto:$("spo").checked&&a>0,how:$("sph").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
+  $("pf").onsubmit=function(e){e.preventDefault();var o={days:Math.min(365,Math.max(1,Number($("pd").value)||30))},any=false;["standard","premium","star"].forEach(function(k,i){var n=Number($("pa"+(i+1)).value)||0;if(n>0)any=true;o[k]={price:$("pp"+(i+1)).value.trim(),amount:n}});o.auto=$("po").checked&&any;rpc("admin_set_setting",{p_key:"plans",p_value:o}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("ff").onsubmit=function(e){e.preventDefault();var a=Number($("fa").value)||0;rpc("admin_set_setting",{p_key:"feature",p_value:{price:$("fp").value.trim(),amount:a,days:Math.min(30,Math.max(1,Number($("fd").value)||7)),auto:$("fo").checked&&a>0}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("vx").onclick=function(){rpc("admin_set_setting",{p_key:"verify",p_value:{}}).then(function(){$("vf2").reset();say("Sign-ups closed.");setTimeout(function(){say("")},2500)})};
   setting("sf","song",function(){return{title:$("s1").value.trim(),artist:$("s2").value.trim(),note:$("s3").value.trim(),link:$("s4").value.trim()}},"sx");

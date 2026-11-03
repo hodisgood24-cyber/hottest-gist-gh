@@ -650,6 +650,24 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+/* ===== Market ===== */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:8px}
+.mc{display:flex;flex-direction:column;gap:2px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 0 10px;overflow:hidden;cursor:pointer;color:var(--text);font:inherit}
+.mcimg{position:relative;aspect-ratio:1;background:var(--line);overflow:hidden}.mcimg img{width:100%;height:100%;object-fit:cover;display:block}
+.mc .mcp{padding:8px 10px 0;font-size:16px}.mc .mct{padding:0 10px;font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mc .mcm{padding:0 10px;color:var(--muted);font-size:12px}
+.mc.sold .mcimg img{filter:grayscale(1);opacity:.5}
+.msold{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.65);color:#fff;text-align:center;font-weight:800;font-size:12px;padding:3px}
+.pbdg{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;color:#fff;background:#6b7280;margin:4px 0}
+.pbdg.premium{background:#7c3aed}.pbdg.star{background:#b8860b}.pbdg.standard{background:#2563eb}
+.pbdg.onimg{position:absolute;left:6px;top:6px;margin:0}
+.mdet h3{margin:8px 0 0;font-size:22px}.mdt{font-size:17px;font-weight:700;margin:2px 0 4px}.mbody{white-space:pre-wrap;margin:8px 0}
+.mgal{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:12px}
+.mgal img{flex:0 0 100%;max-height:360px;object-fit:cover;scroll-snap-align:center;border-radius:12px}
+.plc{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}.plc.cur{border-color:var(--red)}
+.plh{display:flex;justify-content:space-between;gap:8px}.plc ul{margin:6px 0 8px;padding-left:18px;font-size:14px}
+.plc button{font:inherit;font-weight:800;background:var(--red);color:#fff;border:0;border-radius:8px;padding:8px 16px;cursor:pointer}
+
 /* ===== Chat background picker ===== */
 .chbox.walled{border-radius:14px;padding:14px 10px 110px;min-height:calc(100vh - 150px)}
 .cwp{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}
@@ -950,6 +968,7 @@ body.biomode main.wrap{max-width:560px}
   <div id="vSearch" hidden></div>
   <div id="vSubmit" hidden></div>
   <div id="vGigs" hidden></div>
+  <div id="vMarket" hidden></div>
   <div id="vChart" hidden></div>
   <div id="vProfile" hidden></div>
   <div id="vGold" hidden></div>
@@ -1264,7 +1283,7 @@ function pollCard(pl){
 
 
 // ===== Remember the page in the address (refresh and Back keep you there) =====
-var V2H={gold:"gold",matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
+var V2H={gold:"gold",matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",market:"market",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
 var H2V={};Object.keys(V2H).forEach(function(k){H2V[V2H[k]]=k});
 var routing=false;
 function isRouteHash(h){return !!H2V[h]||/^[um]-[0-9a-f-]{36}$/.test(h)||/^match-\d+$/.test(h)}
@@ -1288,7 +1307,7 @@ window.addEventListener("popstate",function(){
   try{if(!routeHash(h)&&(!h||isRouteHash(h)||viewName!=="gist"))setView("gist")}finally{routing=false}
 });
 // ===== "You are here" line and tap flash =====
-var VIEWNAMES={gold:"Gold tick",matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
+var VIEWNAMES={gold:"Gold tick",matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",market:"Market",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
 function drawWhere(){
   var w=$("where");if(!w)return;w.textContent="";
   if(viewName==="search")return;
@@ -2657,6 +2676,121 @@ function gigCard(g,box,reload){
   d.appendChild(act);
   return d;
 }
+var MCATS=["Phones and tablets","Fashion and shoes","Music and studio gear","Cameras and video","Computers and gadgets","Home and furniture","Beauty and care","Food and drinks","Vehicles","Services","Other"];
+var mCat="",mQ="",mMine=false,mPlansOpen=false;
+var MPLANS=[["standard","Standard",15,["Ranked above free sellers","Standard badge on your items"]],["premium","Premium",50,["Ranked above Standard","Premium badge on your items"]],["star","Star",200,["Always at the very top","⭐ Star seller badge","Shown in the Star strip"]]];
+function planBadge(p){if(!p||p==="free")return null;return el("span","pbdg "+p,p==="star"?"⭐ Star seller":p==="premium"?"Premium":"Standard")}
+function priceTxt(p){return p===null||p===undefined?"Contact for price":"GH₵ "+Number(p).toLocaleString("en-GB",{maximumFractionDigits:2})}
+function mkCard(it,open){
+  var c=el("button","mc"+(it.sold?" sold":""));c.type="button";
+  var im=Array.isArray(it.images)&&it.images[0]&&safeLink(it.images[0]);
+  var ph=el("div","mcimg");if(im){var i=document.createElement("img");i.src=im;i.alt="";i.loading="lazy";ph.appendChild(i)}
+  var pb=planBadge(it.plan);if(pb){pb.className+=" onimg";ph.appendChild(pb)}
+  if(it.sold)ph.appendChild(el("span","msold","SOLD"));
+  c.appendChild(ph);c.appendChild(el("b","mcp",priceTxt(it.price)));c.appendChild(el("span","mct",it.title));
+  c.appendChild(el("small","mcm",(it.location?it.location+" · ":"")+(it.condition==="new"?"New":"Used")));
+  c.onclick=function(){open(it)};return c;
+}
+function openItem(it,reload){
+  var cs=cr[it.user_id]||{name:"Seller"},mine=SES&&SES.user&&SES.user.id===it.user_id;
+  var m=el("div","cwp");m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label",it.title);
+  var sh=el("div","cwps mdet");
+  function close(){m.remove();document.removeEventListener("keydown",esc);document.body.style.overflow=""}
+  function esc(e){if(e.key==="Escape")close()}
+  var gal=el("div","mgal");(Array.isArray(it.images)?it.images:[]).forEach(function(u){var s=safeLink(u);if(!s)return;var i=document.createElement("img");i.src=s;i.alt=it.title;gal.appendChild(i)});sh.appendChild(gal);
+  sh.appendChild(el("h3",null,priceTxt(it.price)));sh.appendChild(el("div","mdt",it.title));
+  var pb=planBadge(it.plan);if(pb)sh.appendChild(pb);
+  sh.appendChild(el("div","none",[it.category,it.condition==="new"?"New":"Used",it.location].filter(Boolean).join(" · ")+(it.sold?" · SOLD":"")));
+  if(it.body)sh.appendChild(el("p","mbody",it.body));
+  var who=el("button","gigwho");who.type="button";who.appendChild(avEl(cs,34));who.appendChild(el("span",null,cs.name||"Seller"));if(cs.verified)who.appendChild(vBadge(14));who.onclick=function(){close();openProfile(it.user_id)};sh.appendChild(who);
+  var act=el("div","evb");var cl=contactLink(it.contact);
+  if(cl&&!it.sold){var a=el("a","linkbtn",cl.label==="WhatsApp"?"Message seller on WhatsApp":"Email seller");a.href=cl.href;a.target="_blank";a.rel="noopener noreferrer";a.style.marginTop="0";act.appendChild(a)}
+  if(mine){
+    var sd=el("button",null,it.sold?"Mark as available":"Mark as sold");sd.type="button";sd.onclick=function(){api("rpc/set_market_sold",{p_id:it.id,p_sold:!it.sold}).then(function(){close();reload()}).catch(function(){toast("Couldn't update")})};act.appendChild(sd);
+    var dl=el("button",null,"Delete");dl.type="button";dl.onclick=function(){if(!confirm("Delete this item?"))return;api("rpc/delete_market_item",{p_id:it.id}).then(function(){close();toast("Deleted");reload()}).catch(function(){toast("Couldn't delete")})};act.appendChild(dl);
+  }else{var rp=el("button",null,"Report");rp.type="button";rp.onclick=function(){reportItem("item",it.id,rp)};act.appendChild(rp)}
+  var cx=el("button",null,"Close");cx.type="button";cx.onclick=close;act.appendChild(cx);sh.appendChild(act);
+  sh.appendChild(el("div","none","Pay the seller directly. Meet in a public place, check the item first, and never pay upfront to a stranger."));
+  m.appendChild(sh);m.onclick=function(e){if(e.target===m)close()};document.addEventListener("keydown",esc);document.body.style.overflow="hidden";document.body.appendChild(m);
+}
+function renderMarket(){
+  var v=$("vMarket");v.textContent="";
+  v.appendChild(el("h2","vh","🛍️ Market"));
+  v.appendChild(el("p","sub","Buy and sell near you. Sellers get paid directly by buyers. Subscribe to a plan to get your items seen by more people."));
+  if(!(CFG&&SES)){v.appendChild(el("div","empty","Log in to buy and sell."));return}
+  var bar=el("div","evb");
+  var sellB=el("button","linkbtn","+ Sell something");sellB.type="button";sellB.style.cssText+=";border:0;cursor:pointer;margin:0;background:var(--red);color:#fff;padding:9px 16px;border-radius:99px;font-weight:800";
+  var planB=el("button",null,"⭐ Seller plans");planB.type="button";
+  var mineB=el("button",null,mMine?"All items":"My items");mineB.type="button";
+  bar.appendChild(sellB);bar.appendChild(planB);bar.appendChild(mineB);v.appendChild(bar);
+  var plans=el("div","fc");plans.hidden=!mPlansOpen;v.appendChild(plans);
+  var form=el("form","cf fc");form.hidden=true;v.appendChild(form);
+  var sb2=el("div","sbar");var q=document.createElement("input");q.type="search";q.placeholder="Search items or places";q.value=mQ;q.setAttribute("aria-label","Search the market");q.style.cssText="width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);box-sizing:border-box;margin:8px 0";
+  var qt=null;q.oninput=function(){clearTimeout(qt);qt=setTimeout(function(){mQ=q.value.trim();load()},350)};v.appendChild(q);
+  var chips=el("div","crs");[""].concat(MCATS).forEach(function(c){var b=el("button","chipb",c||"All");b.type="button";b.setAttribute("aria-pressed",String(c===mCat));b.onclick=function(){mCat=c;renderMarket()};chips.appendChild(b)});v.appendChild(chips);
+  var strip=el("div");v.appendChild(strip);var box=el("div","mgrid");v.appendChild(box);
+  mineB.onclick=function(){mMine=!mMine;renderMarket()};
+  sellB.onclick=function(){form.hidden=!form.hidden;if(!form.hidden)plans.hidden=true};
+  planB.onclick=function(){plans.hidden=!plans.hidden;mPlansOpen=!plans.hidden;if(!plans.hidden)form.hidden=true};
+  function load(){
+    box.textContent="";strip.textContent="";box.appendChild(el("div","none","Loading..."));
+    api("rpc/market_list",{p_cat:mCat||null,p_q:mQ||null,p_mine:mMine,p_limit:48,p_offset:0}).then(function(rows){
+      rows=rows||[];
+      return fetchCreators(rows.map(function(r){return r.user_id})).then(function(){
+        box.textContent="";
+        var stars=rows.filter(function(r){return r.plan==="star"&&!r.sold}).slice(0,10);
+        if(stars.length&&!mCat&&!mQ&&!mMine){strip.appendChild(el("div","none","⭐ Star sellers"));var sc=el("div","crs");stars.forEach(function(it){var c=mkCard(it,function(x){openItem(x,load)});c.style.flex="0 0 150px";sc.appendChild(c)});strip.appendChild(sc)}
+        if(!rows.length){box.appendChild(el("div","empty",mMine?"You haven't listed anything yet.":"Nothing here yet. Be the first to sell something!"));return}
+        rows.forEach(function(it){box.appendChild(mkCard(it,function(x){openItem(x,load)}))});
+      });
+    }).catch(function(){box.textContent="";box.appendChild(el("div","none","Couldn't load the market. Did you run setup-market.sql?"))});
+  }
+  // plans panel
+  function drawPlans(cur,until){
+    plans.textContent="";var pc=cfgSet.plans||{};
+    plans.appendChild(el("h3",null,"Seller plans"));
+    plans.appendChild(el("p","none","Everyone can sell for free (up to 3 items at a time). A plan lets you list more and puts your items higher up, with a badge buyers trust."+(cur!=="free"&&until?" Your plan: "+cur.charAt(0).toUpperCase()+cur.slice(1)+", active until "+new Date(until).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+".":"")));
+    MPLANS.forEach(function(p){
+      var d=el("div","plc"+(cur===p[0]?" cur":""));var h=el("div","plh");h.appendChild(el("b",null,(p[0]==="star"?"⭐ ":"")+p[1]));
+      var info=pc[p[0]]||{},price=info.amount>0?(info.price||"GH₵ "+info.amount):"Coming soon";h.appendChild(el("span",null,price+(info.amount>0?" / "+(pc.days||30)+" days":"")));d.appendChild(h);
+      var ul=el("ul");ul.appendChild(el("li",null,"Up to "+p[2]+" items at a time"));p[3].forEach(function(t){ul.appendChild(el("li",null,t))});d.appendChild(ul);
+      if(pc.auto&&info.amount>0){var b=el("button",null,cur===p[0]?"Renew":"Subscribe");b.type="button";
+        b.onclick=function(){b.disabled=true;b.textContent="Opening payment page...";
+          token().then(function(t){return fetch(CFG.url.replace(/\/$/,"")+"/functions/v1/paystack-init",{method:"POST",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify({origin:location.origin,plan:p[0]})})}).then(function(r){return r.json()}).then(function(j){if(j&&j.url)location.href=j.url;else throw new Error("failed")}).catch(function(){b.disabled=false;b.textContent="Try again";toast("Couldn't open the payment page. Try again in a moment.")})};
+        d.appendChild(b)}
+      plans.appendChild(d);
+    });
+    plans.appendChild(el("div","none","Paid with Mobile Money or card on Paystack. Your plan turns on by itself within a minute."));
+  }
+  drawPlans("free",null);
+  api("seller_tiers?select=plan,until&user_id=eq."+SES.user.id).then(function(r){if(r&&r[0])drawPlans(r[0].plan,r[0].until)}).catch(function(){});
+  // sell form
+  var imgs=[];
+  var ti=document.createElement("input");ti.maxLength=80;ti.placeholder="What are you selling? e.g. iPhone 12, 128GB";ti.setAttribute("aria-label","Title");
+  var cat=document.createElement("select");MCATS.forEach(function(o){var op=document.createElement("option");op.value=o;op.textContent=o;cat.appendChild(op)});cat.setAttribute("aria-label","Category");
+  var cond=document.createElement("select");[["used","Used"],["new","New"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];cond.appendChild(op)});cond.setAttribute("aria-label","Condition");
+  var pr=document.createElement("input");pr.type="number";pr.min="0";pr.step="any";pr.placeholder="Price in GH₵ (leave empty to ask buyers to contact you)";pr.setAttribute("aria-label","Price");
+  var lo=document.createElement("input");lo.maxLength=60;lo.placeholder="Location, e.g. Accra, East Legon";lo.setAttribute("aria-label","Location");
+  var bo=document.createElement("textarea");bo.maxLength=800;bo.rows=4;bo.placeholder="Describe the item (no links here)";bo.setAttribute("aria-label","Description");
+  var co=document.createElement("input");co.maxLength=80;co.placeholder="WhatsApp number or email buyers can reach you on";co.setAttribute("aria-label","Contact");
+  var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.multiple=true;fi.setAttribute("aria-label","Photos");
+  var th=el("div","th2");var st=el("div","none","Add 1 to 5 clear photos.");
+  var thumbs=function(){th.textContent="";imgs.forEach(function(u,i){var im=document.createElement("img");im.src=u;im.alt="Tap to remove";im.onclick=function(){imgs.splice(i,1);thumbs()};th.appendChild(im)})};
+  var sub=el("button",null,"Post item");sub.type="submit";
+  fi.onchange=function(){var fs=[].slice.call(fi.files).slice(0,5-imgs.length);if(!fs.length)return;st.textContent="Uploading photos...";sub.disabled=true;
+    fs.reduce(function(p,fl){return p.then(function(){return shrinkImg(fl,1400).then(function(b){return upFan(b,"jpg","image/jpeg")}).then(function(u){imgs.push(u);thumbs()})})},Promise.resolve()).catch(function(){toast("A photo couldn't upload")}).then(function(){fi.value="";st.textContent="Add 1 to 5 clear photos.";sub.disabled=false})};
+  [ti,cat,cond,pr,lo,bo,co,el("div","none","Photos (required)"),fi,th,st,el("div","none","Your contact is shown to logged-in members only. Buyers pay you directly. Hottest Gist GH does not handle the money."),sub].forEach(function(n){form.appendChild(n)});
+  form.onsubmit=function(e){
+    e.preventDefault();if(ti.value.trim().length<4){ti.focus();return}if(co.value.trim().length<5){co.focus();return}if(!imgs.length){toast("Add at least one photo");return}
+    sub.disabled=true;
+    api("rpc/add_market_item",{p_title:ti.value.trim(),p_body:bo.value.trim(),p_category:cat.value,p_condition:cond.value,p_price:pr.value===""?null:Number(pr.value),p_location:lo.value.trim(),p_images:imgs,p_contact:co.value.trim()}).then(function(){
+      ti.value=bo.value=pr.value=lo.value="";imgs=[];thumbs();sub.disabled=false;form.hidden=true;toast("Item posted!");load();
+    }).catch(function(er){sub.disabled=false;var m=String(er.detail||er.message||"");
+      if(/plan limit/.test(m)){toast("You've reached your listing limit. Get a seller plan to list more.");form.hidden=true;plans.hidden=false;mPlansOpen=true;plans.scrollIntoView({block:"center"})}
+      else toast(/slow down/.test(m)?"Too many posts today. Try again tomorrow.":/contact/.test(m)?"Enter a valid phone number or email.":/photo|image/.test(m)?"Add 1 to 5 photos.":"Couldn't post. No links or bad words in the text.")});
+  };
+  load();
+}
 function renderGigs(){
   var v=$("vGigs");v.textContent="";
   v.appendChild(el("h2","vh","💼 Services"));
@@ -2847,14 +2981,14 @@ function renderProfile(uid){
 function setView(v){
   viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="gold"||v==="profile"||v==="friends"||v==="messages"||v==="chat"||v==="match");document.body.classList.toggle("inchat",v==="chat"||v==="match");document.body.classList.toggle("biomode",v==="bio");
   setTimeout(navMark,0);syncHash(v);
-  ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","market","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
-  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 function buildTabs(){
   var t=$("tabs");t.textContent="";t.hidden=false;
-  [["gist","🔥 Gist"],["matchday","⚽ Match day"],["chart","🎵 Top 10"],["fans","🌟 Fans"],["gigs","💼 Services"],["events","📅 Events"],["polls","📊 Polls"],["top","🏆 Top fans"],["wall","💬 Wall"],["quiz","🧠 Quiz"]].forEach(function(x){
+  [["gist","🔥 Gist"],["matchday","⚽ Match day"],["chart","🎵 Top 10"],["fans","🌟 Fans"],["gigs","💼 Services"],["market","🛍️ Market"],["events","📅 Events"],["polls","📊 Polls"],["top","🏆 Top fans"],["wall","💬 Wall"],["quiz","🧠 Quiz"]].forEach(function(x){
     var b=el("button",null,x[1]);b.type="button";b.setAttribute("data-v",x[0]);b.setAttribute("aria-pressed",String(x[0]===viewName));b.onclick=function(){setView(x[0])};t.appendChild(b);
   });
 }
@@ -3260,6 +3394,7 @@ function start(){
   try{
     var qp=new URLSearchParams(location.search);
     if(qp.get("paid")==="song"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your song will show as Featured within a minute.");mySubs=null;setView("submit");return}
+    if(qp.get("paid")==="plan"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your seller plan turns on within a minute.");mPlansOpen=true;setView("market");return}
     if(qp.get("paid")==="gig"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your listing will show as Featured within a minute.");setView("gigs");return}
     if(qp.get("paid")&&CFG&&SES){
       history.replaceState(null,"",location.pathname);

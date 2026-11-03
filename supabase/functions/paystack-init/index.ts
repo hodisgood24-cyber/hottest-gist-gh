@@ -30,7 +30,8 @@ Deno.serve(async (req) => {
     try { reqBody = await req.json(); } catch (_) { /* no body */ }
     const gigId = reqBody?.gig_id ? Number(reqBody.gig_id) : 0;
     const songId = !gigId && reqBody?.song_id ? Number(reqBody.song_id) : 0;
-    const settingKey = gigId ? "feature" : songId ? "spotlight" : "verify";
+    const planName = !gigId && !songId && ["standard", "premium", "star"].includes(String(reqBody?.plan)) ? String(reqBody.plan) : "";
+    const settingKey = gigId ? "feature" : songId ? "spotlight" : planName ? "plans" : "verify";
 
     // 2. Price from the site settings (saved in the Admin page)
     const sr = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.${settingKey}&select=value`, {
@@ -38,7 +39,7 @@ Deno.serve(async (req) => {
     });
     const rows = await sr.json();
     const v = rows?.[0]?.value || {};
-    const amount = Number(v.amount);
+    const amount = planName ? Number(v?.[planName]?.amount) : Number(v.amount);
     if (!v.auto || !(amount > 0)) return json({ error: "payments not open" }, 400);
 
     // 3a. A featured slot must be for the person's own, visible listing
@@ -68,7 +69,7 @@ Deno.serve(async (req) => {
     let origin = "";
     origin = String(reqBody?.origin || "");
     if (!/^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(origin)) origin = "";
-    const reference = `${gigId ? "feat" : songId ? "song" : "gold"}_${user.id.slice(0, 8)}_${Date.now().toString(36)}`;
+    const reference = `${gigId ? "feat" : songId ? "song" : planName ? "plan" : "gold"}_${user.id.slice(0, 8)}_${Date.now().toString(36)}`;
     const body: Record<string, unknown> = {
       email: user.email,
       amount: Math.round(amount * 100), // pesewas
@@ -76,9 +77,10 @@ Deno.serve(async (req) => {
       reference,
       metadata: gigId ? { user_id: user.id, purpose: "feature_gig", gig_id: gigId, days: Number(v.days) || 7 }
         : songId ? { user_id: user.id, purpose: "feature_song", song_id: songId, days: Number(v.days) || 7 }
+        : planName ? { user_id: user.id, purpose: "seller_plan", plan: planName, days: Number(v.days) || 30 }
         : { user_id: user.id, purpose: "gold_tick", months: 1 },
     };
-    if (origin) body.callback_url = `${origin}/?paid=${gigId ? "gig" : songId ? "song" : "1"}`;
+    if (origin) body.callback_url = `${origin}/?paid=${gigId ? "gig" : songId ? "song" : planName ? "plan" : "1"}`;
     const pk = await fetch("https://api.paystack.co/transaction/initialize", {
       method: "POST",
       headers: { Authorization: `Bearer ${PAYSTACK_SECRET}`, "Content-Type": "application/json" },
