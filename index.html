@@ -650,6 +650,17 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+.mvbar{margin:6px 0 10px}.mvchips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}.mvchips::-webkit-scrollbar{display:none}.mvchips .chip{flex:none}
+.mvgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin:10px 0}
+.mvc{display:flex;flex-direction:column;gap:4px;text-align:left;background:none;border:0;padding:0;font:inherit;color:var(--text);cursor:pointer}
+.mvth{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#222}.mvth img{width:100%;height:100%;object-fit:cover;display:block}
+.mvplay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;background:rgba(0,0,0,.25);text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.mvt{font-size:14px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.mvm{font-size:12px;color:var(--muted)}
+.mvmod{position:relative;background:var(--bg);border-radius:16px;padding:12px;width:100%;max-width:760px;max-height:94vh;overflow:auto}
+.mvfr{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#000;display:block;margin-bottom:8px}
+.mvx{position:absolute;right:8px;top:6px;z-index:2;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer}
+.mvov .mvmod h3{margin:6px 0 2px}
+
 .tk{letter-spacing:-3px;font-weight:800;opacity:.7}.tk.seen{color:#34b7f1;opacity:1}
 .bub.me .tk{background:rgba(255,255,255,.92);color:#8a8a8a;border-radius:8px;padding:0 5px 0 3px;font-size:12px;margin-left:2px;opacity:1}
 .bub.me .tk.seen{color:#1d9bf0}
@@ -1113,6 +1124,7 @@ body.biomode main.wrap{max-width:560px}
   <div id="vWall" hidden></div>
   <div id="vQuiz" hidden></div>
   <div id="vPlay" hidden></div>
+  <div id="vMovies" hidden></div>
 </main>
 <footer class="wrap foot">Hottest Gist GH · Fresh music, movies and culture from Ghana and beyond.<div class="fl2"><a href="/stories.html">All stories</a><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></footer>
 
@@ -1432,7 +1444,7 @@ function pollCard(pl){
 
 
 // ===== Remember the page in the address (refresh and Back keep you there) =====
-var V2H={gold:"gold",matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",market:"market",play:"play",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
+var V2H={gold:"gold",matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",market:"market",play:"play",movies:"movies",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
 var H2V={};Object.keys(V2H).forEach(function(k){H2V[V2H[k]]=k});
 var routing=false;
 function isRouteHash(h){return !!H2V[h]||/^[um]-[0-9a-f-]{36}$/.test(h)||/^match-\d+$/.test(h)}
@@ -1456,7 +1468,7 @@ window.addEventListener("popstate",function(){
   try{if(!routeHash(h)&&(!h||isRouteHash(h)||viewName!=="gist"))setView("gist")}finally{routing=false}
 });
 // ===== "You are here" line and tap flash =====
-var VIEWNAMES={gold:"Gold tick",matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",market:"Market",play:"Play",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
+var VIEWNAMES={gold:"Gold tick",matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",market:"Market",play:"Play",movies:"Movies",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
 function drawWhere(){
   var w=$("where");if(!w)return;w.textContent="";
   if(viewName==="search")return;
@@ -2802,6 +2814,60 @@ function openStory(items){
   ov.addEventListener("contextmenu",function(e){e.preventDefault()});
   document.addEventListener("keydown",key);document.body.appendChild(ov);show();
 }
+
+/* ===== Movies (YouTube embeds) ===== */
+var MVCATS=["Ghana","Nollywood","Action","Comedy","Drama","Faith","Documentary","Short film","Kids","Other"],mvRows=null,mvCat="All";
+function ytId(u){var e=embedUrl(u);if(!e||!e.src)return null;var m=e.src.match(/embed\/([\w-]+)/);return m?m[1]:null}
+function renderMovies(){
+  var v=$("vMovies");v.textContent="";
+  v.appendChild(el("h2","vh","🎬 Free movies"));
+  v.appendChild(el("p","sub","Full movies from YouTube channels that share them for free. They play right here."));
+  var bar=el("div","mvbar");var sb=el("button","go2","🎬 Submit a film");sb.type="button";sb.onclick=function(){if(!SES){needLogin("Log in to submit a film.");return}submitFilm()};bar.appendChild(sb);v.appendChild(bar);
+  var chips=el("div","mvchips");v.appendChild(chips);var grid=el("div","mvgrid");v.appendChild(grid);
+  function draw(){
+    chips.textContent="";["All"].concat(MVCATS).forEach(function(c){var b=el("button","chip",c);b.type="button";b.setAttribute("aria-pressed",String(c===mvCat));b.onclick=function(){mvCat=c;draw()};chips.appendChild(b)});
+    grid.textContent="";var rows=(mvRows||[]).filter(function(m){return mvCat==="All"||m.category===mvCat});
+    if(!rows.length){grid.appendChild(el("div","none",mvRows&&mvRows.length?"No films in this category yet.":"No films yet. Be the first to submit one!"));return}
+    rows.forEach(function(m){
+      var id=ytId(m.yt),c=el("button","mvc");c.type="button";c.setAttribute("aria-label","Watch "+m.title);
+      var th=el("div","mvth");if(id){var im=document.createElement("img");im.src="https://i.ytimg.com/vi/"+id+"/hqdefault.jpg";im.alt="";im.loading="lazy";th.appendChild(im)}th.appendChild(el("span","mvplay","▶"));c.appendChild(th);
+      c.appendChild(el("b","mvt",m.title));c.appendChild(el("span","mvm",m.category+(m.year?" · "+m.year:"")));
+      c.onclick=function(){watchFilm(m)};grid.appendChild(c);
+    });
+  }
+  if(mvRows){draw()}else{grid.appendChild(el("div","none","Loading..."))}
+  if(CFG)api("rpc/movie_list",{}).then(function(r){mvRows=r||[];if(viewName==="movies")draw()}).catch(function(){mvRows=[];if(viewName==="movies"){grid.textContent="";grid.appendChild(el("div","none","Movies aren't ready yet. Did you run setup-movies.sql?"))}});
+}
+function watchFilm(m){
+  var e=embedUrl(m.yt);if(!e||!e.src)return;
+  var ov=el("div","stov mvov"),card=el("div","mvmod");ov.appendChild(card);
+  function close(){ov.remove();document.removeEventListener("keydown",esc)}
+  function esc(ev){if(ev.key==="Escape")close()}
+  var x=el("button","mvx","✕");x.type="button";x.setAttribute("aria-label","Close");x.onclick=close;card.appendChild(x);
+  var fr=document.createElement("iframe");fr.src=e.src+"?autoplay=1&rel=0";fr.setAttribute("allow","autoplay; encrypted-media; picture-in-picture; fullscreen");fr.setAttribute("allowfullscreen","");fr.referrerPolicy="strict-origin-when-cross-origin";fr.title=m.title;fr.className="mvfr";card.appendChild(fr);
+  card.appendChild(el("h3",null,m.title));card.appendChild(el("div","mvm",m.category+(m.year?" · "+m.year:"")+(m.by_name?" · shared by "+m.by_name:"")));
+  if(m.description)card.appendChild(el("p","gdesc",m.description));
+  var rw=el("div","evb");
+  var yt=el("a","go2","Open on YouTube");yt.href=m.yt;yt.target="_blank";yt.rel="noopener noreferrer";rw.appendChild(yt);
+  var rp=el("button","g","Report");rp.type="button";rp.onclick=function(){if(!SES){needLogin("Log in to report a film.");return}api("rpc/movie_report",{p_id:m.id}).then(function(){toast("Thanks, we'll check it")}).catch(function(){toast("Couldn't report")})};rw.appendChild(rp);
+  card.appendChild(rw);
+  ov.onclick=function(ev){if(ev.target===ov)close()};document.addEventListener("keydown",esc);document.body.appendChild(ov);
+}
+function submitFilm(){
+  var ov=el("div","stov"),card=el("div","stadd");ov.appendChild(card);
+  card.appendChild(el("h3",null,"Submit a film"));
+  card.appendChild(el("p","none","Paste the YouTube link of a full movie. Only submit films you own or that the owner lets people share. We review every film before it shows."));
+  var t=el("input");t.placeholder="Film title";t.maxLength=100;card.appendChild(t);
+  var u=el("input");u.placeholder="YouTube link";u.type="url";card.appendChild(u);
+  var c=el("select");MVCATS.forEach(function(x){var o=el("option",null,x);o.value=x;c.appendChild(o)});card.appendChild(c);
+  var y=el("input");y.placeholder="Year (optional)";y.type="number";y.min="1900";y.max="2100";card.appendChild(y);
+  var d=el("textarea");d.rows=3;d.maxLength=600;d.placeholder="Short description (optional)";card.appendChild(d);
+  [t,u,c,y,d].forEach(function(e){e.style.cssText="width:100%;box-sizing:border-box;margin:4px 0"});
+  var go=el("button",null,"Submit"),cn=el("button","g","Cancel");go.type=cn.type="button";cn.onclick=function(){ov.remove()};
+  go.onclick=function(){go.disabled=true;api("rpc/movie_submit",{p_title:t.value,p_url:u.value,p_cat:c.value,p_year:y.value?Number(y.value):null,p_desc:d.value}).then(function(st){ov.remove();toast(st==="live"?"Film added":"Thanks! We'll review it soon.");if(st==="live"){mvRows=null;renderMovies()}}).catch(function(er){go.disabled=false;toast((er&&er.detail)||"Couldn't submit. Did you run setup-movies.sql?")})};
+  var rw=el("div","evb");rw.appendChild(go);rw.appendChild(cn);card.appendChild(rw);
+  ov.onclick=function(e){if(e.target===ov)ov.remove()};document.body.appendChild(ov);
+}
 function renderQuiz(reset){
   var v=$("vQuiz");v.textContent="";
   v.appendChild(el("h2","vh","🧠 Ghana music quiz"));
@@ -2940,6 +3006,7 @@ function buildShowcase(){
    ["gigs","💼","Services","Hire a CapCut editor or a promo creator","#0e7490,#164e63"],
    ["events","📅","Events",evSub,"#d97706,#92400e"],
    ["polls","📊","Poll of the day",pl,"#2563eb,#1e3a8a"],
+   ["movies","🎬","Free movies","Watch full movies for free, picked for you","#7c2d12,#431407"],
    ["play","🎮","Play with a friend","Challenge a friend to a penalty shootout, each on your own phone","#0f766e,#134e4a"],
    ["quiz","🧠","Quiz","Test your Ghana music and football knowledge","#db2777,#831843"],
    ["fans","🌟","Fans","Post, follow and grow your page. TikTok trending sounds","#9333ea,#581c87"],
@@ -3497,16 +3564,16 @@ function renderProfile(uid){
 function setView(v){
   viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="gold"||v==="profile"||v==="friends"||v==="messages"||v==="chat"||v==="match");document.body.classList.toggle("inchat",v==="chat"||v==="match");document.body.classList.toggle("biomode",v==="bio");
   setTimeout(navMark,0);syncHash(v);
-  ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","market","play","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","market","play","movies","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   if($("tabs")&&!$("tabs").hidden)buildTabs();
-  if(v==="gist")loadStories();if(v!=="play")stopPlay();if(v==="play")renderPlay();if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="gist")loadStories();if(v==="movies")renderMovies();if(v!=="play")stopPlay();if(v==="play")renderPlay();if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 var TCATS=[
  ["home","Home","#c8102e",'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',[["gist","🔥 Gist"]]],
  ["music","Music & Sport","#7c3aed",'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',[["matchday","⚽ Match day"],["chart","🎵 Top 10"],["events","📅 Events"]]],
  ["community","Community","#2563eb",'<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><path d="M16 4.500a3.500 3.500 0 0 1 0 7M18 14.500a6.500 6.500 0 0 1 3.500 5.500"/>',[["fans","🌟 Fans"],["wall","💬 Wall"],["top","🏆 Top fans"]]],
- ["fun","Fun & Games","#d97706",'<path d="M7 7h10a4 4 0 0 1 4 4v3a3 3 0 0 1-5.500 1.600L14.800 14H9.200l-.7 1.600A3 3 0 0 1 3 14v-3a4 4 0 0 1 4-4z"/><path d="M8 10v3M6.500 11.500h3"/><circle cx="15.500" cy="10.500" r=".6"/><circle cx="17.500" cy="12.500" r=".6"/>',[["play","🎮 Play"],["polls","📊 Polls"],["quiz","🧠 Quiz"]]],
+ ["fun","Fun & Games","#d97706",'<path d="M7 7h10a4 4 0 0 1 4 4v3a3 3 0 0 1-5.500 1.600L14.800 14H9.200l-.7 1.600A3 3 0 0 1 3 14v-3a4 4 0 0 1 4-4z"/><path d="M8 10v3M6.500 11.500h3"/><circle cx="15.500" cy="10.500" r=".6"/><circle cx="17.500" cy="12.500" r=".6"/>',[["play","🎮 Play"],["movies","🎬 Movies"],["polls","📊 Polls"],["quiz","🧠 Quiz"]]],
  ["biz","Business","#15803d",'<path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/>',[["market","🛍️ Market"],["gigs","💼 Services"]]]
 ];
 var tLastCat="home",tCatView={};

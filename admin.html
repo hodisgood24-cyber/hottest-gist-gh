@@ -109,6 +109,14 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
  <div class="row"><button>Save</button></div></form>
  <h2>Market items and sellers</h2><div id="mkt" class="card">Loading...</div>
  <h2>Services listings</h2><div id="gigs" class="card">Loading...</div>
+ <h2>🎬 Movies (YouTube)</h2>
+ <form id="mvf" class="card"><label>Film title</label><input id="mv1" maxlength="100" required>
+ <label>YouTube link (full movie)</label><input id="mv2" type="url" placeholder="https://www.youtube.com/watch?v=..." required>
+ <label>Category</label><select id="mv3"><option>Ghana</option><option>Nollywood</option><option>Action</option><option>Comedy</option><option>Drama</option><option>Faith</option><option>Documentary</option><option>Short film</option><option>Kids</option><option>Other</option></select>
+ <label>Year (optional)</label><input id="mv4" type="number" min="1900" max="2100">
+ <label>Description (optional)</label><textarea id="mv5" rows="2" maxlength="600"></textarea>
+ <div class="row"><button>Add film</button></div></form>
+ <div id="mvl" class="card">Loading...</div>
  <h2>⚽ Match day</h2>
  <form id="mdf" class="card"><label>Home team</label><input id="mh" maxlength="40" placeholder="Ghana" required>
  <label>Away team</label><input id="ma" maxlength="40" placeholder="Nigeria" required>
@@ -258,6 +266,23 @@ function loadMarket(){
     });
   }).catch(function(){$("mkt").textContent="Couldn't load. Did you run setup-market.sql?"});
 }
+function loadMovies(){
+  rpc("admin_movies").then(function(m){
+    var b=$("mvl");b.textContent="";
+    if(!(m||[]).length)b.textContent="No films yet.";
+    (m||[]).forEach(function(c){
+      var d=el("div","it"),L=el("div");
+      L.appendChild(el("p",null,c.title+" ("+c.category+")"));
+      L.appendChild(el("p","m",c.status.toUpperCase()+(c.by_name?" \u00b7 by "+c.by_name:"")+" \u00b7 "+new Date(c.created_at).toLocaleString()+(c.reports?" \u00b7 "+c.reports+" report(s)":"")));d.appendChild(L);
+      var v=el("a","g","Open");v.href=c.yt;v.target="_blank";v.rel="noopener";d.appendChild(v);
+      function setS(st){return function(){rpc("admin_movie_set",{p_id:c.id,p_status:st}).then(loadMovies).catch(function(){alert("Failed")})}}
+      if(c.status!=="live"){var ap=el("button",null,"Approve");ap.onclick=setS("live");d.appendChild(ap)}
+      if(c.status==="live"){var hd=el("button","d","Hide");hd.onclick=setS("hidden");d.appendChild(hd)}
+      var dl=el("button","d","Delete");dl.onclick=function(){if(confirm("Delete this film?"))rpc("admin_movie_delete",{p_id:c.id}).then(loadMovies).catch(function(){alert("Failed")})};d.appendChild(dl);
+      b.appendChild(d);
+    });
+  }).catch(function(){$("mvl").textContent="Couldn't load. Did you run setup-movies.sql?"});
+}
 function loadGigs(){
   rpc("admin_gigs").then(function(m){
     var b=$("gigs");b.textContent="";
@@ -324,7 +349,7 @@ function loadMatches(){
   }).catch(function(){$("mdl").textContent="Couldn't load. Did you run setup-matchday.sql?"});
 }
 function init(){
-  loadPosts();loadMod();loadCreators();loadGigs();loadMarket();loadVer();loadPays();loadSubm();loadMatches();
+  loadPosts();loadMod();loadCreators();loadGigs();loadMovies();loadMarket();loadVer();loadPays();loadSubm();loadMatches();
   $("mdsync").onclick=function(){var b=$("mdsync");b.disabled=true;b.textContent="Getting matches…";rpc("admin_sync_matches").then(function(r){say("Done: "+r);loadMatches()}).catch(function(){alert("Failed. Did you run setup-matchday-auto.sql?")}).then(function(){b.disabled=false;b.textContent="Get latest matches now"})};
   $("mdf").onsubmit=function(e){e.preventDefault();var k=new Date($("mk").value);if(isNaN(k)){alert("Pick the kick-off date and time");return}
     rpc("admin_save_match",{p:{home:$("mh").value.trim(),away:$("ma").value.trim(),competition:$("mc").value.trim(),kickoff:k.toISOString()}}).then(function(){$("mh").value="";$("ma").value="";$("mk").value="";say("Match added. Fans can predict now ⚽");loadMatches()}).catch(function(){alert("Failed. Did you run setup-matchday.sql?")})};
@@ -363,6 +388,7 @@ function init(){
   $("vf2").onsubmit=function(e){e.preventDefault();rpc("admin_set_setting",{p_key:"verify",p_value:{price:$("vp").value.trim(),amount:Number($("va").value)||0,auto:$("vo").checked&&Number($("va").value)>0,how:$("vh").value.trim(),link:$("vl").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("spf").onsubmit=function(e){e.preventDefault();var a=Number($("spa").value)||0;rpc("admin_set_setting",{p_key:"spotlight",p_value:{price:$("spp").value.trim(),amount:a,days:Math.min(30,Math.max(1,Number($("spd").value)||7)),auto:$("spo").checked&&a>0,how:$("sph").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("plf").onsubmit=function(e){e.preventDefault();var o={days:Math.min(365,Math.max(1,Number($("pd").value)||30))},any=false;["standard","premium","star"].forEach(function(k,i){var n=Number($("pa"+(i+1)).value)||0;if(n>0)any=true;o[k]={price:$("pp"+(i+1)).value.trim(),amount:n}});o.auto=$("po").checked&&any;rpc("admin_set_setting",{p_key:"plans",p_value:o}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
+  $("mvf").onsubmit=function(e){e.preventDefault();rpc("movie_submit",{p_title:$("mv1").value,p_url:$("mv2").value,p_cat:$("mv3").value,p_year:$("mv4").value?Number($("mv4").value):null,p_desc:$("mv5").value}).then(function(){$("mvf").reset();loadMovies();say("Film added.");setTimeout(function(){say("")},2500)}).catch(function(er){alert((er&&er.detail)||"Failed. Did you run setup-movies.sql?")})};
   $("ff").onsubmit=function(e){e.preventDefault();var a=Number($("fa").value)||0;rpc("admin_set_setting",{p_key:"feature",p_value:{price:$("fp").value.trim(),amount:a,days:Math.min(30,Math.max(1,Number($("fd").value)||7)),auto:$("fo").checked&&a>0}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("vx").onclick=function(){rpc("admin_set_setting",{p_key:"verify",p_value:{}}).then(function(){$("vf2").reset();say("Sign-ups closed.");setTimeout(function(){say("")},2500)})};
   setting("sf","song",function(){return{title:$("s1").value.trim(),artist:$("s2").value.trim(),note:$("s3").value.trim(),link:$("s4").value.trim()}},"sx");
@@ -374,7 +400,7 @@ function init(){
   var G=[
    ["home","🏠","Overview",[]],
    ["content","📝","Content",["Write a post","Your posts","Song of the day","TikTok trending sounds","Sponsor strip"]],
-   ["mod","🛡️","Moderation",["Moderation","Fan posts","Services listings","Market items and sellers","Song submissions"]],
+   ["mod","🛡️","Moderation",["Moderation","Fan posts","Services listings","🎬 Movies","Market items and sellers","Song submissions"]],
    ["money","💰","Money",["Gold tick requests","Recent automatic payments","Gold tick price and payment details","Featured slot price","Seller plans","Featured artist price"]],
    ["people","👥","People",["Creators","Email subscribers"]],
    ["match","⚽","Match day",["⚽ Match day"]]
