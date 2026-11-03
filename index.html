@@ -650,6 +650,12 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+.hgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));box-sizing:border-box;width:100%;gap:8px;margin:10px 0;background:#c08a4b;padding:10px;border-radius:16px;border:2px solid #92400e}
+.hs{position:relative;min-width:0;aspect-ratio:1;border:0;border-radius:12px;background:rgba(255,255,255,.25);font-size:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.hs:disabled{cursor:default}.hs:not(:disabled):hover{background:rgba(255,255,255,.5)}
+.hs .hm{position:absolute;right:4px;bottom:2px;font-size:22px}
+.hs.hot{background:rgba(239,68,68,.45)}.hs.cold{background:rgba(59,130,246,.4)}.hs.found{background:rgba(34,197,94,.6)}.hs.mine{outline:3px solid #fff}
+
 .glob{display:grid;gap:12px;margin:10px 0}
 .gcard{border-radius:18px;overflow:hidden;background:var(--card);border:1.5px solid var(--line)}
 .gart{height:110px;background:linear-gradient(135deg,var(--ga,#444),var(--gb,#222))}.gart svg{width:100%;height:100%;display:block}
@@ -662,7 +668,7 @@ body.inchat footer{display:none}
 .gsoon{display:flex;align-items:center;gap:12px;border-style:dashed;opacity:.85}.gsoon .gart{width:90px;height:auto;min-height:90px;display:flex;align-items:center;justify-content:center;font-size:40px;background:var(--bg)}.gsoon .gbody{padding:12px}
 
 .gbub{margin-top:6px;background:var(--red);color:#fff;border:0;border-radius:99px;padding:7px 14px;font:inherit;font-weight:800;cursor:pointer}.gbub:disabled{opacity:.6}
-.pen{position:relative}.psnd{position:absolute;right:2px;top:-4px;z-index:2;background:none;border:0;font-size:20px;cursor:pointer}
+.pen{position:relative}.psnd{position:absolute;right:2px;top:-30px;z-index:2;background:none;border:0;font-size:20px;cursor:pointer}
 
 .gdock{margin:6px 0}.gch{width:100%;background:var(--card);border:1.5px dashed var(--line);border-radius:12px;padding:8px;font:inherit;font-weight:700;color:var(--text);cursor:pointer}
 .gbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--card);border:1.5px solid var(--red);border-radius:12px;padding:8px 10px}.gbar b{flex:1;min-width:120px}
@@ -2496,17 +2502,19 @@ var QUIZ=[
 ];
 var qs={i:0,score:0,order:[],done:false};
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
-var playId=null,playTimer=null,playListT=null,playLen=null,playSig="",playBanner=null;
+var playKind="penalty",playSel="penalty",playId=null,playTimer=null,playListT=null,playLen=null,playSig="",playBanner=null;
 var DIRN=["Left","Centre","Right"],DIRX=[17,50,83];
 function stopPlay(){clearInterval(playTimer);playTimer=null;clearInterval(playListT);playListT=null}
 function pName(st,i){return st["p"+i+"_name"]||"Friend"}
 function pAv(st,i,sz){return avEl({name:pName(st,i),avatar:st["p"+i+"_avatar"]},sz)}
 var GAMES=[{kind:"penalty",icon:"⚽",title:"Penalty shootout",tag:"2 players",c1:"#1b5e20",c2:"#2e7d32",desc:"Five kicks each. Pick where to shoot or where to dive. Nobody sees the other's choice until both have picked. Most goals wins.",chips:["👥 Friends only","⏱ About 3 min","🔊 Sound"],
- art:'<svg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="gs" width="40" height="120" patternUnits="userSpaceOnUse"><rect width="20" height="120" fill="#2e7d32"/><rect x="20" width="20" height="120" fill="#2a7330"/></pattern></defs><rect width="320" height="120" fill="url(#gs)"/><rect x="95" y="14" width="130" height="64" fill="none" stroke="#fff" stroke-width="4"/><path d="M95 14l130 64M225 14L95 78" stroke="rgba(255,255,255,.25)" stroke-width="1"/><circle cx="160" cy="98" r="3" fill="#fff"/><text x="160" y="62" font-size="34" text-anchor="middle">🧤</text><text x="215" y="108" font-size="26" text-anchor="middle">⚽</text></svg>'}];
+ art:'<svg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="gs" width="40" height="120" patternUnits="userSpaceOnUse"><rect width="20" height="120" fill="#2e7d32"/><rect x="20" width="20" height="120" fill="#2a7330"/></pattern></defs><rect width="320" height="120" fill="url(#gs)"/><rect x="95" y="14" width="130" height="64" fill="none" stroke="#fff" stroke-width="4"/><path d="M95 14l130 64M225 14L95 78" stroke="rgba(255,255,255,.25)" stroke-width="1"/><circle cx="160" cy="98" r="3" fill="#fff"/><text x="160" y="62" font-size="34" text-anchor="middle">🧤</text><text x="215" y="108" font-size="26" text-anchor="middle">⚽</text></svg>'},
+ {kind:"hide",icon:"🙈",title:"Hide and Seek",tag:"2 players",c1:"#92400e",c2:"#b45309",desc:"Hide in the yard while your friend searches. They get 3 tries and a hot or cold hint after each one. Then swap roles. 6 rounds, most points wins.",chips:["👥 Friends only","⏱ About 5 min","🔥 Hot or cold hints"],
+ art:'<svg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="320" height="120" fill="#c08a4b"/><rect y="84" width="320" height="36" fill="#9a6b34"/><text x="48" y="78" font-size="52" text-anchor="middle">🌳</text><text x="125" y="84" font-size="44" text-anchor="middle">🛖</text><text x="200" y="88" font-size="38" text-anchor="middle">🐐</text><text x="262" y="80" font-size="46" text-anchor="middle">🌴</text><text x="160" y="40" font-size="26" text-anchor="middle">👀</text></svg>'}];
 function renderPlay(){
   var v=$("vPlay");stopPlay();v.textContent="";
   if(!(CFG&&SES)){v.appendChild(el("div","empty","Log in to play with friends."));return}
-  if(playId){roomView(v,playId);return}
+  if(playId){if(playKind==="hide")hideRoom(v,playId);else roomView(v,playId);return}
   v.appendChild(el("h2","vh","🎮 Play with a friend"));
   v.appendChild(el("p","sub","Challenge a friend. You each play on your own phone, wherever you are."));
   var gl=el("div","glob");v.appendChild(gl);var statEl={};
@@ -2517,47 +2525,109 @@ function renderPlay(){
     bd.appendChild(el("p","gdesc",g.desc));
     var ch=el("div","gchips");g.chips.forEach(function(t){ch.appendChild(el("span",null,t))});bd.appendChild(ch);
     var st=el("div","gstats");st.textContent="Loading your record…";statEl[g.kind]=st;bd.appendChild(st);
-    var pb=el("button","gplay","🎮 Challenge a friend");pb.type="button";pb.onclick=function(){v.querySelector(".gfl").scrollIntoView({behavior:"smooth",block:"start"})};bd.appendChild(pb);
+    var pb=el("button","gplay","🎮 Challenge a friend");pb.type="button";pb.onclick=function(){playSel=g.kind;drawFriends();v.querySelector(".gfl").scrollIntoView({behavior:"smooth",block:"start"})};bd.appendChild(pb);
     c.appendChild(bd);gl.appendChild(c);
   });
   var soon=el("div","gcard gsoon");soon.appendChild(el("div","gart gq","❓"));var sb2=el("div","gbody");sb2.appendChild(el("h3",null,"More games coming"));sb2.appendChild(el("p","gdesc","New games for you and your friends are on the way. Check back soon."));soon.appendChild(sb2);gl.appendChild(soon);
   var mine=el("div");v.appendChild(el("h3","vh2","Your games"));v.appendChild(mine);
   var fl=el("div","gfl");v.appendChild(el("h3","vh2","Challenge a friend"));v.appendChild(fl);
-  function openR(id){playId=id;playLen=null;playSig="";renderPlay()}
+  function openR(id,k){playId=id;playKind=k||"penalty";playLen=null;playSig="";renderPlay()}
   function drawGames(){
-    api("rpc/game_list",{}).then(function(rows){
-      rows=rows||[];mine.textContent="";
+    Promise.all([api("rpc/game_list",{}).then(function(r){return(r||[]).map(function(x){x.kind=x.kind||"penalty";return x})}),api("rpc/hide_list",{}).then(function(r){return r||[]}).catch(function(){return[]})]).then(function(parts){
+      var rows=parts[0].concat(parts[1]).sort(function(a,b){return String(b.updated_at).localeCompare(String(a.updated_at))});mine.textContent="";
       GAMES.forEach(function(g){var e2=statEl[g.kind];if(!e2)return;var fin=rows.filter(function(r){return r.kind===g.kind&&r.status==="done"}),w=fin.filter(function(r){return r.winner===SES.user.id}).length,d=fin.filter(function(r){return !r.winner}).length;e2.textContent=fin.length?("Last 2 days:  🏆 "+w+" won  ·  "+(fin.length-w-d)+" lost  ·  "+d+" draw"):"No games yet. Be the first to play!"});
       if(!rows.length){mine.appendChild(el("div","none","No games yet. Challenge a friend below."));return}
       rows.forEach(function(g){
         var me=g.mine,opp=me===1?2:1,r=el("div","lbr");r.style.cursor="pointer";
         r.appendChild(pAv(g,opp,36));
-        var tx=el("div");tx.style.flex="1";tx.style.minWidth="0";tx.appendChild(el("b",null,"⚽ vs "+pName(g,opp)));
-        var s=g.status==="invited"?(me===2?"Challenged you":"Waiting for them to accept"):g.status==="active"?(g.my_pick!==null&&g.my_pick!==undefined?"Waiting for them…":"Your move! "+g.score1+" - "+g.score2):(g.winner===SES.user.id?"You won "+(me===1?g.score1+"-"+g.score2:g.score2+"-"+g.score1):g.winner?"You lost "+(me===1?g.score1+"-"+g.score2:g.score2+"-"+g.score1):"Draw");
+        var tx=el("div");tx.style.flex="1";tx.style.minWidth="0";var isH=g.kind==="hide";tx.appendChild(el("b",null,(isH?"🙈":"⚽")+" vs "+pName(g,opp)));
+        var s=g.status==="invited"?(me===2?"Challenged you":"Waiting for them to accept"):g.status==="active"?(isH?(((g.hider===me)===!g.hidden)?"Your move! "+g.score1+" - "+g.score2:"Waiting for them…"):(g.my_pick!==null&&g.my_pick!==undefined?"Waiting for them…":"Your move! "+g.score1+" - "+g.score2)):(g.winner===SES.user.id?"You won "+(me===1?g.score1+"-"+g.score2:g.score2+"-"+g.score1):g.winner?"You lost "+(me===1?g.score1+"-"+g.score2:g.score2+"-"+g.score1):"Draw");
         tx.appendChild(el("div","none",s));r.appendChild(tx);
         if(g.status==="invited"&&me===2){
-          var ok=el("button",null,"Accept");ok.type="button";ok.onclick=function(e){e.stopPropagation();api("rpc/game_respond",{p_id:g.id,p_accept:true}).then(function(){openR(g.id)}).catch(function(){toast("Couldn't accept")})};
-          var no=el("button","g","Decline");no.type="button";no.onclick=function(e){e.stopPropagation();api("rpc/game_respond",{p_id:g.id,p_accept:false}).then(drawGames).catch(function(){})};
+          var ok=el("button",null,"Accept");ok.type="button";ok.onclick=function(e){e.stopPropagation();api(g.kind==="hide"?"rpc/hide_respond":"rpc/game_respond",{p_id:g.id,p_accept:true}).then(function(){openR(g.id,g.kind)}).catch(function(){toast("Couldn't accept")})};
+          var no=el("button","g","Decline");no.type="button";no.onclick=function(e){e.stopPropagation();api(g.kind==="hide"?"rpc/hide_respond":"rpc/game_respond",{p_id:g.id,p_accept:false}).then(drawGames).catch(function(){})};
           r.appendChild(ok);r.appendChild(no);
         }else r.appendChild(el("span","none",g.status==="active"?"Play →":"›"));
-        r.onclick=function(){openR(g.id)};mine.appendChild(r);
+        r.onclick=function(){openR(g.id,g.kind)};mine.appendChild(r);
       });
     }).catch(function(){mine.textContent="";mine.appendChild(el("div","none","Games aren't ready yet. Did you run setup-games.sql?"))});
   }
   drawGames();playListT=setInterval(function(){if(viewName!=="play"||playId){stopPlay();return}drawGames()},5000);
   function drawFriends(){
-    fl.textContent="";var fr=friends.filter(function(f){return f.state==="friends"});
+    fl.textContent="";fl.appendChild(el("div","none","Game: "+(GAMES.filter(function(x){return x.kind===playSel})[0]||GAMES[0]).title));var fr=friends.filter(function(f){return f.state==="friends"});
     if(!fr.length){fl.appendChild(el("div","none","You need a friend to play with. Add friends first."));var fb=el("button",null,"Find friends");fb.type="button";fb.onclick=function(){setView("friends")};fl.appendChild(fb);return}
     fr.forEach(function(f){
       var r=el("div","lbr");r.appendChild(avEl(f,36));var nm=el("div","nm2",f.name||"Friend");nm.style.flex="1";r.appendChild(nm);
-      var b=el("button",null,"⚽ Challenge");b.type="button";
-      b.onclick=function(){b.disabled=true;api("rpc/game_invite",{p_to:f.user_id,p_kind:"penalty"}).then(function(id){toast("Challenge sent!");openR(id)}).catch(function(er){b.disabled=false;toast(er.detail||"Couldn't send the challenge")})};
+      var gm=GAMES.filter(function(x){return x.kind===playSel})[0]||GAMES[0];var b=el("button",null,gm.icon+" Challenge");b.type="button";
+      b.onclick=function(){b.disabled=true;(gm.kind==="hide"?api("rpc/hide_invite",{p_to:f.user_id}):api("rpc/game_invite",{p_to:f.user_id,p_kind:"penalty"})).then(function(id){toast("Challenge sent!");openR(id,gm.kind)}).catch(function(er){b.disabled=false;toast(er.detail||"Couldn't send the challenge")})};
       r.appendChild(b);fl.appendChild(r);
     });
   }
   if(frLoaded)drawFriends();else{fl.appendChild(el("div","none","Loading..."));loadFriends(drawFriends)}
 }
 
+
+var HSPOT=["🌳","🏠","🚗","🛢️","🐐","🪣","🌴","🧺","🛖"],HNAME=["the tree","the hut","the car","the drum","the goat pen","the well","the palm","the basket","the shed"];
+function hideRoom(v,gid){
+  var back=el("button","rl","← Back to Play");back.type="button";back.onclick=function(){playId=null;renderPlay()};v.appendChild(back);
+  var wrap=el("div","pen");v.appendChild(wrap);wrap.appendChild(el("div","none","Loading..."));
+  var sig0="",len0=null,doneSnd=false,tm=null,turnR=0;
+  function pull(){api("rpc/hide_state",{p_id:gid}).then(draw).catch(function(){wrap.textContent="";wrap.appendChild(el("div","none","Couldn't open this game."))})}
+  function act(fn,p){api("rpc/"+fn,p).then(draw).catch(function(er){toast(er.detail||"Not allowed right now")})}
+  function draw(st){
+    var hl=(st.history||[]).length,sig=[st.status,st.round,hl,st.hidden,(st.guesses||[]).length,st.winner,st.score1,st.score2].join("|");
+    if(sig===sig0)return;
+    var fresh=len0!==null&&hl>len0,prevG=sig0===""?0:Number(sig0.split("|")[4]||0);len0=hl;sig0=sig;
+    var me=st.mine,opp=me===1?2:1,myId=SES.user.id,amH=st.hider===me,gs=st.guesses||[];
+    wrap.textContent="";
+    var snb=el("button","psnd",GSND.on()?"🔊":"🔇");snb.type="button";snb.setAttribute("aria-label","Game sounds");snb.onclick=function(){GSND.set(!GSND.on());snb.textContent=GSND.on()?"🔊":"🔇";GSND.play("kick")};wrap.appendChild(snb);
+    var sb=el("div","pscore");
+    [1,2].forEach(function(i){var c=el("div","psc"+(i===me?" me":""));c.appendChild(pAv(st,i,40));c.appendChild(el("b",null,i===me?"You":pName(st,i)));c.appendChild(el("span","pn",String(st["score"+i])));sb.appendChild(c)});
+    wrap.appendChild(sb);
+    var last=hl?st.history[hl-1]:null;
+    if(fresh&&last){
+      var iHid=last.hider===me,txt=last.found?(iHid?"😮 "+pName(st,opp)+" found you on try "+last.tries+"!":"🎉 You found them on try "+last.tries+"! They were at "+HNAME[last.spot]+"."):(iHid?"😎 You stayed hidden at "+HNAME[last.spot]+"!":"🙈 Not found! They were at "+HNAME[last.spot]+".");
+      var good=last.found?!iHid:iHid;GSND.play(good?"goal":"save");
+      wrap.appendChild(el("div","pbanner "+(good?"good":"bad"),txt));
+    }
+    if(st.status==="invited"){
+      if(me===2){wrap.appendChild(el("div","pmsg",pName(st,1)+" wants to play Hide and Seek!"));
+        var ok=el("button",null,"Accept");ok.type="button";ok.onclick=function(){act("hide_respond",{p_id:gid,p_accept:true})};
+        var no=el("button","g","Decline");no.type="button";no.onclick=function(){api("rpc/hide_respond",{p_id:gid,p_accept:false}).then(function(){playId=null;renderPlay()})};
+        var rw=el("div","evb");rw.appendChild(ok);rw.appendChild(no);wrap.appendChild(rw)}
+      else{wrap.appendChild(el("div","pmsg","Waiting for "+pName(st,2)+" to accept…"));var cn=el("button","g","Cancel");cn.type="button";cn.onclick=function(){api("rpc/hide_end",{p_id:gid,p_how:"resign"}).then(function(){playId=null;renderPlay()})};wrap.appendChild(cn)}
+    }else if(st.status==="active"){
+      wrap.appendChild(el("div","pround","Round "+st.round+" of 6 · "+(amH?"You hide":"You seek")));
+      var onMe=amH?!st.hidden:st.hidden;
+      var msg=amH?(st.hidden?"You're hidden at "+HNAME[st.my_spot]+". "+pName(st,opp)+" is looking…":"Pick your hiding spot. Don't tell!"):(st.hidden?"Find "+pName(st,opp)+"! "+(3-gs.length)+" "+(3-gs.length===1?"try":"tries")+" left.":pName(st,opp)+" is hiding…");
+      wrap.appendChild(el("div","pmsg",msg));
+      var grid=el("div","hgrid");
+      for(var k=0;k<9;k++)(function(k){
+        var b=el("button","hs");b.type="button";var gu=gs.filter(function(x){return x.g===k})[0];
+        b.appendChild(el("span","hi",HSPOT[k]));
+        if(amH&&st.my_spot===k){b.classList.add("mine");b.appendChild(el("span","hm","🙈"))}
+        if(gu){b.classList.add(gu.h);b.disabled=true;b.appendChild(el("span","hm",gu.h==="found"?"🎉":gu.h==="hot"?"🔥":"❄️"))}
+        var canTap=(amH&&!st.hidden)||(!amH&&st.hidden&&gs.length<3&&!gu);
+        if(!canTap&&!gu)b.disabled=true;
+        b.onclick=function(){GSND.play("kick");act(amH?"hide_hide":"hide_seek",{p_id:gid,p_spot:k})};
+        grid.appendChild(b)})(k);
+      wrap.appendChild(grid);
+      if(!amH&&gs.length)wrap.appendChild(el("div","none","🔥 hot = right next to it · ❄️ cold = far away"));
+      if(!onMe){var idle=Date.now()-Date.parse(st.updated_at)>180000;if(idle){var cl=el("button",null,"They left. Claim the win");cl.type="button";cl.onclick=function(){act("hide_end",{p_id:gid,p_how:"claim"})};wrap.appendChild(cl)}}
+      else if(turnR!==st.round+"|"+gs.length){turnR=st.round+"|"+gs.length;if(!fresh)GSND.play("turn")}
+    }else{
+      var mt=st.winner===myId?"🏆 You win!":st.winner?"😔 "+pName(st,opp)+" wins":"🤝 It's a draw";if(st.status==="declined")mt="Challenge declined";
+      wrap.appendChild(el("div","pwin",mt));
+      if(st.status==="done"&&!doneSnd){doneSnd=true;GSND.play(st.winner===myId?"win":st.winner?"lose":"whistle")}
+      var rm=el("button",null,"🔁 Rematch");rm.type="button";rm.onclick=function(){api("rpc/hide_invite",{p_to:st["p"+opp]}).then(function(id){toast("Rematch sent!");playId=id;playLen=null;playSig="";renderPlay()}).catch(function(er){toast(er.detail||"Couldn't send the rematch")})};
+      var bk=el("button","g","Back to Play");bk.type="button";bk.onclick=function(){playId=null;renderPlay()};
+      var rw2=el("div","evb");rw2.appendChild(rm);rw2.appendChild(bk);wrap.appendChild(rw2);
+    }
+    if(hl){var hist=el("div","phist");st.history.forEach(function(h){var row=el("div","phr");row.appendChild(el("span","none","R"+h.round+" · "+(h.hider===me?"you hid":"you sought")+" · "+(h.found?"found in "+h.tries:"not found")));hist.appendChild(row)});wrap.appendChild(hist)}
+    if(st.status==="active"){var gu2=el("button","pgiv","Give up");gu2.type="button";gu2.onclick=function(){if(confirm("Give up this game?"))act("hide_end",{p_id:gid,p_how:"resign"})};wrap.appendChild(gu2)}
+  }
+  pull();tm=setInterval(function(){if(viewName!=="play"||!playId){clearInterval(tm);return}pull()},1500);playTimer=tm;
+}
 var GSND=(function(){
   var ctx=null;
   function on(){try{return ls("gh-gsnd")!=="0"}catch(e){return true}}
