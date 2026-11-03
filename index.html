@@ -650,6 +650,31 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+/* ===== Stories ===== */
+#stories{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px;margin-bottom:4px;scrollbar-width:none}#stories::-webkit-scrollbar{display:none}
+.stc{flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;width:64px;border:0;background:none;color:var(--text);font:inherit;cursor:pointer;padding:0}
+.str{width:62px;height:62px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#c8102e,#fcd116,#006b3f);display:flex;align-items:center;justify-content:center}
+.str .av{border:2px solid var(--bg);box-sizing:border-box}
+.str.add{background:var(--card);border:2px dashed var(--line);font-size:28px;font-weight:700;color:var(--red)}
+.stn{font-size:11px;font-weight:700;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.stadd{background:var(--bg);border-radius:18px;padding:16px;width:100%;max-width:400px;max-height:92vh;overflow:auto}
+.stadd textarea{width:100%;box-sizing:border-box;margin:6px 0}
+.stsw{display:flex;gap:8px;margin:6px 0}.stsw button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer}.stsw button.on{border-color:var(--text)}
+.stprev{height:150px;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-weight:800;font-size:20px;padding:14px;margin:8px 0;overflow:hidden;word-break:break-word}
+.stview{padding:0;background:#000}
+.stview .stbody{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.stbody img{width:100%;height:100%;object-fit:contain}
+.sttxt{color:#fff;font:400 30px/1.2 var(--font-display);text-align:center;padding:30px;word-break:break-word}.sttxt.cap{position:absolute;left:0;right:0;bottom:70px;font:700 17px/1.3 inherit;background:linear-gradient(transparent,rgba(0,0,0,.7))}
+.stbars{position:absolute;top:8px;left:8px;right:8px;display:flex;gap:4px;z-index:3}
+.stbars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.35);overflow:hidden}.stbars b{display:block;height:100%;width:0;background:#fff}.stbars b.run{animation:stfill 5s linear forwards}
+@keyframes stfill{to{width:100%}}
+.sthd{position:absolute;top:18px;left:10px;right:10px;display:flex;align-items:center;gap:8px;color:#fff;z-index:3}.sthd .none{color:#ddd}.sthd .av{border:2px solid #fff}
+.stx{margin-left:auto;background:none;border:0;color:#fff;font-size:22px;cursor:pointer}
+.stnav{position:absolute;top:70px;bottom:70px;width:40%;background:none;border:0;z-index:2;cursor:pointer}.stnav.l{left:0}.stnav.r{right:0}
+.stdel{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:3;background:rgba(0,0,0,.6);color:#fff;border:1px solid #fff;border-radius:999px;padding:8px 18px;font:inherit;font-weight:700;cursor:pointer}
+@media(min-width:700px){.stview{background:rgba(0,0,0,.85)}.stview .stbody,.stbars,.sthd{left:50%;right:auto;width:min(420px,100%);transform:translateX(-50%)}.stview .stbody{inset:0 auto 0 50%}}
+
 /* ===== Play: penalty shootout ===== */
 .vh2{font-size:16px;margin:16px 0 6px}
 .pen{max-width:520px}
@@ -1022,6 +1047,7 @@ body.biomode main.wrap{max-width:560px}
 <div class="wrap where" id="where" aria-live="polite"></div>
 <main class="wrap">
   <div id="vGist">
+    <div id="stories" hidden aria-label="Stories"></div>
     <section id="show" class="xp" aria-label="Explore Hottest Gist"></section>
     <div id="wach"></div>
     <aside class="side" id="side" aria-label="Highlights">
@@ -2525,6 +2551,75 @@ function roomView(v){
   }
   pull();playTimer=setInterval(function(){if(viewName!=="play"||!playId){stopPlay();return}pull()},1500);
 }
+
+/* ===== 24-hour Stories ===== */
+var STBG=["#c8102e","#0f766e","#7c3aed","#d97706","#2563eb","#db2777","#15803d","#111827"],stRows=[];
+function loadStories(){
+  if(!CFG)return;
+  api("rpc/story_list",{}).then(function(r){stRows=r||[]}).catch(function(){stRows=[]}).then(drawStories);
+}
+function drawStories(){
+  var box=$("stories");if(!box)return;box.textContent="";
+  var by={},order=[];stRows.forEach(function(x){if(!by[x.user_id]){by[x.user_id]=[];order.push(x.user_id)}by[x.user_id].push(x)});
+  var me=SES&&SES.user&&SES.user.id;
+  order.sort(function(a,b){return a===me?-1:b===me?1:by[b][by[b].length-1].created_at.localeCompare(by[a][by[a].length-1].created_at)});
+  var add=el("button","stc");add.type="button";add.setAttribute("aria-label","Add to your story");
+  var ring=el("span","str add");ring.textContent="+";add.appendChild(ring);add.appendChild(el("span","stn","Your story"));
+  add.onclick=function(){if(!SES){needLogin("Log in to post a story that lasts 24 hours.");return}addStory()};box.appendChild(add);
+  order.forEach(function(u){
+    var it=by[u],f=it[0],b=el("button","stc");b.type="button";
+    var r=el("span","str");r.appendChild(avEl(f,52));b.appendChild(r);b.appendChild(el("span","stn",u===me?"You":(f.name||"Fan").split(" ")[0]));
+    b.onclick=function(){openStory(it)};box.appendChild(b);
+  });
+  box.hidden=false;
+}
+function addStory(){
+  var ov=el("div","stov"),card=el("div","stadd");ov.appendChild(card);
+  card.appendChild(el("h3",null,"Add to your story"));card.appendChild(el("p","none","Lasts 24 hours."));
+  var ta=el("textarea");ta.maxLength=280;ta.rows=3;ta.placeholder="Write something (optional with a photo)";card.appendChild(ta);
+  var bg=0,sw=el("div","stsw");
+  STBG.forEach(function(c,i){var b=el("button");b.type="button";b.style.background=c;b.setAttribute("aria-label","Colour "+(i+1));b.onclick=function(){bg=i;prev.style.background=c;[].forEach.call(sw.children,function(x){x.classList.remove("on")});b.classList.add("on")};sw.appendChild(b)});
+  sw.children[0].classList.add("on");
+  var prev=el("div","stprev","Your story");prev.style.background=STBG[0];
+  ta.oninput=function(){prev.textContent=ta.value||"Your story";prev.style.backgroundImage=""};
+  card.appendChild(sw);card.appendChild(prev);
+  var file=null,pin=el("input");pin.type="file";pin.accept="image/*";pin.hidden=true;
+  var pb=el("button","g","📷 Add photo");pb.type="button";pb.onclick=function(){pin.click()};
+  pin.onchange=function(){if(pin.files[0]){file=pin.files[0];prev.style.backgroundImage="url("+URL.createObjectURL(file)+")";prev.style.backgroundSize="cover";prev.style.backgroundPosition="center"}};
+  var go=el("button",null,"Post story"),cn=el("button","g","Cancel");go.type=cn.type="button";
+  cn.onclick=function(){ov.remove()};
+  go.onclick=function(){
+    if(!file&&!ta.value.trim()){toast("Add a photo or some text");return}
+    go.disabled=true;go.textContent="Posting…";
+    var p=file?shrinkImg(file,1080).then(function(bl){return upFan(bl,"jpg","image/jpeg","st-")}):Promise.resolve(null);
+    p.then(function(url){return api("rpc/story_add",{p_media:url,p_body:ta.value.trim(),p_bg:bg})}).then(function(){ov.remove();toast("Story posted");loadStories()}).catch(function(er){go.disabled=false;go.textContent="Post story";toast((er&&er.detail)||"Couldn't post your story. Did you run setup-stories.sql?")});
+  };
+  var rw=el("div","evb");rw.appendChild(pb);rw.appendChild(go);rw.appendChild(cn);card.appendChild(rw);card.appendChild(pin);
+  ov.onclick=function(e){if(e.target===ov)ov.remove()};document.body.appendChild(ov);
+}
+function openStory(items){
+  var i=0,t=null,ov=el("div","stov stview");
+  function close(){clearTimeout(t);document.removeEventListener("keydown",key);ov.remove()}
+  function key(e){if(e.key==="Escape")close();if(e.key==="ArrowRight")nx();if(e.key==="ArrowLeft"){i=Math.max(0,i-1);show()}}
+  function nx(){if(i<items.length-1){i++;show()}else close()}
+  function show(){
+    clearTimeout(t);ov.textContent="";var s=items[i],me=SES&&SES.user&&SES.user.id===s.user_id;
+    var bars=el("div","stbars");items.forEach(function(_,k){var b=el("i");var f=el("b");if(k<i)f.style.width="100%";if(k===i)f.className="run";b.appendChild(f);bars.appendChild(b)});ov.appendChild(bars);
+    var hd=el("div","sthd");hd.appendChild(avEl(s,34));hd.appendChild(el("b",null,s.name||"Fan"));
+    var ago=Math.max(1,Math.round((Date.now()-Date.parse(s.created_at))/60000));hd.appendChild(el("span","none",ago<60?ago+"m":Math.round(ago/60)+"h"));
+    var x=el("button","stx","✕");x.type="button";x.setAttribute("aria-label","Close");x.onclick=close;hd.appendChild(x);ov.appendChild(hd);
+    var bd=el("div","stbody");bd.style.background=STBG[s.bg||0];
+    if(s.media&&safeLink(s.media)){var im=document.createElement("img");im.src=s.media;im.alt="";bd.appendChild(im)}
+    if(s.body)bd.appendChild(el("div","sttxt"+(s.media?" cap":""),s.body));
+    ov.appendChild(bd);
+    var l=el("button","stnav l");l.type="button";l.setAttribute("aria-label","Previous");l.onclick=function(){i=Math.max(0,i-1);show()};
+    var r=el("button","stnav r");r.type="button";r.setAttribute("aria-label","Next");r.onclick=nx;ov.appendChild(l);ov.appendChild(r);
+    if(me){var d=el("button","stdel","🗑 Delete");d.type="button";d.onclick=function(){clearTimeout(t);api("rpc/story_delete",{p_id:s.id}).then(function(){stRows=stRows.filter(function(z){return z.id!==s.id});items.splice(i,1);drawStories();if(!items.length)close();else{i=Math.min(i,items.length-1);show()}}).catch(function(){toast("Couldn't delete")})};ov.appendChild(d)}
+    else if(s.user_id){var pv=el("button","stdel","View profile");pv.type="button";pv.onclick=function(){close();openProfile(s.user_id)};ov.appendChild(pv)}
+    t=setTimeout(nx,5000);
+  }
+  document.addEventListener("keydown",key);document.body.appendChild(ov);show();
+}
 function renderQuiz(reset){
   var v=$("vQuiz");v.textContent="";
   v.appendChild(el("h2","vh","🧠 Ghana music quiz"));
@@ -3222,7 +3317,7 @@ function setView(v){
   setTimeout(navMark,0);syncHash(v);
   ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","market","play","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   if($("tabs")&&!$("tabs").hidden)buildTabs();
-  if(v!=="play")stopPlay();if(v==="play")renderPlay();if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="gist")loadStories();if(v!=="play")stopPlay();if(v==="play")renderPlay();if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 var TCATS=[
