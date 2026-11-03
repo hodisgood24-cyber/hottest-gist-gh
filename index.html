@@ -650,6 +650,31 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+/* ===== Play: penalty shootout ===== */
+.vh2{font-size:16px;margin:16px 0 6px}
+.pen{max-width:520px}
+.pscore{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.psc{display:flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:8px 10px;min-width:0}
+.psc.me{border-color:var(--red)}.psc b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}.psc .pn{font:400 30px/1 var(--font-display)}
+.ppitch{position:relative;height:210px;border-radius:18px;overflow:hidden;background:repeating-linear-gradient(90deg,#2e7d32 0 36px,#2a7330 36px 72px);border:2px solid #1b5e20}
+.pgoal{position:absolute;left:9%;right:9%;top:18px;height:112px;border:5px solid #fff;border-bottom:0;border-radius:4px 4px 0 0}
+.pnet{position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.18) 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,rgba(255,255,255,.18) 0 1px,transparent 1px 9px)}
+.pzones{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr)}
+.pz{background:rgba(255,255,255,.1);border:0;border-left:1px dashed rgba(255,255,255,.6);color:#fff;font-size:30px;cursor:pointer}
+.pz:first-child{border-left:0}.pz:hover:not(:disabled){background:rgba(255,255,255,.3)}.pz:disabled{opacity:.5}
+.pkeeper{position:absolute;top:44px;left:50%;font-size:42px;line-height:1;transform:translateX(-50%);transition:left .45s ease;pointer-events:none}
+.pball{position:absolute;bottom:14px;left:50%;font-size:34px;line-height:1;transform:translateX(-50%);transition:left .5s ease,bottom .5s ease;pointer-events:none}
+.pball.in{filter:drop-shadow(0 0 8px #fff)}
+.pround{text-align:center;color:var(--muted);font-weight:700;font-size:13px;margin:10px 0 2px}
+.pmsg{text-align:center;font-weight:800;font-size:16px;margin:8px 0}
+.pbanner{text-align:center;font-weight:900;font-size:18px;border-radius:12px;padding:10px;margin:10px 0;transition:opacity .6s}
+.pbanner.good{background:#1f8a4c;color:#fff}.pbanner.bad{background:#b3261e;color:#fff}.pbanner.fade{opacity:0;height:0;padding:0;margin:0;overflow:hidden}
+.pwin{text-align:center;font:400 30px/1.1 var(--font-display);margin:14px 0}
+.phist{display:grid;gap:6px;margin:12px 0}.phr{display:flex;align-items:center;gap:8px}
+.pdots{display:flex;gap:6px;flex-wrap:wrap}.pdots i{font-style:normal;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;border:2px solid var(--line);color:#fff}
+.pdots i.g{background:#1f8a4c;border-color:#1f8a4c}.pdots i.m{background:#b3261e;border-color:#b3261e}
+.pgiv{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer;margin-top:8px}
+
 /* ===== Header v2: slim and calm ===== */
 header.hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:14px 6px;padding-right:164px;position:relative;min-height:70px}
 @media(min-width:1200px){header.hdr{padding-right:0}}
@@ -1028,6 +1053,7 @@ body.biomode main.wrap{max-width:560px}
   <div id="vPolls" hidden></div>
   <div id="vWall" hidden></div>
   <div id="vQuiz" hidden></div>
+  <div id="vPlay" hidden></div>
 </main>
 <footer class="wrap foot">Hottest Gist GH · Fresh music, movies and culture from Ghana and beyond.<div class="fl2"><a href="/stories.html">All stories</a><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></footer>
 
@@ -1347,7 +1373,7 @@ function pollCard(pl){
 
 
 // ===== Remember the page in the address (refresh and Back keep you there) =====
-var V2H={gold:"gold",matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",market:"market",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
+var V2H={gold:"gold",matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",market:"market",play:"play",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
 var H2V={};Object.keys(V2H).forEach(function(k){H2V[V2H[k]]=k});
 var routing=false;
 function isRouteHash(h){return !!H2V[h]||/^[um]-[0-9a-f-]{36}$/.test(h)||/^match-\d+$/.test(h)}
@@ -1371,7 +1397,7 @@ window.addEventListener("popstate",function(){
   try{if(!routeHash(h)&&(!h||isRouteHash(h)||viewName!=="gist"))setView("gist")}finally{routing=false}
 });
 // ===== "You are here" line and tap flash =====
-var VIEWNAMES={gold:"Gold tick",matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",market:"Market",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
+var VIEWNAMES={gold:"Gold tick",matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",market:"Market",play:"Play",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
 function drawWhere(){
   var w=$("where");if(!w)return;w.textContent="";
   if(viewName==="search")return;
@@ -2383,6 +2409,122 @@ var QUIZ=[
 ];
 var qs={i:0,score:0,order:[],done:false};
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+var playId=null,playTimer=null,playListT=null,playLen=null,playSig="",playBanner=null;
+var DIRN=["Left","Centre","Right"],DIRX=[17,50,83];
+function stopPlay(){clearInterval(playTimer);playTimer=null;clearInterval(playListT);playListT=null}
+function pName(st,i){return st["p"+i+"_name"]||"Friend"}
+function pAv(st,i,sz){return avEl({name:pName(st,i),avatar:st["p"+i+"_avatar"]},sz)}
+function renderPlay(){
+  var v=$("vPlay");stopPlay();v.textContent="";
+  if(!(CFG&&SES)){v.appendChild(el("div","empty","Log in to play with friends."));return}
+  if(playId){roomView(v);return}
+  v.appendChild(el("h2","vh","🎮 Play with a friend"));
+  v.appendChild(el("p","sub","Challenge a friend. You each play on your own phone, wherever you are."));
+  var gc=el("div","fc");gc.appendChild(el("h3",null,"⚽ Penalty shootout"));gc.appendChild(el("p","none","Five kicks each. Pick where to shoot, or where to dive. Nobody sees the other's choice until both have picked. Most goals wins."));v.appendChild(gc);
+  var mine=el("div");v.appendChild(el("h3","vh2","Your games"));v.appendChild(mine);
+  var fl=el("div");v.appendChild(el("h3","vh2","Challenge a friend"));v.appendChild(fl);
+  function openR(id){playId=id;playLen=null;playSig="";renderPlay()}
+  function drawGames(){
+    api("rpc/game_list",{}).then(function(rows){
+      rows=rows||[];mine.textContent="";
+      if(!rows.length){mine.appendChild(el("div","none","No games yet. Challenge a friend below."));return}
+      rows.forEach(function(g){
+        var me=g.mine,opp=me===1?2:1,r=el("div","lbr");r.style.cursor="pointer";
+        r.appendChild(pAv(g,opp,36));
+        var tx=el("div");tx.style.flex="1";tx.style.minWidth="0";tx.appendChild(el("b",null,"⚽ vs "+pName(g,opp)));
+        var s=g.status==="invited"?(me===2?"Challenged you":"Waiting for them to accept"):g.status==="active"?(g.my_pick!==null&&g.my_pick!==undefined?"Waiting for them…":"Your move! "+g.score1+" - "+g.score2):(g.winner===SES.user.id?"You won "+(me===1?g.score1+"-"+g.score2:g.score2+"-"+g.score1):g.winner?"You lost "+(me===1?g.score1+"-"+g.score2:g.score2+"-"+g.score1):"Draw");
+        tx.appendChild(el("div","none",s));r.appendChild(tx);
+        if(g.status==="invited"&&me===2){
+          var ok=el("button",null,"Accept");ok.type="button";ok.onclick=function(e){e.stopPropagation();api("rpc/game_respond",{p_id:g.id,p_accept:true}).then(function(){openR(g.id)}).catch(function(){toast("Couldn't accept")})};
+          var no=el("button","g","Decline");no.type="button";no.onclick=function(e){e.stopPropagation();api("rpc/game_respond",{p_id:g.id,p_accept:false}).then(drawGames).catch(function(){})};
+          r.appendChild(ok);r.appendChild(no);
+        }else r.appendChild(el("span","none",g.status==="active"?"Play →":"›"));
+        r.onclick=function(){openR(g.id)};mine.appendChild(r);
+      });
+    }).catch(function(){mine.textContent="";mine.appendChild(el("div","none","Games aren't ready yet. Did you run setup-games.sql?"))});
+  }
+  drawGames();playListT=setInterval(function(){if(viewName!=="play"||playId){stopPlay();return}drawGames()},5000);
+  function drawFriends(){
+    fl.textContent="";var fr=friends.filter(function(f){return f.state==="friends"});
+    if(!fr.length){fl.appendChild(el("div","none","You need a friend to play with. Add friends first."));var fb=el("button",null,"Find friends");fb.type="button";fb.onclick=function(){setView("friends")};fl.appendChild(fb);return}
+    fr.forEach(function(f){
+      var r=el("div","lbr");r.appendChild(avEl(f,36));var nm=el("div","nm2",f.name||"Friend");nm.style.flex="1";r.appendChild(nm);
+      var b=el("button",null,"⚽ Challenge");b.type="button";
+      b.onclick=function(){b.disabled=true;api("rpc/game_invite",{p_to:f.user_id,p_kind:"penalty"}).then(function(id){toast("Challenge sent!");openR(id)}).catch(function(er){b.disabled=false;toast(er.detail||"Couldn't send the challenge")})};
+      r.appendChild(b);fl.appendChild(r);
+    });
+  }
+  if(frLoaded)drawFriends();else{fl.appendChild(el("div","none","Loading..."));loadFriends(drawFriends)}
+}
+function roomView(v){
+  var back=el("button","rl","← Back to Play");back.type="button";back.onclick=function(){playId=null;renderPlay()};v.appendChild(back);
+  var wrap=el("div","pen");v.appendChild(wrap);wrap.appendChild(el("div","none","Loading..."));
+  function pull(){
+    api("rpc/game_state",{p_id:playId}).then(draw).catch(function(){wrap.textContent="";wrap.appendChild(el("div","none","Couldn't open this game."))});
+  }
+  function move(d){api("rpc/game_move",{p_id:playId,p_dir:d}).then(draw).catch(function(er){toast(er.detail||"Couldn't send your move")})}
+  function end(how){api("rpc/game_end",{p_id:playId,p_how:how}).then(draw).catch(function(er){toast("Not yet. Try again in a moment.")})}
+  function draw(st){
+    var hl=(st.history||[]).length,sig=[st.status,st.round,hl,st.my_pick,st.opp_picked,st.winner,st.score1,st.score2].join("|");
+    if(sig===playSig)return;
+    var fresh=playLen!==null&&hl>playLen;playLen=hl;playSig=sig;
+    var me=st.mine,opp=me===1?2:1,myId=SES.user.id;
+    wrap.textContent="";
+    // scoreboard
+    var sb=el("div","pscore");
+    [1,2].forEach(function(i){var c=el("div","psc"+(i===me?" me":""));c.appendChild(pAv(st,i,40));c.appendChild(el("b",null,i===me?"You":pName(st,i)));c.appendChild(el("span","pn",String(st["score"+i])));sb.appendChild(c)});
+    wrap.appendChild(sb);
+    // pitch
+    var pitch=el("div","ppitch"),goal=el("div","pgoal"),zones=el("div","pzones"),keeper=el("div","pkeeper","🧤"),ball=el("div","pball","⚽");
+    goal.appendChild(el("div","pnet"));goal.appendChild(zones);goal.appendChild(keeper);pitch.appendChild(goal);pitch.appendChild(ball);wrap.appendChild(pitch);
+    var last=hl?st.history[hl-1]:null;
+    if(fresh&&last){
+      setTimeout(function(){ball.style.left=DIRX[last.shot]+"%";ball.style.bottom=last.goal?"112px":"96px";keeper.style.left=DIRX[last.dive]+"%";if(last.goal)ball.classList.add("in")},60);
+      var txt=last.goal?(last.shooter===me?"⚽ GOAL! You scored!":"⚽ "+pName(st,opp)+" scored."):(last.shooter===me?"🧤 Saved! "+pName(st,opp)+" kept it out.":"🧤 You saved it!");
+      var bn=el("div","pbanner "+(last.goal===(last.shooter===me)?"good":"bad"),txt);wrap.appendChild(bn);
+      clearTimeout(playBanner);playBanner=setTimeout(function(){if(bn.parentNode)bn.classList.add("fade")},3200);
+    }
+    // status and controls
+    if(st.status==="invited"){
+      if(me===2){wrap.appendChild(el("div","pmsg",pName(st,1)+" challenged you to a penalty shootout!"));
+        var ok=el("button",null,"Accept");ok.type="button";ok.onclick=function(){api("rpc/game_respond",{p_id:playId,p_accept:true}).then(draw).catch(function(){toast("Couldn't accept")})};
+        var no=el("button","g","Decline");no.type="button";no.onclick=function(){api("rpc/game_respond",{p_id:playId,p_accept:false}).then(function(){playId=null;renderPlay()})};
+        var rw=el("div","evb");rw.appendChild(ok);rw.appendChild(no);wrap.appendChild(rw)}
+      else{wrap.appendChild(el("div","pmsg","Waiting for "+pName(st,2)+" to accept… They got a message from you."));var cn=el("button","g","Cancel challenge");cn.type="button";cn.onclick=function(){end("resign");playId=null;renderPlay()};wrap.appendChild(cn)}
+    }else if(st.status==="active"){
+      var shooter=st.round%2===1?1:2,amS=shooter===me;
+      var kickNo=Math.ceil(st.round/2);
+      wrap.appendChild(el("div","pround","Round "+st.round+(st.round>10?" · sudden death":"")+" · "+(amS?"You shoot":pName(st,shooter)+" shoots")));
+      if(st.my_pick===null||st.my_pick===undefined){
+        wrap.appendChild(el("div","pmsg",amS?"Your kick! Where do you shoot?":"Your save! Where do you dive?"));
+        [0,1,2].forEach(function(d){var z=el("button","pz");z.type="button";z.setAttribute("aria-label",(amS?"Shoot ":"Dive ")+DIRN[d]);z.textContent=d===0?"⬅":d===1?"⬆":"➡";z.onclick=function(){zones.querySelectorAll("button").forEach(function(b){b.disabled=true});move(d)};zones.appendChild(z)});
+      }else{
+        wrap.appendChild(el("div","pmsg","You picked "+DIRN[st.my_pick]+". Waiting for "+pName(st,opp)+"…"));
+        var idle=Date.now()-Date.parse(st.updated_at)>180000;
+        if(idle){var cl=el("button",null,"They left. Claim the win");cl.type="button";cl.onclick=function(){end("claim")};wrap.appendChild(cl)}
+      }
+    }else{
+      var mt=st.winner===myId?"🏆 You win!":st.winner?"😔 "+pName(st,opp)+" wins":"🤝 It's a draw";
+      if(st.status==="declined")mt="Challenge declined";
+      wrap.appendChild(el("div","pwin",mt));
+      var rm=el("button",null,"🔁 Rematch");rm.type="button";rm.onclick=function(){api("rpc/game_invite",{p_to:st["p"+opp],p_kind:"penalty"}).then(function(id){toast("Rematch sent!");playId=id;playLen=null;playSig="";renderPlay()}).catch(function(er){toast(er.detail||"Couldn't send the rematch")})};
+      var bk=el("button","g","Back to Play");bk.type="button";bk.onclick=function(){playId=null;renderPlay()};
+      var rw2=el("div","evb");rw2.appendChild(rm);rw2.appendChild(bk);wrap.appendChild(rw2);
+    }
+    // kicks record
+    var hist=el("div","phist");
+    [1,2].forEach(function(i){
+      var row=el("div","phr");row.appendChild(pAv(st,i,22));var dots=el("span","pdots");
+      var ks=(st.history||[]).filter(function(h){return h.shooter===i});
+      var total=Math.max(5,ks.length);
+      for(var k=0;k<total;k++){var d=el("i",k<ks.length?(ks[k].goal?"g":"m"):"o",k<ks.length?(ks[k].goal?"✓":"✗"):"");dots.appendChild(d)}
+      row.appendChild(dots);hist.appendChild(row);
+    });
+    wrap.appendChild(hist);
+    if(st.status==="active"){var gu=el("button","pgiv","Give up");gu.type="button";gu.onclick=function(){if(confirm("Give up this game?"))end("resign")};wrap.appendChild(gu)}
+  }
+  pull();playTimer=setInterval(function(){if(viewName!=="play"||!playId){stopPlay();return}pull()},1500);
+}
 function renderQuiz(reset){
   var v=$("vQuiz");v.textContent="";
   v.appendChild(el("h2","vh","🧠 Ghana music quiz"));
@@ -2521,6 +2663,7 @@ function buildShowcase(){
    ["gigs","💼","Services","Hire a CapCut editor or a promo creator","#0e7490,#164e63"],
    ["events","📅","Events",evSub,"#d97706,#92400e"],
    ["polls","📊","Poll of the day",pl,"#2563eb,#1e3a8a"],
+   ["play","🎮","Play with a friend","Challenge a friend to a penalty shootout, each on your own phone","#0f766e,#134e4a"],
    ["quiz","🧠","Quiz","Test your Ghana music and football knowledge","#db2777,#831843"],
    ["fans","🌟","Fans","Post, follow and grow your page. TikTok trending sounds","#9333ea,#581c87"],
    ["submit","🎤","Submit your song","Artists: send your music to be featured","#111827,#374151"]
@@ -3077,16 +3220,16 @@ function renderProfile(uid){
 function setView(v){
   viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="gold"||v==="profile"||v==="friends"||v==="messages"||v==="chat"||v==="match");document.body.classList.toggle("inchat",v==="chat"||v==="match");document.body.classList.toggle("biomode",v==="bio");
   setTimeout(navMark,0);syncHash(v);
-  ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","market","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","market","play","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   if($("tabs")&&!$("tabs").hidden)buildTabs();
-  if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v!=="play")stopPlay();if(v==="play")renderPlay();if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 var TCATS=[
  ["home","Home","#c8102e",'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',[["gist","🔥 Gist"]]],
  ["music","Music & Sport","#7c3aed",'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',[["matchday","⚽ Match day"],["chart","🎵 Top 10"],["events","📅 Events"]]],
  ["community","Community","#2563eb",'<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><path d="M16 4.500a3.500 3.500 0 0 1 0 7M18 14.500a6.500 6.500 0 0 1 3.500 5.500"/>',[["fans","🌟 Fans"],["wall","💬 Wall"],["top","🏆 Top fans"]]],
- ["fun","Fun & Games","#d97706",'<path d="M7 7h10a4 4 0 0 1 4 4v3a3 3 0 0 1-5.500 1.600L14.800 14H9.200l-.7 1.600A3 3 0 0 1 3 14v-3a4 4 0 0 1 4-4z"/><path d="M8 10v3M6.500 11.500h3"/><circle cx="15.500" cy="10.500" r=".6"/><circle cx="17.500" cy="12.500" r=".6"/>',[["polls","📊 Polls"],["quiz","🧠 Quiz"]]],
+ ["fun","Fun & Games","#d97706",'<path d="M7 7h10a4 4 0 0 1 4 4v3a3 3 0 0 1-5.500 1.600L14.800 14H9.200l-.7 1.600A3 3 0 0 1 3 14v-3a4 4 0 0 1 4-4z"/><path d="M8 10v3M6.500 11.500h3"/><circle cx="15.500" cy="10.500" r=".6"/><circle cx="17.500" cy="12.500" r=".6"/>',[["play","🎮 Play"],["polls","📊 Polls"],["quiz","🧠 Quiz"]]],
  ["biz","Business","#15803d",'<path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/>',[["market","🛍️ Market"],["gigs","💼 Services"]]]
 ];
 var tLastCat="home",tCatView={};
