@@ -649,6 +649,15 @@ body.inchat footer{display:none}
 .bimg{display:block;width:100%;max-height:360px;object-fit:cover;border-radius:14px;cursor:zoom-in;background:var(--line)}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
+.vn{display:flex;align-items:center;gap:10px;min-width:210px;max-width:260px;padding:2px 0}
+.vnp{flex:none;width:38px;height:38px;border-radius:50%;border:0;background:#c8102e;display:grid;place-items:center;cursor:pointer;padding:0}
+.vni{width:0;height:0;border-left:12px solid #fff;border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px}
+.vn.pl .vni{width:12px;height:14px;border:0;margin:0;background:linear-gradient(90deg,#fff 0 35%,transparent 35% 65%,#fff 65%)}
+.vnb{flex:1;display:flex;align-items:center;gap:2px;height:30px;cursor:pointer}.vnb i{flex:1;min-width:2px;border-radius:2px;background:#0003}.vnb i.on{background:#c8102e}
+.vnt{flex:none;font:600 12px/1 system-ui;color:#666;min-width:30px;text-align:right}.vsend{font-size:11px;color:#777;margin-left:4px}
+.bub.me .vnp{background:#fff}.bub.me .vni{border-left-color:#c8102e}.bub.me.vn.pl .vni,.bub.me .vn.pl .vni{background:linear-gradient(90deg,#c8102e 0 35%,transparent 35% 65%,#c8102e 65%)}
+.bub.me .vnb i{background:#fff6}.bub.me .vnb i.on{background:#fff}.bub.me .vnt,.bub.me .vsend{color:#fffc}
+.chmic{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .bub.sending{opacity:.75;padding:10px 14px}
 #streakbar{margin:10px 0}.skc{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fdba74;border-radius:16px;padding:10px 12px}
 .skc.done{background:#f0fdf4;border-color:#86efac}.skf{font-size:28px}.skt{flex:1;min-width:0;display:flex;flex-direction:column;font-size:13px;color:#555}.skt b{font-size:15px;color:#111}
@@ -1744,7 +1753,7 @@ function buildMsgTab(p){
     if(!npChats||!npChats.length){list.appendChild(el("div","none","No messages yet. Add friends, then message them anytime."));}
     (npChats||[]).slice(0,8).forEach(function(c){
       var b=el("button","nt npm"+(c.unread?" new":""));b.type="button";b.appendChild(avEl(c,36));
-      var x=el("span","nx");x.appendChild(el("b",null,c.name||"Fan"));x.appendChild(el("small",null,(c.last_mine?"You: ":"")+c.last_body));b.appendChild(x);
+      var x=el("span","nx");x.appendChild(el("b",null,c.name||"Fan"));x.appendChild(el("small",null,(c.last_mine?"You: ":"")+String(c.last_body||"").replace(/^~\d+$/,"\ud83c\udf99\ufe0f Voice note")));b.appendChild(x);
       var r=el("span","npr");r.appendChild(el("small",null,agoTxt(Date.parse(c.last_at))));if(c.unread)r.appendChild(el("i","npc",String(c.unread)));b.appendChild(r);
       b.onclick=function(){closeNotes();openChat(c.user_id)};list.appendChild(b);
     });
@@ -1779,7 +1788,7 @@ function renderMessages(){
     chats.forEach(function(c){
       var b=el("button","chrow"+(c.unread?" unread":""));b.type="button";b.appendChild(avEl(c,48));
       var t=el("span","cht");var top=el("span","chn");var nm=el("b",null,c.name||"Fan");top.appendChild(nm);if(c.verified)top.appendChild(vBadge(14));top.appendChild(el("small",null,agoTxt(Date.parse(c.last_at))));t.appendChild(top);
-      t.appendChild(el("span","chl",(c.last_mine?"You: ":"")+c.last_body));b.appendChild(t);
+      t.appendChild(el("span","chl",(c.last_mine?"You: ":"")+String(c.last_body||"").replace(/^~\d+$/,"\ud83c\udf99\ufe0f Voice note")));b.appendChild(t);
       if(c.unread)b.appendChild(el("i","chu",String(c.unread)));
       b.onclick=function(){openChat(c.user_id)};list.appendChild(b);
     });
@@ -1877,8 +1886,8 @@ function renderChat(){
     var b=el("div","bub"+(m.mine?" me":"")+(m.kind&&m.kind!=="text"?" media":""));var md=safeLink(m.media);
     if(m.kind==="image"&&md){var im=document.createElement("img");im.src=md;im.alt="Photo";im.loading="lazy";im.className="bimg";im.onclick=function(){openLb(md,"Photo")};b.appendChild(im)}
     else if(m.kind==="video"&&md){var vd=document.createElement("video");vd.src=md;vd.controls=true;vd.playsInline=true;vd.preload="metadata";vd.className="bvid";b.appendChild(vd)}
-    else if(m.kind==="voice"&&md){var au=document.createElement("audio");au.src=md;au.controls=true;au.preload="metadata";au.className="baud";b.appendChild(au)}
-    if(m.body)b.appendChild(el("span",null,m.body));
+    else if(m.kind==="voice"&&md){var dm=/^~(\d+)$/.exec(m.body||"");b.appendChild(vnNote(md,dm?+dm[1]:0,m.id))}
+    if(m.body&&!(m.kind==="voice"&&/^~\d+$/.test(m.body)))b.appendChild(el("span",null,m.body));
     if(!m.mine&&/Penalty Shootout/.test(m.body||"")&&Date.now()-Date.parse(m.created_at)<172800000){var gb=el("button","gbub","\u26bd Accept & play");gb.type="button";gb.onclick=function(){gb.disabled=true;playFromChat().then(function(ok){gb.disabled=false;if(!ok)toast("This challenge has ended")})};b.appendChild(el("br"));b.appendChild(gb)}
     var meta=el("small",null,new Date(m.created_at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}));if(m.mine){var tk=el("span","tk"+(m.read_at?" seen":""),m.read_at?"\u2713\u2713":"\u2713");tk.setAttribute("data-tk",m.id);tk.setAttribute("aria-label",m.read_at?"Seen":"Sent");meta.appendChild(document.createTextNode(" "));meta.appendChild(tk)}b.appendChild(meta);
     var row=el("div","mrow"+(m.mine?" me":"")),t=Date.parse(m.created_at);row.setAttribute("data-id",m.id);
@@ -1935,7 +1944,10 @@ function renderChat(){
     }).catch(function(e){if(first){box.textContent="";box.appendChild(el("div","snone","Messages aren't ready yet. Did you run setup-messages.sql?"))}});
   }
   function sendMedia(kind,blobOrFile,ext,ct,pre,caption){
-    var tmp=el("div","bub me media sending");tmp.appendChild(el("span",null,{image:"\ud83d\udcf7 Sending photo\u2026",video:"\ud83c\udfac Sending video\u2026",voice:"\ud83c\udf99\ufe0f Sending voice note\u2026"}[kind]));box.appendChild(tmp);down();
+    var tmp=el("div","bub me media sending");
+    if(kind==="voice"){var lu=URL.createObjectURL(blobOrFile),dd=+caption.replace(/\D/g,"")||0;tmp.appendChild(vnNote(lu,dd,3));tmp.appendChild(el("span","vsend","Sending\u2026"))}
+    else tmp.appendChild(el("span",null,{image:"\ud83d\udcf7 Sending photo\u2026",video:"\ud83c\udfac Sending video\u2026"}[kind]));
+    box.appendChild(tmp);down();
     var up=kind==="image"?shrinkImg(blobOrFile,1600).then(function(b){return upFan(b,"jpg","image/jpeg","chat-")}):upFan(blobOrFile,ext,ct,pre);
     up.then(function(u){return api("rpc/send_message",{p_to:uid,p_body:caption||"",p_kind:kind,p_media:u})}).then(function(){tmp.remove();note.hidden=true;pull(false)})
       .catch(function(er){tmp.remove();note.hidden=false;var d=String(er.detail||er.message||"");note.textContent=/friends/.test(d)?d:/kind|media|p_kind|function/i.test(d)?"Photos, videos and voice notes need setup-chat-media.sql in Supabase.":"Couldn't send. Check your connection and try again."});
@@ -1963,20 +1975,28 @@ function renderChat(){
   }
   function pick(){var fi=document.createElement("input");fi.type="file";fi.accept="image/*,video/*";fi.onchange=function(){var fl=fi.files[0];if(fl)preview(fl)};fi.click()}
   ab.onclick=pick;
-  var mrec=null,mchunks=[],mtimer=null,msecs=0,mtype="",mcancel=false;
+  var mrec=null,mchunks=[],mtimer=null,msecs=0,mtype="",mcancel=false,mt0=0,mdown=0,mpend=false,mx0=0;
   function recStop(cancel){mcancel=!!cancel;if(mrec&&mrec.state==="recording")mrec.stop()}
-  mic.onclick=function(){
+  function micStart(){
     if(!navigator.mediaDevices||!window.MediaRecorder){note.hidden=false;note.textContent="Voice notes aren't supported in this browser. Try Chrome.";return}
     navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
       mtype=MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported("audio/webm")?"audio/webm":"audio/mp4";
-      try{mrec=new MediaRecorder(stream,{mimeType:mtype})}catch(e){mrec=new MediaRecorder(stream);mtype=(mrec.mimeType||"audio/webm").split(";")[0]}
-      mchunks=[];mcancel=false;msecs=0;rt.textContent="0:00";recBar.hidden=false;f.classList.add("recording");
+      try{mrec=new MediaRecorder(stream,{mimeType:mtype,audioBitsPerSecond:32000})}catch(e){try{mrec=new MediaRecorder(stream,{mimeType:mtype})}catch(e2){mrec=new MediaRecorder(stream);mtype=(mrec.mimeType||"audio/webm").split(";")[0]}}
+      mchunks=[];mcancel=false;msecs=0;mt0=Date.now();rt.textContent="0:00";recBar.hidden=false;f.classList.add("recording");
       mrec.ondataavailable=function(e){if(e.data&&e.data.size)mchunks.push(e.data)};
       mrec.onstop=function(){clearInterval(mtimer);stream.getTracks().forEach(function(t){t.stop()});recBar.hidden=true;f.classList.remove("recording");
-        if(mcancel||!mchunks.length||msecs<1)return;var bl=new Blob(mchunks,{type:mtype});sendMedia("voice",bl,/mp4/.test(mtype)?"m4a":"webm",mtype,"voice-","")};
+        var secs=Math.max(1,Math.round((Date.now()-mt0)/1000));if(mcancel||!mchunks.length||(Date.now()-mt0)<700)return;var bl=new Blob(mchunks,{type:mtype});sendMedia("voice",bl,/mp4/.test(mtype)?"m4a":"webm",mtype,"voice-","~"+secs)};
       mrec.start();mtimer=setInterval(function(){msecs++;rt.textContent=Math.floor(msecs/60)+":"+("0"+(msecs%60)).slice(-2);if(msecs>=120)recStop(false)},1000);
     }).catch(function(){note.hidden=false;note.textContent="Allow the microphone for this site in your browser settings, then try again."});
   };
+  mic.onpointerdown=function(e){e.preventDefault();mdown=Date.now();mx0=e.clientX;mpend=true;try{mic.setPointerCapture(e.pointerId)}catch(x){}
+    if(mrec&&mrec.state==="recording")return;micStart();navigator.vibrate&&navigator.vibrate(15)};
+  mic.onpointermove=function(e){if(mpend&&mrec&&mrec.state==="recording"&&e.clientX-mx0<-90){mpend=false;recStop(true)}};
+  mic.onpointerup=function(){if(!mpend)return;mpend=false;
+    if(Date.now()-mdown>700){if(mrec&&mrec.state==="recording")recStop(false);else mpend=false}}; 
+  mic.onpointercancel=function(){mpend=false};
+  mic.onclick=function(e){e.preventDefault()};
+  mic.oncontextmenu=function(e){e.preventDefault()};
   rx.onclick=function(){recStop(true)};rs.onclick=function(){recStop(false)};
   f.onsubmit=function(e){e&&e.preventDefault&&e.preventDefault();var t=ta.value.trim();if(!t)return;sb.disabled=true;
     api("rpc/send_message",{p_to:uid,p_body:t}).then(function(){ta.value="";ta.style.height="auto";swap();note.hidden=true;pull(false);ta.focus()}).catch(function(er){note.hidden=false;note.textContent=er.detail||"Couldn't send. Try again."}).then(function(){sb.disabled=false})};
@@ -3284,6 +3304,29 @@ function renderEvents(){
     var l=safeLink(p.link);if(l){var t2=el("a",null,linkLabel(l));t2.href=l;t2.target="_blank";t2.rel="noopener noreferrer";b.appendChild(t2)}
     c.appendChild(b);v.appendChild(c);
   });
+}
+/* ===== WhatsApp-style voice note player ===== */
+var vnCur=null;
+function vnFmt(t){t=Math.max(0,Math.round(t||0));return Math.floor(t/60)+":"+("0"+(t%60)).slice(-2)}
+function vnNote(src,dur,seed){
+  var w=el("div","vn"),pb=el("button","vnp");pb.type="button";pb.setAttribute("aria-label","Play voice note");
+  var ic=el("span","vni");pb.appendChild(ic);
+  var bars=el("div","vnb");var n=28,h=seed|0||7;
+  for(var i=0;i<n;i++){h=(h*1103515245+12345)&0x7fffffff;var bb=el("i");bb.style.height=(18+(h%70))+"%";bars.appendChild(bb)}
+  var tm=el("span","vnt",vnFmt(dur));w.appendChild(pb);w.appendChild(bars);w.appendChild(tm);
+  var au=null,total=dur||0;
+  function prog(){var p=au&&au.duration&&isFinite(au.duration)?au.currentTime/au.duration:(total?au.currentTime/total:0);var k=Math.round(p*n);
+    for(var i=0;i<n;i++)bars.children[i].className=i<k?"on":"";
+    tm.textContent=vnFmt(au.paused&&au.currentTime===0?total:(isFinite(au.duration)?au.duration:total)-au.currentTime)}
+  function mk(){if(au)return;au=new Audio();au.preload="auto";au.src=src;
+    au.ontimeupdate=prog;au.onended=function(){w.classList.remove("pl");au.currentTime=0;for(var i=0;i<n;i++)bars.children[i].className="";tm.textContent=vnFmt(total)};
+    au.onpause=function(){w.classList.remove("pl")};au.onplay=function(){w.classList.add("pl")};
+    au.onerror=function(){w.classList.remove("pl");tm.textContent="!"}}
+  pb.addEventListener("pointerdown",mk,{passive:true});
+  pb.onclick=function(){mk();if(au.paused){if(vnCur&&vnCur!==au)vnCur.pause();vnCur=au;au.play().catch(function(){})}else au.pause()};
+  bars.onclick=function(e){mk();var r=bars.getBoundingClientRect(),p=(e.clientX-r.left)/r.width,d=isFinite(au.duration)?au.duration:total;if(d){au.currentTime=p*d;prog()}};
+  w.vnAudio=function(){return au};
+  return w;
 }
 /* ===== Daily check-in streak ===== */
 var STK=null;
