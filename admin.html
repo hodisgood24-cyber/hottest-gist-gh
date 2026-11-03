@@ -66,6 +66,7 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
  <label>Competition</label><input id="mc" maxlength="40" placeholder="Black Stars, Premier League, Ghana Premier League…" value="Black Stars">
  <label>Kick-off (your local time)</label><input id="mk" type="datetime-local" required>
  <div class="row"><button>Add match</button></div></form>
+ <div class="card"><p class="m" style="margin-top:0">Matches for the Black Stars, Premier League, Champions League, AFCON and Ghana Premier League come in by themselves every 5 minutes, with live scores and results. Use the form above only for a match that isn't there.</p><div class="row"><button type="button" id="mdsync">Get latest matches now</button></div></div>
  <div id="mdl" class="card">Loading...</div>
  <h2>Song submissions</h2><div id="subm" class="card">Loading...</div>
  <h2>Featured artist price (homepage spotlight)</h2>
@@ -258,6 +259,7 @@ function loadMatches(){
 }
 function init(){
   loadPosts();loadMod();loadCreators();loadGigs();loadVer();loadPays();loadSubm();loadMatches();
+  $("mdsync").onclick=function(){var b=$("mdsync");b.disabled=true;b.textContent="Getting matches…";rpc("admin_sync_matches").then(function(r){say("Done: "+r);loadMatches()}).catch(function(){alert("Failed. Did you run setup-matchday-auto.sql?")}).then(function(){b.disabled=false;b.textContent="Get latest matches now"})};
   $("mdf").onsubmit=function(e){e.preventDefault();var k=new Date($("mk").value);if(isNaN(k)){alert("Pick the kick-off date and time");return}
     rpc("admin_save_match",{p:{home:$("mh").value.trim(),away:$("ma").value.trim(),competition:$("mc").value.trim(),kickoff:k.toISOString()}}).then(function(){$("mh").value="";$("ma").value="";$("mk").value="";say("Match added. Fans can predict now ⚽");loadMatches()}).catch(function(){alert("Failed. Did you run setup-matchday.sql?")})};
   api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="sounds"){var it=Array.isArray(x.value)?x.value:(x.value&&x.value.items)||[];$("snd").value=it.map(function(i){return [i.title||"",i.artist||"",i.link||""].join(" | ")}).join("\n")}if(x.key==="verify"){$("vp").value=v.price||"";$("va").value=v.amount||"";$("vo").checked=!!v.auto;$("vh").value=v.how||"";$("vl").value=v.link||""}if(x.key==="spotlight"){$("spp").value=v.price||"";$("spa").value=v.amount||"";$("spd").value=v.days||7;$("spo").checked=!!v.auto;$("sph").value=v.how||""}if(x.key==="feature"){$("fp").value=v.price||"";$("fa").value=v.amount||"";$("fd").value=v.days||7;$("fo").checked=!!v.auto}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
