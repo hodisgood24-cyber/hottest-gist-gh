@@ -1,6 +1,31 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "piesie-esther-flora-grace-2026",
+      "title": "Piesie Esther's Flora Made By Grace marks five years, with Kuami Eugene on stage",
+      "cat": "Gospel",
+      "by": "News desk",
+      "body": "Gospel fans filled Perez Dome on Sunday for a big milestone 🙏\n\nPiesie Esther held the fifth edition of her Flora Made By Grace concert at Perez Chapel International in Dzorwulu, Accra, under the theme \"The Greater Grace Encounter\". The free-entry show started at 4pm and marked five years of the initiative.\n\nThe surprise of the evening came when she brought Kuami Eugene onto the stage to share a performance. Ohemaa Mercy, the Tagoe Sisters, Francis Amo and the Breaking Yoke Choir also ministered, and Communications Minister Sam George was among the guests.\n\nIf you missed it, Kumasi gets its own edition on November 15.\nSource: 3News",
+      "ts": 1793724408481,
+      "link": "https://3news.com/music/kuami-eugene-joins-piesie-esther-on-stage-at-flora-made-by-grace",
+      "images": ["images/piesie-esther-flora-grace-2026.jpg"],
+      "pin": false,
+      "status": "live"
+  },
+  {
+      "id": "nacee-kavod-26-national-theatre",
+      "title": "Nacee's KAVOD 26 brings gospel, theatre and comedy to the National Theatre on November 8",
+      "cat": "Events",
+      "by": "News desk",
+      "body": "Plan your Sunday evening, Accra 🎟️\n\nNacee has announced the second edition of KAVOD, a night that mixes gospel music, theatre and stand-up comedy. It takes place on Sunday, November 8, 2026 at the National Theatre in Accra, starting at 5pm.\n\nOn the music side, Nacee will be joined by Soul Winners, Cindy Thompson, Kofi Peprah, Yvonne Mends and Joe Mettle. The theatre line-up includes Vivian Jill, Killer Ntua and Clemento Suarez, while Jacinta, Parrot Mouth and Jeffrey Nortey are among the comedians.\n\nTickets are GH¢200 for standard and GH¢300 for VIP. For enquiries, call 0597143961.\nSource: MyJoyOnline",
+      "ts": 1793724407481,
+      "link": "https://www.myjoyonline.com/nacee-announces-star-studded-second-edition-of-kavod-for-november-8/",
+      "images": ["images/nacee-kavod-26-national-theatre.jpg"],
+      "pin": false,
+      "status": "live",
+      "eventAt": 1794096000000
+  },
+  {
     "id": "afestacc-2026-accra",
     "title": "AFESTACC 2026 heads to Accra from December 9 to 12",
     "cat": "Events",
