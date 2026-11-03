@@ -48,6 +48,21 @@ Deno.serve(async (req) => {
     if (!fg.ok) return new Response("grant failed", { status: 500 });
     return new Response("ok", { status: 200 });
   }
+  if (purpose === "feature_song" && d?.metadata?.song_id) {
+    const sr3 = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.spotlight&select=value`, {
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+    });
+    const sv = (await sr3.json())?.[0]?.value || {};
+    const sprice = Number(sv.amount);
+    if (!(sprice > 0) || d.amount < Math.round(sprice * 100)) return new Response("amount too low", { status: 200 });
+    const sg = await fetch(`${SUPABASE_URL}/rest/v1/rpc/grant_song_feature`, {
+      method: "POST",
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_song: Number(d.metadata.song_id), p_ref: ref, p_amount: d.amount, p_currency: d.currency, p_days: Number(sv.days) || 7 }),
+    });
+    if (!sg.ok) return new Response("grant failed", { status: 500 });
+    return new Response("ok", { status: 200 });
+  }
   if (purpose !== "gold_tick" || !d?.metadata?.user_id) return new Response("not a gold tick", { status: 200 });
 
   // The amount must cover the current price

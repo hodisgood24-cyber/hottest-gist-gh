@@ -356,6 +356,28 @@ body.insearch header,body.insearch .tabs,body.insearch .gear,body.insearch .bell
 .sres mark{background:rgba(252,209,22,.35);color:inherit;border-radius:3px;padding:0 1px}
 .sres .rk{font:400 22px/1 var(--font-display);color:var(--red);width:22px;text-align:center;flex:none}
 .snone{color:var(--muted);text-align:center;padding:26px 8px}
+.spot{margin:14px 0;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#2b1a00,#5c3a00 55%,#c8102e);color:#fff;border:1px solid #f3b61f;box-shadow:0 8px 24px rgba(243,182,31,.18)}
+.spot .si{display:flex;gap:12px;padding:14px;align-items:center}
+.spot img,.spot .ph{width:96px;height:96px;border-radius:12px;object-fit:cover;flex:none;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:40px}
+.spot .pk{font-size:11px;letter-spacing:.12em;font-weight:800;color:#fcd116;text-transform:uppercase}
+.spot h3{margin:4px 0 2px;font:400 24px/1.05 var(--font-display);text-transform:uppercase}
+.spot p{margin:6px 0 0;font-size:14px;opacity:.92;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.spot .sa{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 14px}
+.spot .pill{background:#fcd116;color:#1a1200;border-color:#fcd116}
+.spot .player{margin:0 14px 14px}
+.rel{margin:14px 0}
+.rel h3{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800;display:flex;justify-content:space-between}
+.rel h3 button{background:none;border:0;color:var(--red);font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.relrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
+.relc{flex:0 0 136px;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;text-align:left;font:inherit;color:var(--text);cursor:pointer}
+.relc img,.relc .ph{width:100%;aspect-ratio:1;border-radius:10px;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:34px;background:linear-gradient(135deg,#7f00ff,#e100ff 60%,#ff0844)}
+.relc b{display:block;font-size:14px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.relc small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.relc[aria-pressed=true]{border-color:var(--red);box-shadow:0 0 0 2px var(--red)}
+.subbar{background:#14213d;border-color:#fcd116}.subbar b{color:#fcd116}
+.sub2 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.subst{font-size:12px;font-weight:800;border-radius:99px;padding:3px 10px;border:1.5px solid var(--line)}
+.subst.new{color:#b8860b;border-color:#b8860b}.subst.approved,.subst.published{color:#1f8a4c;border-color:#1f8a4c}.subst.rejected{color:var(--muted)}
 .wabar{display:flex;align-items:center;gap:10px;margin:14px 0;padding:12px 14px;border-radius:14px;background:#0f3d24;border:1px solid #25D366;color:#fff;text-decoration:none;font-weight:800;font-size:14px}
 .chtz{width:100%;font:inherit;font-weight:800;text-align:left;cursor:pointer;background:#2a1030;border-color:#e100ff}.chtz b{color:#ff7ae6}
 .wabar svg{width:22px;height:22px;flex:none;fill:#25D366}
@@ -403,6 +425,7 @@ body.hasnav .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   <div id="vFans" hidden></div>
   <div id="vFriends" hidden></div>
   <div id="vSearch" hidden></div>
+  <div id="vSubmit" hidden></div>
   <div id="vGigs" hidden></div>
   <div id="vChart" hidden></div>
   <div id="vProfile" hidden></div>
@@ -412,7 +435,7 @@ body.hasnav .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   <div id="vWall" hidden></div>
   <div id="vQuiz" hidden></div>
 </main>
-<footer class="wrap foot">Hottest Gist GH · Fresh music, movies and culture from Ghana and beyond.<div class="fl2"><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></footer>
+<footer class="wrap foot">Hottest Gist GH · Fresh music, movies and culture from Ghana and beyond.<div class="fl2"><a href="/stories.html">All stories</a><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></footer>
 
 <div class="gate" id="gate" hidden></div>
 <div class="lb" id="lb" hidden><button class="lbx" id="lbx" type="button" aria-label="Close photo">×</button><img id="lbimg" alt=""></div>
@@ -421,6 +444,7 @@ body.hasnav .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 <div class="toast" id="toast" role="status"></div>
 
 <script src="config.js"></script>
+<script>(function(){var t=window.GH_CFG&&window.GH_CFG.analytics;if(!t)return;var s=document.createElement("script");s.defer=true;s.src="https://static.cloudflareinsights.com/beacon.min.js";s.setAttribute("data-cf-beacon",JSON.stringify({token:t}));document.head.appendChild(s)})();</script>
 <script src="posts.js"></script>
 <script src="polls.js"></script>
 <script>
@@ -710,6 +734,96 @@ function pollCard(pl){
 
 
 
+
+// ===== Submit your song, Featured artist, New Releases =====
+var spotRows=null,relRows=null,mySubs=null;
+function loadMusicExtras(){
+  if(!CFG)return;
+  api("featured_spotlight?select=id,artist,song,story,link,image&limit=3").then(function(r){spotRows=r||[];renderExtras()}).catch(function(){spotRows=[]});
+  api("new_releases?select=id,artist,song,link,image&limit=20").then(function(r){relRows=r||[];renderExtras()}).catch(function(){relRows=[]});
+}
+function spotCard(x){
+  var c=el("section","spot");var si=el("div","si");
+  var im=safeLink(x.image);if(im){var i=document.createElement("img");i.src=im;i.alt="";i.loading="lazy";si.appendChild(i)}else si.appendChild(el("div","ph","🎤"));
+  var t=el("div");t.appendChild(el("div","pk","⭐ Featured artist"));t.appendChild(el("h3",null,x.artist));t.appendChild(el("div",null,"“"+x.song+"”"));if(x.story)t.appendChild(el("p",null,x.story));si.appendChild(t);c.appendChild(si);
+  var lk=safeLink(x.link),emb=embedUrl(lk);
+  var sa=el("div","sa");c.appendChild(sa);
+  if(emb){var mp=makePlayer(emb);sa.appendChild(mp.btn);c.appendChild(mp.box)}
+  else if(lk){var a=el("a","pill",linkLabel?linkLabel(lk):"Listen");a.href=lk;a.target="_blank";a.rel="noopener noreferrer";sa.appendChild(a)}
+  return c;
+}
+function relSection(){
+  if(!relRows||!relRows.length)return null;
+  var w=el("section","rel");var h=el("h3");h.appendChild(el("span",null,"🎧 New releases"));var sb=el("button",null,"Submit yours →");sb.type="button";sb.onclick=function(){setView("submit")};h.appendChild(sb);w.appendChild(h);
+  var row=el("div","relrow");w.appendChild(row);var box=el("div");w.appendChild(box);var cur=null;
+  relRows.forEach(function(x){
+    var b=el("button","relc");b.type="button";b.setAttribute("aria-pressed","false");
+    var im=safeLink(x.image);if(im){var i=document.createElement("img");i.src=im;i.alt="";i.loading="lazy";b.appendChild(i)}else b.appendChild(el("div","ph","🎵"));
+    b.appendChild(el("b",null,x.song));b.appendChild(el("small",null,x.artist));
+    b.onclick=function(){
+      var lk=safeLink(x.link),emb=embedUrl(lk);
+      if(!emb){if(lk)window.open(lk,"_blank","noopener");return}
+      [].forEach.call(row.children,function(c){c.setAttribute("aria-pressed","false")});box.textContent="";
+      if(cur===x.id){cur=null;return}
+      cur=x.id;b.setAttribute("aria-pressed","true");var pl=el("div","player");box.appendChild(pl);buildPlayer(pl,emb);
+    };
+    row.appendChild(b);
+  });
+  return w;
+}
+function renderSubmit(){
+  var v=$("vSubmit");v.textContent="";
+  var back=el("button","rl","← Back");back.type="button";back.onclick=function(){setView("gist")};v.appendChild(back);
+  v.appendChild(el("h2","vh","🎤 Submit your song"));
+  v.appendChild(el("p","sub","Artist or manager? Send us your new song. We listen to every one, and the best get a story on Hottest Gist GH and a spot in New Releases."));
+  if(!(CFG&&SES)){v.appendChild(loginBox("Log in to send your song."));return}
+  var f=el("form","cf fc sub2");
+  function fld(lbl,type,ph,max,id){var l=el("label",null,lbl);l.style.fontWeight="700";var i=type==="textarea"?el("textarea"):el("input");if(type!=="textarea")i.type=type;else i.rows=4;i.placeholder=ph||"";if(max)i.maxLength=max;i.id=id;l.htmlFor=id;f.appendChild(l);f.appendChild(i);return i}
+  var ar=fld("Artist name","text","e.g. Smokelexx",60,"sa1");
+  var so=fld("Song title","text","e.g. Collabo",80,"sa2");
+  var st=fld("About you and the song","textarea","Where are you from, your label, the producer, what the song is about…",800,"sa3");
+  var lk=fld("Link to the song","url","YouTube, Audiomack, Spotify or TikTok link",300,"sa4");
+  var ct=fld("WhatsApp number or email","text","So we can reach you",80,"sa5");
+  var il=el("label",null,"Cover art or photo (optional)");il.style.fontWeight="700";f.appendChild(il);
+  var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.setAttribute("aria-label","Cover art or photo");f.appendChild(fi);
+  var prev=el("div");f.appendChild(prev);var img=null;
+  fi.onchange=function(){var file=fi.files[0];if(!file)return;go.disabled=true;go.textContent="Uploading photo…";
+    shrinkImg(file,1200).then(function(b){return upFan(b,"jpg","image/jpeg")}).then(function(u){img=u;prev.textContent="";var i=document.createElement("img");i.src=u;i.alt="";i.style.cssText="width:120px;height:120px;object-fit:cover;border-radius:12px;margin-top:6px";prev.appendChild(i)})
+      .catch(function(){toast("Couldn't upload the photo. Try another one.")}).then(function(){go.disabled=false;go.textContent="Send my song"})};
+  var go=el("button",null,"Send my song");go.type="submit";f.appendChild(go);
+  f.onsubmit=function(e){e.preventDefault();
+    if(ar.value.trim().length<2||!so.value.trim()){toast("Add the artist name and the song title");return}
+    if(ct.value.trim().length<5){toast("Add a WhatsApp number or email");return}
+    if(lk.value.trim()&&!/^https:\/\//i.test(lk.value.trim())){toast("The link must start with https://");return}
+    go.disabled=true;go.textContent="Sending…";
+    api("rpc/submit_song",{p_artist:ar.value,p_song:so.value,p_story:st.value,p_contact:ct.value,p_link:lk.value.trim()||null,p_image:img}).then(function(){
+      toast("Song sent! We'll listen and get back to you 🎶");mySubs=null;renderSubmit();
+    }).catch(function(er){go.disabled=false;go.textContent="Send my song";if(!er.login)toast(er.detail||"Couldn't send it. Did you run setup-submissions.sql?")})};
+  v.appendChild(f);
+  var mine=el("div");v.appendChild(mine);
+  function drawMine(){
+    mine.textContent="";if(!mySubs||!mySubs.length)return;
+    mine.appendChild(el("h3","vh","Your songs"));
+    var sp=cfgSet.spotlight||{};
+    mySubs.forEach(function(x){
+      var c=el("div","fc sub2");var r=el("div","row");r.appendChild(el("b",null,x.artist+" – "+x.song));
+      var lab={new:"Waiting for review",approved:"Approved",published:"Published",rejected:"Not selected"}[x.status]||x.status;r.appendChild(el("span","subst "+x.status,lab));c.appendChild(r);
+      var feat=x.featured_until&&new Date(x.featured_until)>new Date();
+      if(feat)c.appendChild(el("p",null,"⭐ Featured on the homepage until "+new Date(x.featured_until).toLocaleDateString("en-GB",{day:"numeric",month:"long"})+"."));
+      if(x.status!=="rejected"){
+        if(sp.auto&&sp.amount>0){
+          var fb=el("button",null,(feat?"⭐ Extend":"⭐ Feature it on the homepage")+" – "+(sp.price||("GH₵ "+sp.amount))+" for "+(sp.days||7)+" days");fb.type="button";fb.style.cssText="background:#f3b61f;border-color:#f3b61f;color:#1a1200";
+          fb.onclick=function(){fb.disabled=true;fb.textContent="Opening payment…";
+            token().then(function(t){return fetch(CFG.url.replace(/\/$/,"")+"/functions/v1/paystack-init",{method:"POST",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify({origin:location.origin,song_id:x.id})})}).then(function(r){return r.json()}).then(function(j){if(j&&j.url)location.href=j.url;else throw new Error("x")}).catch(function(){fb.disabled=false;fb.textContent="Try again";toast("Couldn't open the payment page. Try again in a moment.")})};
+          c.appendChild(fb);
+          if(x.status==="new")c.appendChild(el("p","sub","Your spotlight shows once we approve the song."));
+        }else if(sp.how){c.appendChild(el("p","sub","Want it featured on the homepage? "+sp.how))}
+      }
+      mine.appendChild(c);
+    });
+  }
+  if(mySubs===null){api("song_submissions?select=id,artist,song,status,featured_until,created_at&order=created_at.desc&limit=20").then(function(r){mySubs=r||[];drawMine()}).catch(function(){mySubs=[]})}else drawMine();
+}
 // ===== Search page =====
 var sQ="",sTimer=null,sPeople=null;
 function openSearch(q){sQ=q||"";setView("search");setTimeout(function(){var i=$("sq");if(i){i.focus();var n=i.value.length;try{i.setSelectionRange(n,n)}catch(e){}}},60)}
@@ -1078,6 +1192,9 @@ function renderExtras(){
     x.appendChild(pb);
   }
   var sc=soundsCard();if(sc)x.appendChild(sc);
+  if(spotRows&&spotRows.length)spotRows.forEach(function(r){x.appendChild(spotCard(r))});
+  var rs=relSection();if(rs)x.appendChild(rs);
+  var sbb=el("button","wabar chtz subbar");sbb.type="button";sbb.appendChild(el("span",null,"\ud83c\udfa4 Artist? Submit your song to Hottest Gist"));sbb.appendChild(el("b",null,"Send \u2192"));sbb.onclick=function(){setView("submit")};x.appendChild(sbb);
   var ct=el("button","wabar chtz");ct.type="button";ct.appendChild(el("span",null,"\ud83c\udfb5 Ghana Top 10: vote for your song"));ct.appendChild(el("b",null,"Vote \u2192"));ct.onclick=function(){setView("chart")};x.appendChild(ct);
   if(CFG&&CFG.whatsapp){var wb=el("a","wabar");wb.href=CFG.whatsapp;wb.target="_blank";wb.rel="noopener noreferrer";wb.appendChild(svg("wa"));wb.appendChild(el("span",null,"Get the gist first on our WhatsApp channel"));wb.appendChild(el("b",null,"Join \u2192"));x.appendChild(wb)}
   var so=cfgSet.song;
@@ -1451,9 +1568,9 @@ function renderProfile(uid){
 function setView(v){
   viewName=v;document.body.classList.toggle("insearch",v==="search");
   setTimeout(navMark,0);
-  ["gist","search","fans","friends","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","search","submit","fans","friends","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
-  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 function buildTabs(){
@@ -1731,11 +1848,12 @@ function startNotes(){
 function start(){
   started=true;
   document.body.classList.remove("locked");$("gate").hidden=true;
-  renderWho();buildTabs();buildNav();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();startNotes();
+  renderWho();buildTabs();buildNav();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();loadMusicExtras();startNotes();
   var wa=$("wach");wa.textContent="";
   if(CFG&&CFG.whatsapp&&!document.querySelector(".wfab")){var wl=el("a","wfab");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wl.setAttribute("aria-label","Join our WhatsApp channel");wl.appendChild(svg("wa"));wl.appendChild(el("span",null,"Join our channel"));document.body.appendChild(wl)}
   try{
     var qp=new URLSearchParams(location.search);
+    if(qp.get("paid")==="song"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your song will show as Featured within a minute.");mySubs=null;setView("submit");return}
     if(qp.get("paid")==="gig"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your listing will show as Featured within a minute.");setView("gigs");return}
     if(qp.get("paid")&&CFG&&SES){
       history.replaceState(null,"",location.pathname);

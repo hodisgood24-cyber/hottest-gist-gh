@@ -60,6 +60,14 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
  <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="fo" style="width:auto"> Paid featuring is on</label>
  <div class="row"><button>Save</button></div></form>
  <h2>Services listings</h2><div id="gigs" class="card">Loading...</div>
+ <h2>Song submissions</h2><div id="subm" class="card">Loading...</div>
+ <h2>Featured artist price (homepage spotlight)</h2>
+ <form id="spf" class="card"><label>Price shown (example: GH₵ 50)</label><input id="spp" maxlength="30">
+ <label>Price as a number (example: 50)</label><input id="spa" type="number" min="1" step="0.5">
+ <label>Days featured per payment</label><input id="spd" type="number" min="1" max="30" value="7">
+ <label>How to pay by hand (shown when automatic payment is off)</label><input id="sph" maxlength="200" placeholder="e.g. Send GH₵ 50 by MoMo to 024… and WhatsApp us your song name">
+ <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="spo" style="width:auto"> Automatic payment (Paystack) is on</label>
+ <div class="row"><button>Save</button></div></form>
  <h2>Creators (verified badge)</h2><div id="crt" class="card">Loading...</div>
  <h2>Email subscribers</h2><div id="subs" class="card">Loading...</div>
 </div></div>
@@ -191,9 +199,36 @@ function loadGigs(){
     });
   }).catch(function(){$("gigs").textContent="Couldn't load. Did you run setup-gigs.sql?"});
 }
+
+function loadSubm(){
+  rpc("admin_submissions").then(function(m){
+    var b=$("subm");b.textContent="";
+    if(!(m||[]).length){b.textContent="No songs sent yet. Artists send them from the “Submit your song” page.";return}
+    (m||[]).forEach(function(c){
+      var d=el("div","it"),L=el("div");
+      var feat=c.featured_until&&new Date(c.featured_until)>new Date();
+      L.appendChild(el("p",null,c.artist+" – "+c.song+(feat?" ⭐":"")));
+      L.appendChild(el("p","m",c.status.toUpperCase()+" · "+new Date(c.created_at).toLocaleString()+" · Contact: "+c.contact+(feat?" · Featured until "+new Date(c.featured_until).toLocaleDateString():"")));
+      if(c.story)L.appendChild(el("p","m",c.story.slice(0,300)));
+      if(c.link){var a=el("a",null,"Open link");a.href=c.link;a.target="_blank";a.rel="noopener noreferrer";L.appendChild(a)}
+      d.appendChild(L);
+      function act(t,cls,fn){var x=el("button",cls,t);x.onclick=function(){x.disabled=true;fn().then(loadSubm).catch(function(){alert("Failed. Did you run setup-submissions.sql?");x.disabled=false})};d.appendChild(x)}
+      if(c.status!=="approved"&&c.status!=="published")act("Approve","g",function(){return rpc("admin_set_submission",{p_id:c.id,p_status:"approved"})});
+      if(c.status!=="published")act("Make it a story","g",function(){
+        var body="New music alert 🎶\n\n"+c.artist+" has a new song out: \""+c.song+"\".\n\n"+(c.story?c.story+"\n\n":"")+"Have a listen and tell us what you think in the comments 👇";
+        return rpc("admin_save_post",{p:{id:"song-"+c.id,title:c.artist+" drops new song \""+c.song+"\"",cat:"Afrobeats",author:"Hottest Gist GH",body:body,link:c.link||"",images:c.image?[c.image]:[],pin:false,status:"live",ts:Date.now()}})
+          .then(function(){return rpc("admin_set_submission",{p_id:c.id,p_status:"published"})}).then(function(){loadPosts()});
+      });
+      act(feat?"Feature +7 days":"Feature 7 days","g",function(){return rpc("admin_feature_song",{p_id:c.id,p_days:7})});
+      if(feat)act("Stop featuring","",function(){return rpc("admin_feature_song",{p_id:c.id,p_days:0})});
+      if(c.status!=="rejected")act("Reject","d",function(){return rpc("admin_set_submission",{p_id:c.id,p_status:"rejected"})});
+      b.appendChild(d);
+    });
+  }).catch(function(){$("subm").textContent="Couldn't load. Did you run setup-submissions.sql?"});
+}
 function init(){
-  loadPosts();loadMod();loadCreators();loadGigs();loadVer();loadPays();
-  api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="sounds"){var it=Array.isArray(x.value)?x.value:(x.value&&x.value.items)||[];$("snd").value=it.map(function(i){return [i.title||"",i.artist||"",i.link||""].join(" | ")}).join("\n")}if(x.key==="verify"){$("vp").value=v.price||"";$("va").value=v.amount||"";$("vo").checked=!!v.auto;$("vh").value=v.how||"";$("vl").value=v.link||""}if(x.key==="feature"){$("fp").value=v.price||"";$("fa").value=v.amount||"";$("fd").value=v.days||7;$("fo").checked=!!v.auto}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
+  loadPosts();loadMod();loadCreators();loadGigs();loadVer();loadPays();loadSubm();
+  api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="sounds"){var it=Array.isArray(x.value)?x.value:(x.value&&x.value.items)||[];$("snd").value=it.map(function(i){return [i.title||"",i.artist||"",i.link||""].join(" | ")}).join("\n")}if(x.key==="verify"){$("vp").value=v.price||"";$("va").value=v.amount||"";$("vo").checked=!!v.auto;$("vh").value=v.how||"";$("vl").value=v.link||""}if(x.key==="spotlight"){$("spp").value=v.price||"";$("spa").value=v.amount||"";$("spd").value=v.days||7;$("spo").checked=!!v.auto;$("sph").value=v.how||""}if(x.key==="feature"){$("fp").value=v.price||"";$("fa").value=v.amount||"";$("fd").value=v.days||7;$("fo").checked=!!v.auto}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
   $("f").onchange=function(){
     var fs=[].slice.call(this.files).slice(0,3-imgs.length);if(!fs.length)return;$("sv").disabled=true;$("sv").textContent="Uploading...";
     fs.reduce(function(p,f){return p.then(function(){return shrink(f).then(upload).then(function(u){imgs.push(u);thumbs()})})},Promise.resolve()).catch(function(){alert("A photo couldn't upload")}).then(function(){$("sv").disabled=false;$("sv").textContent=editId?"Update":"Publish";$("f").value=""});
@@ -226,6 +261,7 @@ function init(){
     rpc("admin_set_setting",{p_key:"sounds",p_value:{items:items,updated:Date.now()}}).then(function(){say("Saved. Trending sounds are live.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("sndx").onclick=function(){rpc("admin_set_setting",{p_key:"sounds",p_value:{}}).then(function(){$("snd").value="";say("Cleared.");setTimeout(function(){say("")},2500)})};
   $("vf2").onsubmit=function(e){e.preventDefault();rpc("admin_set_setting",{p_key:"verify",p_value:{price:$("vp").value.trim(),amount:Number($("va").value)||0,auto:$("vo").checked&&Number($("va").value)>0,how:$("vh").value.trim(),link:$("vl").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
+  $("spf").onsubmit=function(e){e.preventDefault();var a=Number($("spa").value)||0;rpc("admin_set_setting",{p_key:"spotlight",p_value:{price:$("spp").value.trim(),amount:a,days:Math.min(30,Math.max(1,Number($("spd").value)||7)),auto:$("spo").checked&&a>0,how:$("sph").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("ff").onsubmit=function(e){e.preventDefault();var a=Number($("fa").value)||0;rpc("admin_set_setting",{p_key:"feature",p_value:{price:$("fp").value.trim(),amount:a,days:Math.min(30,Math.max(1,Number($("fd").value)||7)),auto:$("fo").checked&&a>0}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("vx").onclick=function(){rpc("admin_set_setting",{p_key:"verify",p_value:{}}).then(function(){$("vf2").reset();say("Sign-ups closed.");setTimeout(function(){say("")},2500)})};
   setting("sf","song",function(){return{title:$("s1").value.trim(),artist:$("s2").value.trim(),note:$("s3").value.trim(),link:$("s4").value.trim()}},"sx");
