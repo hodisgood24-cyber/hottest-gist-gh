@@ -659,6 +659,7 @@ body.inchat footer{display:none}
 .bub.me .vnb i{background:#fff6}.bub.me .vnb i.on{background:#fff}.bub.me .vnt,.bub.me .vsend{color:#fffc}
 .avw{position:relative;display:inline-flex;flex:none}.pdot{position:absolute;right:0;bottom:0;width:28%;height:28%;min-width:9px;min-height:9px;border-radius:50%;background:#25d366;border:2px solid var(--bg);display:none}.avw.on .pdot{display:block}
 .chwt{display:flex;flex-direction:column;min-width:0;line-height:1.2}.chseen{font-size:12px;font-weight:600;color:var(--muted)}.chseen.on{color:#25a85a}.chseen:empty{display:none}
+.pushask{display:block;width:100%;margin:6px 0 10px;padding:12px 14px;border-radius:14px;border:1.5px dashed var(--red);background:var(--card);color:var(--text);font:inherit;font-weight:700;cursor:pointer;text-align:left}
 .hidon{display:block;margin:6px 4px 10px;font-size:13px;color:var(--muted)}
 .vns{flex:none;border:0;border-radius:999px;background:#0002;color:#333;font:700 11px/1 system-ui;padding:6px 7px;cursor:pointer}.vns.fast{background:#c8102e;color:#fff}.bub.me .vns{background:#fff3;color:#fff}.bub.me .vns.fast{background:#fff;color:#c8102e}.vnb{touch-action:none}
 .chmic{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
@@ -1495,6 +1496,7 @@ function routeHash(h){
   if(H2V[h]){setView(H2V[h]);return true}
   if(/^match-\d+$/.test(h)){openMatch(+h.slice(6));return true}
   if(/^m-[0-9a-f-]{36}$/.test(h)){if(CFG&&SES){openChat(h.slice(2))}else{setView("gist");needLogin("Log in to read your messages.")}return true}
+  if(/^chat-[0-9a-f-]{36}$/.test(h)){if(CFG&&SES){openChat(h.slice(5))}else{setView("gist");needLogin("Log in to read your messages.")}return true}
   if(/^u-[0-9a-f-]{36}$/.test(h)){if(CFG&&SES){openProfile(h.slice(2))}else{setView("gist");needLogin("Log in to see profiles and add friends.")}return true}
   return false;
 }
@@ -1784,6 +1786,11 @@ function renderMessages(){
   if(!(CFG&&SES)){v.appendChild(loginBox("Log in to message your friends."));return}
   var hl=el("label","hidon");var hc=document.createElement("input");hc.type="checkbox";hc.checked=!hideOn();hl.appendChild(hc);hl.appendChild(document.createTextNode(" Show when I'm online"));
   hc.onchange=function(){try{localStorage.setItem("gh-hideon",hc.checked?"0":"1")}catch(e){}presPing();toast(hc.checked?"Friends can see when you're online":"Your online status is hidden")};v.appendChild(hl);
+  var pb=el("div");v.appendChild(pb);
+  pushState().then(function(st){if(st==="off"||(st==="none"&&/iphone|ipad|ipod/i.test(navigator.userAgent))){
+    var bt=el("button","pushask","\ud83d\udd14 Get a notification when a friend messages you");bt.type="button";
+    bt.onclick=function(){pushOn().then(function(ok){if(ok)pb.textContent=""})};pb.appendChild(bt)}
+    else if(st==="blocked"){pb.appendChild(el("p","hidon","Notifications are blocked. Allow them for this site in your browser settings to hear about new messages."))}});
   var list=el("div");v.appendChild(list);list.appendChild(el("div","none","Loading your messages..."));
   api("rpc/my_chats",{}).then(function(r){
     chats=r||[];list.textContent="";
@@ -3338,7 +3345,12 @@ function presWatch(){
     paintDots();var need=false;document.querySelectorAll(".avw[data-uid],.chseen[data-uid]").forEach(function(e){var u=e.dataset.uid;if(u&&!presTried[u]){presTried[u]=1;need=true}});
     if(need)presFetch()},400)}).observe(document.body,{childList:true,subtree:true});
 }
+function pushLink(){
+  if(!(CFG&&SES&&pushOk()&&Notification.permission==="granted"))return;
+  navigator.serviceWorker.ready.then(function(r){return r.pushManager.getSubscription()}).then(function(s){if(!s)return;var j=s.toJSON();return api("rpc/save_push",{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth})}).catch(function(){});
+}
 function presStart(){
+  pushLink();
   if(presT)return;presPing();presT=setInterval(function(){presPing();presFetch()},60000);
   document.addEventListener("visibilitychange",function(){if(!document.hidden){presPing();presFetch()}});
 }

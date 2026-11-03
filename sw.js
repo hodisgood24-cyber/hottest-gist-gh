@@ -15,13 +15,17 @@ self.addEventListener("push", (e) => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch (x) { d = { title: e.data && e.data.text() }; }
   const title = d.title || "Hottest Gist GH";
-  e.waitUntil(self.registration.showNotification(title, {
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((cs) => {
+    // Message alerts are skipped when the site is already open on screen.
+    if (d.dm && cs.some((c) => c.visibilityState === "visible")) return;
+    return self.registration.showNotification(title, {
     body: d.body || "New gist just dropped 🔥",
     icon: "/icon-192.png",
     badge: "/favicon-48.png",
     image: d.image || undefined,
     tag: d.tag || "gist",
     data: { url: d.url || "/" }
+  });
   }));
 });
 self.addEventListener("notificationclick", (e) => {
