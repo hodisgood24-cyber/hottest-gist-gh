@@ -2,21 +2,61 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Admin · Hottest Gist GH</title>
 <style>
-:root{--bg:#fff;--card:#f6f6f7;--text:#16161a;--muted:#666;--line:#ddd;--red:#c8102e}
-@media(prefers-color-scheme:dark){:root{--bg:#111;--card:#1b1b1f;--text:#f2f2f2;--muted:#aaa;--line:#333}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,sans-serif}
-.w{max-width:760px;margin:0 auto;padding:16px}h1{font-size:22px;margin:0 0 4px}h2{font-size:18px;margin:26px 0 8px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
-label{display:block;font-weight:700;font-size:13px;margin:10px 0 4px}
-input,textarea,select{width:100%;font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
-button,.b{font:inherit;font-weight:800;border:0;border-radius:999px;padding:9px 16px;background:var(--red);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
-button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)}button.d{background:#444}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}.m{color:var(--muted);font-size:13px}
-.it{display:flex;gap:10px;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
-.it p{margin:2px 0;overflow-wrap:anywhere}.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.thumbs img{width:70px;height:70px;object-fit:cover;border-radius:8px}
+:root{--bg:#f3f3f5;--card:#fff;--text:#16161a;--muted:#6b6b76;--line:#e4e4ea;--red:#c8102e;--gold:#fcd116;--green:#006b3f;--shadow:0 1px 2px rgba(0,0,0,.04),0 6px 24px rgba(0,0,0,.05);--inp:#f7f7f9;--side:#15151a}
+@media(prefers-color-scheme:dark){:root{--bg:#0e0e11;--card:#18181d;--text:#f2f2f4;--muted:#9a9aa6;--line:#2a2a31;--shadow:none;--inp:#101014;--side:#0a0a0d}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+body:before{content:"";position:fixed;left:0;right:0;top:0;height:4px;z-index:60}
+body:before{background:linear-gradient(90deg,#c8102e 0 33.3%,#fcd116 33.3% 66.6%,#006b3f 66.6%)}
+a{color:var(--red)}
+.shell{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+.side{background:var(--side);color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px;overflow:auto}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font:800 17px/1.1 system-ui;padding:4px 8px 16px;letter-spacing:.2px}
+.brand img{width:36px;height:36px;border-radius:9px}.brand small{display:block;font-weight:600;font-size:11px;opacity:.6;letter-spacing:.8px;text-transform:uppercase;margin-top:2px}
+.side nav{display:flex;flex-direction:column;gap:4px}
+.nb{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:none;border:0;color:#c9c9d3;padding:11px 12px;border-radius:12px;font:700 15px system-ui;cursor:pointer;transition:background .15s,color .15s}
+.nb:hover{background:rgba(255,255,255,.07);color:#fff}
+.nb.on{background:var(--red);color:#fff}
+.nb .ic{font-size:18px;width:24px;text-align:center}.nb .bd{margin-left:auto;background:var(--gold);color:#111;border-radius:99px;font-size:12px;font-weight:800;padding:1px 8px;min-width:22px;text-align:center}
+.nb .bd[hidden]{display:none}
+.side .back{margin-top:auto;color:#c9c9d3;text-decoration:none;font-weight:700;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.15);text-align:center}
+.side .back:hover{background:rgba(255,255,255,.07);color:#fff}
+.main{padding:26px clamp(14px,3vw,36px) 60px;max-width:980px;width:100%}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 0 18px}
+h1{font-size:28px;margin:0;letter-spacing:-.3px}.top .m{margin:0}
+.sec{margin:0 0 26px}.sec>h2{font-size:15px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.sec>h2:before{content:"";width:4px;height:16px;border-radius:2px;background:var(--red)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:10px 0;box-shadow:var(--shadow)}
+label{display:block;font-weight:700;font-size:13px;margin:12px 0 5px;color:var(--text)}label:first-child{margin-top:0}
+input,textarea,select{width:100%;font:inherit;padding:10px 12px;border-radius:11px;border:1.5px solid var(--line);background:var(--inp);color:var(--text);transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(200,16,46,.15)}
+input[type=checkbox]{width:auto;accent-color:var(--red)}
+button,.b{font:inherit;font-weight:800;border:0;border-radius:999px;padding:9px 18px;background:var(--red);color:#fff;cursor:pointer;text-decoration:none;display:inline-block;transition:transform .1s,filter .15s}
+button:hover{filter:brightness(1.08)}button:active{transform:scale(.97)}
+button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)}button.d{background:#3a3a44;color:#fff}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}.row>input{flex:1;min-width:120px}.m{color:var(--muted);font-size:13px}
+.it{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}.it:last-child{border-bottom:0}
+.it p{margin:2px 0;overflow-wrap:anywhere}.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.thumbs img{width:70px;height:70px;object-fit:cover;border-radius:10px}
 .tag{background:var(--red);color:#fff;border-radius:6px;padding:0 6px;font-size:12px;font-weight:800}
-</style></head><body><div class="w">
-<h1>🛠️ Admin</h1><p class="m"><a href="/" style="color:var(--red)">← Back to the site</a></p>
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:6px 0 22px}@media(max-width:480px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{all:unset;box-sizing:border-box;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .15s}
+.tile:hover{transform:translateY(-2px);border-color:var(--red)}
+.tile b{font-size:30px;line-height:1.1;letter-spacing:-.5px}.tile span{color:var(--muted);font-size:13px;font-weight:600}.tile i{font-style:normal;font-size:20px;margin-bottom:4px}
+.tile.hot b{color:var(--red)}
+.qa{display:flex;gap:8px;flex-wrap:wrap}
+.hello{background:linear-gradient(135deg,#c8102e,#8e0b21);color:#fff;border-radius:18px;padding:20px 22px;margin:0 0 18px;box-shadow:var(--shadow)}
+.hello h2{margin:0 0 4px;font-size:21px;color:#fff;text-transform:none;letter-spacing:0}.hello h2:before{display:none}.hello p{margin:0;opacity:.85}
+@media(max-width:860px){
+ .shell{display:block}
+ .side{position:sticky;top:4px;z-index:50;height:auto;flex-direction:row;align-items:center;padding:8px 10px;gap:8px;overflow-x:auto;border-radius:0 0 16px 16px}
+ .brand{padding:0 6px 0 0}.brand span{display:none}.brand img{width:32px;height:32px}
+ .side nav{flex-direction:row;gap:6px}.nb{width:auto;white-space:nowrap;padding:8px 13px;border-radius:99px;font-size:14px}.nb .ic{width:auto;font-size:16px}
+ .side .back{margin:0 0 0 auto;white-space:nowrap;padding:8px 12px}
+ .main{padding-top:18px}h1{font-size:24px}
+}
+</style></head><body><div class="shell">
+<aside class="side"><a class="brand" href="/"><img src="/icon-192.png" alt=""><span>Hottest Gist<small>Admin</small></span></a><nav id="nav" aria-label="Admin sections"></nav><a class="back" href="/">← Site</a></aside>
+<main class="main">
+<header class="top"><h1 id="pt">Overview</h1><p class="m" id="who"></p></header>
 <div id="msg" class="card">Checking your login...</div>
 <div id="app" hidden>
  <h2>Write a post</h2>
@@ -87,7 +127,7 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
  <div class="row"><button>Save</button></div></form>
  <h2>Creators (verified badge)</h2><div id="crt" class="card">Loading...</div>
  <h2>Email subscribers</h2><div id="subs" class="card">Loading...</div>
-</div></div>
+</div></main></div>
 <script src="config.js"></script>
 <script>
 var CFG=window.GH_CFG,SES=null,$=function(i){return document.getElementById(i)},imgs=[],editId=null,mine=[];
@@ -328,4 +368,53 @@ function init(){
   setting("sf","song",function(){return{title:$("s1").value.trim(),artist:$("s2").value.trim(),note:$("s3").value.trim(),link:$("s4").value.trim()}},"sx");
   setting("pf2","sponsor",function(){return{text:$("p1").value.trim(),link:$("p2").value.trim()}},"px");
 }
+</script><script>
+(function(){
+  var app=document.getElementById("app");if(!app)return;
+  var G=[
+   ["home","🏠","Overview",[]],
+   ["content","📝","Content",["Write a post","Your posts","Song of the day","TikTok trending sounds","Sponsor strip"]],
+   ["mod","🛡️","Moderation",["Moderation","Fan posts","Services listings","Market items and sellers","Song submissions"]],
+   ["money","💰","Money",["Gold tick requests","Recent automatic payments","Gold tick price and payment details","Featured slot price","Seller plans","Featured artist price"]],
+   ["people","👥","People",["Creators","Email subscribers"]],
+   ["match","⚽","Match day",["⚽ Match day"]]
+  ];
+  var secs=[],cur=null,kids=[].slice.call(app.children);
+  kids.forEach(function(n){
+    if(n.tagName==="H2"){
+      cur=document.createElement("section");cur.className="sec";cur.setAttribute("data-g","content");
+      var t=n.textContent.trim();G.forEach(function(g){g[3].forEach(function(p){if(t.indexOf(p)===0)cur.setAttribute("data-g",g[0])})});
+      app.insertBefore(cur,n);cur.appendChild(n);secs.push(cur);
+    }else if(cur){cur.appendChild(n)}
+  });
+  var home=document.createElement("section");home.className="sec";home.setAttribute("data-g","home");app.insertBefore(home,app.firstChild);
+  var hello=document.createElement("div");hello.className="hello";
+  var hr=new Date().getHours(),gr=hr<12?"Good morning":hr<17?"Good afternoon":"Good evening";
+  hello.innerHTML="<h2>"+gr+" \ud83d\udc4b</h2><p>"+new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+". Here is what needs you today.</p>";
+  home.appendChild(hello);
+  var tiles=document.createElement("div");tiles.className="tiles";home.appendChild(tiles);
+  var T=[["\ud83d\udcdd","posts","Your posts","content"],["\ud83d\udee1\ufe0f","mod","Moderation queue","mod"],["\u2b50","vr","Gold tick requests","money"],["\ud83c\udfb5","subm","Song submissions","mod"],["\ud83c\udf1f","crt","Creators","people"],["\u2709\ufe0f","subs","Subscribers","people"]];
+  var tEls={};
+  T.forEach(function(t){var b=document.createElement("button");b.type="button";b.className="tile";b.innerHTML="<i>"+t[0]+"</i><b>\u2013</b><span>"+t[2]+"</span>";b.onclick=function(){show(t[3])};tiles.appendChild(b);tEls[t[1]]=b});
+  var qa=document.createElement("div");qa.className="qa";
+  [["\u270d\ufe0f Write a post","content","pf"],["\ud83d\udee1\ufe0f Review reports","mod","mod"],["\ud83d\udcb0 Prices and plans","money","plf"]].forEach(function(q){var b=document.createElement("button");b.type="button";b.textContent=q[0];b.onclick=function(){show(q[1]);setTimeout(function(){var e=document.getElementById(q[2]);if(e)e.scrollIntoView({block:"start"})},50)};qa.appendChild(b)});
+  home.appendChild(qa);
+  var nav=document.getElementById("nav"),btns={};
+  G.forEach(function(g){var b=document.createElement("button");b.type="button";b.className="nb";b.innerHTML='<span class="ic">'+g[1]+'</span><span>'+g[2]+'</span><span class="bd" hidden></span>';b.onclick=function(){show(g[0])};nav.appendChild(b);btns[g[0]]=b});
+  function show(id){
+    G.forEach(function(g){btns[g[0]].classList.toggle("on",g[0]===id);if(g[0]===id)document.getElementById("pt").textContent=g[2]});
+    var all=app.querySelectorAll(":scope>.sec");[].forEach.call(all,function(s){s.hidden=s.getAttribute("data-g")!==id});
+    try{localStorage.setItem("gh-admtab",id)}catch(e){}window.scrollTo({top:0});
+  }
+  function count(id){var e=document.getElementById(id);return e?e.querySelectorAll(".it").length:0}
+  function refresh(){
+    var n={};T.forEach(function(t){n[t[1]]=count(t[1]);tEls[t[1]].querySelector("b").textContent=n[t[1]];tEls[t[1]].classList.toggle("hot",(t[1]==="mod"||t[1]==="vr")&&n[t[1]]>0)});
+    function bd(id,v){var s=btns[id].querySelector(".bd");s.hidden=!v;s.textContent=v}
+    bd("mod",n.mod);bd("money",n.vr);
+  }
+  var obs=new MutationObserver(function(){clearTimeout(refresh.t);refresh.t=setTimeout(refresh,150)});
+  ["posts","mod","vr","subm","crt","subs"].forEach(function(id){var e=document.getElementById(id);if(e)obs.observe(e,{childList:true,subtree:true})});
+  var start="home";try{start=localStorage.getItem("gh-admtab")||"home"}catch(e){}if(!btns[start])start="home";show(start);refresh();
+  try{var s=JSON.parse(localStorage.getItem("gh-ses")||"null");var w=document.getElementById("who");if(w&&s&&s.user&&s.user.email)w.textContent="Signed in as "+s.user.email}catch(e){}
+})();
 </script></body></html>
