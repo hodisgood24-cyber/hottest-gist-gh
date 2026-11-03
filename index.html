@@ -1243,12 +1243,15 @@ function badgesFor(id){
 }
 function nameEl(name,id){var w=el("span");var nb=el("b","plink",name);if(id&&/^[0-9a-f-]{36}$/.test(id))nb.onclick=function(){openProfile(id)};w.appendChild(nb);var bg=badgesFor(id);if(bg)w.appendChild(el("span","bdg",bg));return w}
 function toggleReaction(p,code){
-  var k=p.id+"|"+code,on=!myReact[k];
+  var k=p.id+"|"+code,on=!myReact[k],prev=[];
+  if(on)R.forEach(function(r){var k2=p.id+"|"+r[0];if(k2!==k&&myReact[k2]){prev.push(k2);delete myReact[k2];reactN[k2]=Math.max(0,(reactN[k2]||0)-1)}});
   if(on)myReact[k]=1;else delete myReact[k];
   reactN[k]=Math.max(0,(reactN[k]||0)+(on?1:-1));paint();renderHot();
   api("rpc/toggle_reaction_auth",{p_post:p.id,p_emoji:code,p_on:on}).catch(function(){
     if(on)delete myReact[k];else myReact[k]=1;
-    reactN[k]=Math.max(0,(reactN[k]||0)+(on?-1:1));paint();renderHot();toast("Couldn't save your reaction");
+    reactN[k]=Math.max(0,(reactN[k]||0)+(on?-1:1));
+    prev.forEach(function(k2){myReact[k2]=1;reactN[k2]=(reactN[k2]||0)+1});
+    paint();renderHot();toast("Couldn't save your reaction");
   });
 }
 function embedUrl(u){
