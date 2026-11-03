@@ -494,6 +494,26 @@ body.fullpage header,body.fullpage .tabs,body.fullpage .where,body.fullpage .gea
 #vProfile .evb{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 #vProfile .evb button,#vProfile .evb .frb{border-radius:999px}
 @media (min-width:760px){.pcover{height:180px}.prh.pro{margin-top:-58px}}
+
+/* ===== Official page card and follow pop-up ===== */
+.offc{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 8px;padding:14px;border-radius:18px;border:1.5px solid #f3b61f;background:linear-gradient(135deg,rgba(206,17,38,.16),rgba(252,209,22,.12) 55%,rgba(0,107,63,.16))}
+.offw{flex:1 1 100%;min-width:0;display:flex;align-items:center;gap:12px;background:none;border:0;padding:0;font:inherit;color:var(--text);text-align:left;cursor:pointer}
+.offw b{display:flex;align-items:center;gap:6px;font-size:17px}
+.offw small{display:block;color:var(--muted);font-size:13px;font-weight:700}
+.offa{display:flex;gap:8px;flex-wrap:wrap;width:100%}.offa>.frb,.offa .acts{flex:1}.offa .acts .frb{flex:1}
+.offa .acts{display:inline-flex;gap:6px}
+.ofpop{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));animation:ofin .25s ease-out}
+.ofbox{position:relative;width:min(380px,100%);background:var(--card);color:var(--text);border-radius:22px;padding:26px 22px 18px;text-align:center;border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.45);overflow:hidden}
+.ofbox::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,#ce1126 33.3%,#fcd116 33.3% 66.6%,#006b3f 66.6%)}
+.ofav{display:flex;justify-content:center}.ofav .av,.ofav img{border:4px solid #f3b61f;border-radius:50%}
+.ofk{margin-top:10px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#d39b06}
+.ofbox h3{margin:6px 0 6px;font:400 28px/1.05 var(--font-display);text-transform:uppercase}
+.ofbox p{margin:0 0 16px;color:var(--muted);font-size:15px}
+.offol{width:100%;margin:0!important;padding:14px!important;font-size:16px!important}
+.oflater{margin-top:8px;background:none;border:0;color:var(--muted);font:inherit;font-weight:700;cursor:pointer;padding:8px}
+.ofx{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:18px;cursor:pointer}
+@keyframes ofin{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.ofpop{animation:none}}
 </style>
 </head>
 <body>
@@ -1031,6 +1051,56 @@ function renderSearch(){
   }
   draw();
 }
+
+// ===== Official page (top of Friends) and follow pop-up =====
+var OFFICIAL=null,offTried=false,folLoaded=false;
+var offWait=[],offDone=false;
+function loadOfficial(cb){
+  if(offDone||!CFG){cb&&cb();return}
+  if(cb)offWait.push(cb);if(offTried)return;offTried=true;
+  api("rpc/official_account",{}).then(function(id){if(!id)return;return api("creator_stats?select=*&user_id=eq."+id).then(function(r){if(r&&r[0]){OFFICIAL=r[0];cr[id]=r[0]}})}).catch(function(){}).then(function(){offDone=true;var w=offWait;offWait=[];w.forEach(function(f){try{f()}catch(e){}})});
+}
+function followOfficial(btn,after){
+  if(!SES){needLogin("Create a free account to follow Hottest Gist GH and get the gist first.");return}
+  var id=OFFICIAL.user_id;if(fol[id])return;fol[id]=1;OFFICIAL.followers=(OFFICIAL.followers||0)+1;if(btn){btn.textContent="Following ✔";btn.disabled=true}
+  api("rpc/toggle_follow",{p_user:id,p_on:true}).then(function(){toast("You're following Hottest Gist GH 🔥");after&&after()}).catch(function(e){delete fol[id];if(btn){btn.textContent="Follow";btn.disabled=false}if(!e.login)toast("Couldn't follow. Try again.")});
+}
+function drawOfficial(box){
+  loadOfficial(function(){
+    box.textContent="";if(!OFFICIAL)return;var o=OFFICIAL;
+    var c=el("section","offc");var who=el("button","offw");who.type="button";who.appendChild(avEl(o,58));
+    var t=el("span");var nm=el("b",null,o.name||"Hottest Gist GH");if(o.verified)nm.appendChild(vBadge(16));t.appendChild(nm);
+    t.appendChild(el("small",null,"⭐ Official page · "+(o.followers||0)+" followers"));who.appendChild(t);who.onclick=function(){openProfile(o.user_id)};c.appendChild(who);
+    var me=SES&&SES.user&&SES.user.id;
+    if(me!==o.user_id){var a=el("div","offa");
+      var fb=el("button","frb go",fol[o.user_id]?"Following ✔":"Follow");fb.type="button";fb.disabled=!!fol[o.user_id];fb.onclick=function(){followOfficial(fb,function(){drawOfficial(box)})};a.appendChild(fb);
+      if(SES&&frLoaded)a.appendChild(friendBtns(o.user_id,o.name||"Hottest Gist GH",frState(o.user_id),function(){drawOfficial(box)}));
+      c.appendChild(a)}
+    box.appendChild(c);
+  });
+}
+function officialPopup(){
+  if(viewName!=="friends"||document.querySelector(".ofpop"))return;
+  loadOfficial(function(){
+    if(!OFFICIAL||viewName!=="friends")return;
+    var me=SES&&SES.user&&SES.user.id;if(me===OFFICIAL.user_id)return;
+    if(SES&&!folLoaded){setTimeout(officialPopup,500);return}
+    if(fol[OFFICIAL.user_id])return;
+    var o=OFFICIAL,m=el("div","ofpop");m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","Follow Hottest Gist GH");
+    var c=el("div","ofbox");var x=el("button","ofx","×");x.type="button";x.setAttribute("aria-label","Close");c.appendChild(x);
+    var av=el("div","ofav");av.appendChild(avEl(o,84));c.appendChild(av);
+    c.appendChild(el("div","ofk","⭐ Official page"));
+    var h=el("h3",null,"Follow Hottest Gist GH");c.appendChild(h);
+    c.appendChild(el("p",null,"Be the first to hear new music, gist and Top 10 results, and see what's trending in Ghana every day. Join "+(o.followers||0)+" fans already following."));
+    var f=el("button","go2 offol",SES?"Follow us":"Join and follow us");f.type="button";c.appendChild(f);
+    var n=el("button","oflater","Maybe later");n.type="button";c.appendChild(n);
+    function close(){m.remove();document.removeEventListener("keydown",esc)}
+    function esc(e){if(e.key==="Escape")close()}
+    x.onclick=n.onclick=close;m.onclick=function(e){if(e.target===m)close()};document.addEventListener("keydown",esc);
+    f.onclick=function(){if(!SES){close();needLogin("Create a free account to follow Hottest Gist GH and add friends.");return}followOfficial(null,function(){close();renderFriends()});f.disabled=true;f.textContent="Following…"};
+    m.appendChild(c);document.body.appendChild(m);f.focus();
+  });
+}
 // ===== Friends =====
 var friends=[],frLoaded=false,frQ="",frRes=null,frTimer=null;
 function loadFriends(cb){
@@ -1055,7 +1125,10 @@ function frRow(p,onChange){
 }
 function renderFriends(){
   var v=$("vFriends");v.textContent="";
-  v.appendChild(el("h2","vh","👫 Friends"));
+  var bar=el("div","ptop");var bk=el("button","bk","\u2190");bk.type="button";bk.setAttribute("aria-label","Back to home");bk.onclick=function(){setView("gist")};bar.appendChild(bk);
+  bar.appendChild(el("b",null,"\ud83d\udc6b Friends"));v.appendChild(bar);
+  var ofw=el("div");v.appendChild(ofw);drawOfficial(ofw);
+  setTimeout(officialPopup,400);
   if(!(CFG&&SES)){v.appendChild(loginBox("Log in to add friends and see who's on Hottest Gist GH."));return}
   v.appendChild(el("p","sub","Find people, add them as friends and follow each other's gist."));
   var sf=el("form","frs");var si=el("input");si.type="search";si.placeholder="Search people by name";si.setAttribute("aria-label","Search people by name");si.value=frQ;si.id="frq";
@@ -1080,13 +1153,13 @@ function renderFriends(){
   if(sent.length){body.appendChild(el("div","frh","Requests you sent"));sent.forEach(function(p){body.appendChild(frRow(p,renderFriends))})}
   var sg=el("div");body.appendChild(sg);
   var me=SES.user.id,known={};friends.forEach(function(f){known[f.user_id]=1});
-  api("creator_stats?select=user_id,name,avatar,verified,followers&order=followers.desc,posts.desc&limit=30").then(function(r){
-    var list=(r||[]).filter(function(p){return p.user_id!==me&&!known[p.user_id]}).slice(0,8);
-    if(!list.length)return;sg.appendChild(el("div","frh","People you may know"));
-    list.forEach(function(p){p.state="none";sg.appendChild(frRow(p,renderFriends))});
+  loadOfficial(function(){api("creator_stats?select=user_id,name,avatar,verified,followers&order=followers.desc,posts.desc&limit=30").then(function(r){
+    var list=(r||[]).filter(function(p){return p.user_id!==me&&!known[p.user_id]&&!(OFFICIAL&&p.user_id===OFFICIAL.user_id)}).slice(0,8);
+    if(list.length){sg.appendChild(el("div","frh","People you may know"));
+    list.forEach(function(p){p.state="none";sg.appendChild(frRow(p,renderFriends))})}
     var inv=el("button","go2","📣 Invite friends to Hottest Gist");inv.type="button";inv.style.marginTop="14px";
     inv.onclick=function(){var t="Join me on Hottest Gist GH 🇬🇭🔥 Ghana's hottest music and gist. Add me as a friend: "+location.origin+"/#u-"+me;if(navigator.share)navigator.share({text:t}).catch(function(){});else window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank")};sg.appendChild(inv);
-  }).catch(function(){});
+  }).catch(function(){})});
 }
 // ===== Weekly Ghana Top 10 =====
 var chartRows=null,myChart=null;
@@ -1356,7 +1429,7 @@ function loadRemote(){
   api("rpc/is_admin",{}).then(function(v){isAdm=v===true}).catch(function(){});
   api("subscribers?select=email").then(function(r){subscribed=!!(r&&r.length)}).catch(function(){});
   var me0=SES&&SES.user&&SES.user.id;
-  if(me0){api("follows?select=followee").then(function(r){fol={};(r||[]).forEach(function(x){fol[x.followee]=1})}).catch(function(){});
+  if(me0){api("follows?select=followee").then(function(r){fol={};(r||[]).forEach(function(x){fol[x.followee]=1});folLoaded=true}).catch(function(){folLoaded=true});
     api("creator_stats?select=*&user_id=eq."+me0).then(function(r){if(r&&r[0])cr[me0]=r[0]}).catch(function(){})}
   var today=new Date().toISOString().slice(0,10);
   var go=function(){api("checkins?select=day&order=day.desc&limit=400").then(function(r){checkDays={};(r||[]).forEach(function(x){checkDays[x.day]=1})}).catch(function(){})};
@@ -1711,7 +1784,7 @@ function renderProfile(uid){
 }
 
 function setView(v){
-  viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="profile");
+  viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="profile"||v==="friends");
   setTimeout(navMark,0);syncHash(v);
   ["gist","search","submit","fans","friends","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
