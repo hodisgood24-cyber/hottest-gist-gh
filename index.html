@@ -546,6 +546,30 @@ body.inchat .bnav{display:none!important}
 body.inchat footer{display:none}
 @media (min-width:760px){body.inchat .bnav{display:flex!important}body.inchat.hasnav .chform,body.inchat.hasnav .chnote{left:88px}}
 @media (min-width:1100px){body.inchat.hasnav .chform,body.inchat.hasnav .chnote{left:232px}}
+
+/* ===== Cover photo and photo viewer ===== */
+.pcover{position:relative;background-size:cover;background-position:center}
+.pcover[role=button]{cursor:pointer}
+.pcover.has{background-color:var(--card)}
+.pcadd{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;font-size:13px;font-weight:800;padding:7px 12px;border-radius:99px;backdrop-filter:blur(4px)}
+.pav{position:relative;background:none;border:0;padding:0;cursor:pointer;border-radius:50%;line-height:0}
+.pav .av,.pav img{border:4px solid var(--bg);box-shadow:0 6px 18px rgba(0,0,0,.35);border-radius:50%}
+.pcam{position:absolute;right:2px;bottom:4px;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;border:3px solid var(--bg)}
+.phs{position:fixed;inset:0;z-index:90;background:#070707;display:flex;flex-direction:column;padding:max(12px,env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) max(14px,env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));color:#fff}
+.phtop{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 2px 10px}
+.phtop b{font-size:17px}
+.phx{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font-size:22px;cursor:pointer}
+.phstage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.phstage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px}
+.phstage:not(.cov) img{border-radius:50%;max-width:min(86vw,420px);max-height:min(86vw,420px);aspect-ratio:1;object-fit:cover}
+.phph{color:rgba(255,255,255,.7);font-weight:700;border:2px dashed rgba(255,255,255,.3);border-radius:16px;padding:40px 24px;text-align:center;width:100%;max-width:520px}
+.phacts{display:flex;flex-direction:column;gap:8px;width:100%;max-width:420px;margin:12px auto 0}
+.phb{width:100%;padding:13px;border-radius:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#fff;font:inherit;font-weight:800;font-size:16px;cursor:pointer}
+.phb.go{background:var(--red);border-color:var(--red)}
+.phb.red{color:#ff8a8a;border-color:rgba(255,120,120,.5)}
+.phb:disabled{opacity:.6}
+.phq{margin:0 0 4px;text-align:center;font-weight:700}
+@media (min-width:760px){.phacts{flex-direction:row;flex-wrap:wrap;max-width:640px}.phb{flex:1 1 180px}}
 </style>
 </head>
 <body>
@@ -1218,6 +1242,46 @@ function renderChat(){
   else if(frState(uid)!=="friends"){note.hidden=false;note.textContent="You can only message friends. Add "+(c.name||"them")+" as a friend first."}
   setTimeout(function(){ta.focus()},100);
 }
+
+// ===== Photo viewer: view, change, save, remove (profile picture and cover) =====
+function savePhoto(src,name){
+  fetch(src).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);toast("Saved to your downloads")})
+    .catch(function(){window.open(src,"_blank","noopener");toast("Press and hold the photo to save it")});
+}
+function photoSheet(o){
+  var isCover=o.kind==="cover",title=isCover?"Cover photo":"Profile picture";
+  var m=el("div","phs");m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label",title);
+  var top=el("div","phtop");var x=el("button","phx","×");x.type="button";x.setAttribute("aria-label","Close");top.appendChild(el("b",null,title));top.appendChild(x);m.appendChild(top);
+  var stage=el("div","phstage"+(isCover?" cov":""));m.appendChild(stage);
+  var acts=el("div","phacts");m.appendChild(acts);
+  var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.hidden=true;m.appendChild(fi);
+  var picked=null;
+  function show(src){stage.textContent="";if(src){var i=document.createElement("img");i.src=src;i.alt=title;stage.appendChild(i)}else{stage.appendChild(isCover?el("div","phph","No cover photo yet"):avEl(o.c,180))}}
+  function btn(t,cls,fn){var b=el("button","phb"+(cls?" "+cls:""),t);b.type="button";b.onclick=fn;acts.appendChild(b);return b}
+  function close(){if(picked)URL.revokeObjectURL(picked);m.remove();document.removeEventListener("keydown",esc)}
+  function esc(e){if(e.key==="Escape")close()}
+  function main(){
+    acts.textContent="";show(o.src);
+    if(o.mine)btn(o.src?"📷 Change photo":"📷 Add a photo","go",function(){fi.click()});
+    if(o.src)btn("⬇️ Save to phone","",function(){savePhoto(o.src,(isCover?"cover":"profile")+"-"+((o.c&&o.c.name)||"photo").replace(/[^\w-]+/g,"-")+".jpg")});
+    if(o.mine&&o.src){var rb=btn("🗑 Remove","red",function(){if(!rb.dataset.sure){rb.dataset.sure="1";rb.textContent="Tap again to remove";return}rb.disabled=true;
+      (isCover?api("rpc/save_cover",{p_cover:""}):api("rpc/remove_avatar",{})).then(function(){toast(title+" removed");delete cr[o.uid];close();renderProfile(o.uid)}).catch(function(){rb.disabled=false;toast("Couldn't remove it. Did you run setup-cover.sql?")})})}
+    btn("Close","",close);
+  }
+  fi.onchange=function(){
+    var f=fi.files[0];if(!f)return;if(picked)URL.revokeObjectURL(picked);picked=URL.createObjectURL(f);show(picked);
+    acts.textContent="";acts.appendChild(el("p","phq","Use this as your "+title.toLowerCase()+"?"));
+    var sv=btn("✔ Save","go",function(){sv.disabled=true;sv.textContent="Saving…";
+      shrinkImg(f,isCover?1600:600).then(function(b){return upFan(b,"jpg","image/jpeg")}).then(function(u){
+        return isCover?api("rpc/save_cover",{p_cover:u}):api("rpc/save_profile",{p_name:(o.c&&o.c.name)||myName(),p_bio:(o.c&&o.c.bio)||"",p_avatar:u});
+      }).then(function(){toast(title+" updated 🔥");delete cr[o.uid];close();renderProfile(o.uid)})
+      .catch(function(){sv.disabled=false;sv.textContent="✔ Save";toast(isCover?"Couldn't save the cover. Did you run setup-cover.sql?":"Couldn't save the photo. Try another one.")})});
+    btn("🔄 Pick another","",function(){fi.value="";fi.click()});
+    btn("Cancel","",function(){fi.value="";if(picked){URL.revokeObjectURL(picked);picked=null}main()});
+  };
+  x.onclick=close;m.onclick=function(e){if(e.target===m||e.target===stage)close()};document.addEventListener("keydown",esc);
+  document.body.appendChild(m);main();x.focus();
+}
 // ===== Friends =====
 var friends=[],frLoaded=false,frQ="",frRes=null,frTimer=null;
 function loadFriends(cb){
@@ -1831,8 +1895,14 @@ function renderProfile(uid){
       body.textContent="";
       if(!c){body.appendChild(el("div","empty","This fan hasn't set up a profile yet."));return}
       cr[uid]=c;drawWhere();bt.textContent=mine?"Your profile":c.name;
-      body.appendChild(el("div","pcover"));
-      var h=el("div","prh pro");h.appendChild(avEl(c,72));
+      var cov=el("div","pcover"+(c.cover?" has":""));var cs=safeLink(c.cover);if(cs)cov.style.backgroundImage="url(\""+cs.replace(/"/g,"")+"\")";
+      if(cs||mine){cov.setAttribute("role","button");cov.tabIndex=0;cov.setAttribute("aria-label",mine?"Cover photo: view or change":"View cover photo");
+        cov.onclick=function(){photoSheet({kind:"cover",src:cs,mine:mine,c:c,uid:uid})};cov.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();cov.onclick()}}}
+      if(mine&&!cs)cov.appendChild(el("span","pcadd","\ud83d\udcf7 Add cover photo"));
+      body.appendChild(cov);
+      var h=el("div","prh pro");var pav=el("button","pav");pav.type="button";pav.setAttribute("aria-label",mine?"Profile picture: view or change":"View profile picture");pav.appendChild(avEl(c,84));
+      if(mine)pav.appendChild(el("span","pcam","\ud83d\udcf7"));
+      pav.onclick=function(){photoSheet({kind:"avatar",src:safeLink(c.avatar),mine:mine,c:c,uid:uid})};h.appendChild(pav);
       var hd=el("div");var nm=el("h2","vh",c.name);if(c.verified)nm.appendChild(vBadge(24));hd.appendChild(nm);
       if(c.bio)hd.appendChild(el("p","sub",c.bio));h.appendChild(hd);body.appendChild(h);
       var stt=el("div","prs"),fcount=null;
