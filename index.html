@@ -820,6 +820,56 @@ body.biomode main.wrap{max-width:560px}
 .cmlk .h{font-size:15px;line-height:1}
 .cmlk.on{color:#ff5a6e}
 .cmlk.pop2 .h{display:inline-block;animation:rxpop .55s cubic-bezier(.2,1.6,.4,1)}
+
+/* ===== Profile (new look) ===== */
+#vProfile .phero .pcover{height:150px;border-radius:20px;margin-top:12px;box-shadow:inset 0 -60px 60px -30px rgba(0,0,0,.35)}
+.phrow{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:-56px 14px 0;position:relative}
+.phrow .pav .av,.phrow .pav img{border:5px solid var(--bg)}
+.pbtns{margin:0 0 4px!important;gap:8px!important;justify-content:flex-end}
+#vProfile .pbtns button,#vProfile .pbtns .frb{background:var(--card);border:1.5px solid var(--line);font-size:13px;padding:8px 14px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.pinfo{padding:10px 16px 4px}
+.pname{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;font:400 32px/1.05 var(--font-display);text-transform:uppercase;letter-spacing:.01em}
+.pvb{background:none;border:0;padding:4px;margin:-4px;cursor:pointer;border-radius:50%;line-height:0;transition:transform .15s}
+.pvb:hover{transform:scale(1.12) rotate(-6deg)}.pvb:focus-visible{outline:2px solid var(--gold)}
+.phandle{color:var(--muted);font-weight:700;margin-top:4px}
+.pbio{margin:8px 0 0;font-size:15px;line-height:1.5;max-width:60ch}
+.plink2{display:inline-block;margin-top:6px;color:var(--red);font-weight:700;font-size:14px;text-decoration:none;word-break:break-all}
+.plink2:hover{text-decoration:underline}
+.pstats{display:flex;flex-wrap:wrap;gap:18px;margin:12px 0 4px;color:var(--muted);font-size:15px}
+.pstats b{color:var(--text);font-size:17px}
+.pedit{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.pgold{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:14px 0 0;padding:12px 14px;border-radius:16px;border:1.5px solid rgba(252,209,22,.45);background:linear-gradient(110deg,rgba(252,209,22,.16),rgba(232,161,15,.06) 60%,transparent);color:var(--text);font:inherit;cursor:pointer;transition:transform .12s,border-color .15s}
+.pgold:hover{border-color:var(--gold);transform:translateY(-1px)}
+.pgt{flex:none;width:46px;height:46px;border-radius:50%;background:rgba(252,209,22,.18);display:flex;align-items:center;justify-content:center}
+.pgx{flex:1;min-width:0;display:flex;flex-direction:column}.pgx small{color:var(--muted);font-weight:600}
+.pga{flex:none;font-weight:800;color:var(--gold);font-size:14px}
+.pcomp{display:flex;align-items:center;gap:12px;width:100%;margin:12px 0 0;padding:10px 12px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--muted);font:inherit;font-size:15px;text-align:left;cursor:pointer}
+.pcomp>span:nth-child(2){flex:1}.pcomp:hover{border-color:var(--red);color:var(--text)}
+.pci{font-size:20px}
+.ptabs{display:flex;gap:4px;margin:18px 0 12px;border-bottom:1px solid var(--line)}
+.ptabs button{flex:1;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);font:inherit;font-weight:800;padding:12px 8px;cursor:pointer}
+.ptabs button[aria-pressed=true]{color:var(--text);border-bottom-color:var(--red)}
+@media (min-width:760px){#vProfile .phero .pcover{height:220px}.phrow{margin-top:-64px}.pname{font-size:40px}.pinfo{padding:12px 20px 4px}}
+@media (max-width:420px){.pbtns .pbtn{padding:8px 11px!important}}
+/* ===== Gold tick page ===== */
+.ghero{text-align:center;padding:34px 18px 26px;margin-top:14px;border-radius:24px;background:radial-gradient(circle at 50% 0%,rgba(252,209,22,.35),transparent 60%),linear-gradient(160deg,#2a2006,#141209 70%);border:1px solid rgba(252,209,22,.35);color:#fff}
+.gbig{display:inline-flex;animation:gfloat 3s ease-in-out infinite;filter:drop-shadow(0 8px 24px rgba(252,209,22,.45))}
+@keyframes gfloat{50%{transform:translateY(-6px) rotate(-4deg)}}
+.ghero h2{margin:12px 0 4px;font:400 34px/1 var(--font-display);text-transform:uppercase;color:var(--gold)}
+.ghero p{margin:0;color:#e9e3cf}
+.gstat{display:flex;align-items:center;gap:10px;margin:14px 0 0;padding:12px 14px;border-radius:14px;background:rgba(31,138,76,.14);border:1px solid rgba(31,138,76,.5);font-weight:700}
+.gperks{display:grid;gap:10px;margin:16px 0}
+.gperk{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.gperk div{display:flex;flex-direction:column}.gperk small{color:var(--muted);font-weight:600;margin-top:2px}
+.gpi{font-size:22px;line-height:1.2}
+.gplan{background:var(--card);border:1.5px solid rgba(252,209,22,.45);border-radius:20px;padding:18px;margin-bottom:24px}
+.gprice{text-align:center}.gprice b{font:400 44px/1 var(--font-display);color:var(--gold)}.gprice span{color:var(--muted);font-weight:700}
+.gnote{text-align:center;color:var(--muted);font-size:13px;margin:6px 0 14px}
+.gpay{display:block;width:100%;box-sizing:border-box;text-align:center;font:inherit;font-weight:800;font-size:16px;padding:14px;border-radius:14px;border:0;background:linear-gradient(90deg,#fcd116,#e8a10f);color:#15140f;cursor:pointer;text-decoration:none;margin:4px 0 8px}
+.gpay:disabled{opacity:.6}
+.gmanual{display:block;margin:10px auto 0;background:none;border:0;color:var(--muted);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+.gsoon{text-align:center;color:var(--muted)}
+@media (min-width:760px){.gperks{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -860,6 +910,7 @@ body.biomode main.wrap{max-width:560px}
   <div id="vGigs" hidden></div>
   <div id="vChart" hidden></div>
   <div id="vProfile" hidden></div>
+  <div id="vGold" hidden></div>
   <div id="vEvents" hidden></div>
   <div id="vTop" hidden></div>
   <div id="vPolls" hidden></div>
@@ -1171,7 +1222,7 @@ function pollCard(pl){
 
 
 // ===== Remember the page in the address (refresh and Back keep you there) =====
-var V2H={matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
+var V2H={gold:"gold",matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
 var H2V={};Object.keys(V2H).forEach(function(k){H2V[V2H[k]]=k});
 var routing=false;
 function isRouteHash(h){return !!H2V[h]||/^[um]-[0-9a-f-]{36}$/.test(h)||/^match-\d+$/.test(h)}
@@ -1195,7 +1246,7 @@ window.addEventListener("popstate",function(){
   try{if(!routeHash(h)&&(!h||isRouteHash(h)||viewName!=="gist"))setView("gist")}finally{routing=false}
 });
 // ===== "You are here" line and tap flash =====
-var VIEWNAMES={matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
+var VIEWNAMES={gold:"Gold tick",matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
 function drawWhere(){
   var w=$("where");if(!w)return;w.textContent="";
   if(viewName==="search")return;
@@ -2546,6 +2597,57 @@ function renderGigs(){
   v.appendChild(chips);v.appendChild(box);
   load();
 }
+
+// ===== Gold tick subscription page =====
+function renderGold(){
+  var v=$("vGold");v.textContent="";
+  var bar=el("div","ptop");var bk=el("button","bk","←");bk.type="button";bk.setAttribute("aria-label","Back");bk.onclick=function(){if(history.length>1)history.back();else setView("gist")};bar.appendChild(bk);bar.appendChild(el("b",null,"Gold tick"));v.appendChild(bar);
+  var hero=el("section","ghero");var gb=el("div","gbig");gb.appendChild(vBadge(76));hero.appendChild(gb);
+  hero.appendChild(el("h2",null,"Hottest Gist Gold"));
+  hero.appendChild(el("p",null,"The gold tick shows fans your page is the real you."));
+  v.appendChild(hero);
+  var stat=el("div","gstat");v.appendChild(stat);
+  var perks=el("section","gperks");
+  [["⭐","Gold tick everywhere","Next to your name on your profile, posts, comments, messages and link page."],
+   ["🛡️","Protection from fakes","Fans can tell your real page from copycats at a glance."],
+   ["🚀","Stand out","Verified pages look more trusted, so more people follow and share."],
+   ["💛","Support Hottest Gist","Your subscription keeps the site free for every fan in Ghana."]].forEach(function(x){
+    var r=el("div","gperk");r.appendChild(el("span","gpi",x[0]));var t=el("div");t.appendChild(el("b",null,x[1]));t.appendChild(el("small",null,x[2]));r.appendChild(t);perks.appendChild(r)});
+  v.appendChild(perks);
+  var plan=el("section","gplan");v.appendChild(plan);
+  if(!(CFG&&SES)){plan.appendChild(loginBox("Log in to get the gold tick."));return}
+  var vbox=el("div");
+  var vcfgP=cfgSet.verify?Promise.resolve():api("site_settings?select=key,value&key=eq.verify").then(function(r){(r||[]).forEach(function(x){cfgSet[x.key]=x.value})}).catch(function(){});
+  Promise.all([api("creator_stats?select=*&user_id=eq."+SES.user.id).catch(function(){return[]}),vcfgP]).then(function(r){
+    var c=(r[0]&&r[0][0])||{name:myName()};
+    if(c.verified){stat.className="gstat on";stat.appendChild(vBadge(22));stat.appendChild(el("span",null,c.verified_until?"Your gold tick is active until "+new Date(c.verified_until).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+". Renew any time to add another month.":"Your gold tick is active."))}
+    else stat.hidden=true;
+    var vcfg=cfgSet.verify||{};
+    if(!vcfg.price){vbox.appendChild(el("p","gsoon","The gold tick is not open yet. Check back soon."))}
+    else{
+  if(vcfg.auto&&vcfg.amount){
+    var pb=el("button",null,"Pay GH\u20b5 "+vcfg.amount+" with Mobile Money or card");pb.type="button";pb.className="gpay";
+    var ps=el("div","none","You will pay on Paystack's secure page. Your tick turns on by itself within a minute.");
+    pb.onclick=function(){pb.disabled=true;pb.textContent="Opening payment page...";
+      token().then(function(t){return fetch(CFG.url.replace(/\/$/,"")+"/functions/v1/paystack-init",{method:"POST",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify({origin:location.origin})})}).then(function(r){return r.json()}).then(function(j){if(j&&j.url){location.href=j.url}else throw new Error(j&&j.error||"failed")}).catch(function(er){pb.disabled=false;pb.textContent="Pay GH\u20b5 "+vcfg.amount+" with Mobile Money or card";ps.textContent="Couldn't open the payment page ("+(er&&er.message||"error")+"). Try again in a moment."})};
+    vbox.appendChild(pb);vbox.appendChild(ps);
+  }
+  else if(vcfg.how)vbox.appendChild(el("p",null,vcfg.how));
+  var pl=vcfg.auto&&vcfg.amount?null:safeLink(vcfg.link);if(pl){var pa=el("a","gpay","Pay now");pa.href=pl;pa.target="_blank";pa.rel="noopener noreferrer";vbox.appendChild(pa)}
+  var vf=el("form","cf gform");if(vcfg.auto&&vcfg.amount){vf.hidden=true;var alr=el("button","gmanual","Already paid another way? Tell us");alr.type="button";alr.onclick=function(){vf.hidden=false;alr.remove()};vbox.appendChild(alr)}var ri=document.createElement("input");ri.placeholder="Payment reference or MoMo number you paid from";ri.maxLength=80;ri.setAttribute("aria-label","Payment reference");
+  var ni2=document.createElement("input");ni2.placeholder="Note (optional)";ni2.maxLength=200;
+  var sb2=el("button",null,"I have paid, verify me");sb2.type="submit";vf.appendChild(ri);vf.appendChild(ni2);vf.appendChild(sb2);
+  var vs=el("div","none","");
+  api("verification_requests?select=status,created_at&order=created_at.desc&limit=1").then(function(r){if(r&&r[0]){vs.textContent=r[0].status==="pending"?"Your last request is waiting for approval. We check payments within 24 hours.":r[0].status==="rejected"?"Your last request was not approved. Check your payment details and try again.":""}}).catch(function(){});
+  vf.onsubmit=function(e){e.preventDefault();if(ri.value.trim().length<3){ri.focus();return}sb2.disabled=true;
+    api("rpc/request_verification",{p_ref:ri.value.trim(),p_note:ni2.value.trim()}).then(function(){ri.value="";ni2.value="";sb2.disabled=false;vs.textContent="Thanks! Your request was sent. We check payments within 24 hours.";toast("Request sent")}).catch(function(er){sb2.disabled=false;vs.textContent="Couldn't send: "+(er.detail||er.message)+(String(er.message)==="404"?" (the database setup for the gold tick is missing, run setup-verify.sql)":er.detail==="already pending"?" (you already have requests waiting)":"");toast("Couldn't send your request")})};
+  vbox.appendChild(vf);vbox.appendChild(vs);
+    }
+
+    if((cfgSet.verify||{}).price){var pr=el("div","gprice");pr.appendChild(el("b",null,cfgSet.verify.price));pr.appendChild(el("span",null," / month"));plan.appendChild(pr);plan.appendChild(el("p","gnote",c.verified?"Renew to keep your tick for another month.":"Cancel any time. It simply stops when the month ends."))}
+    plan.appendChild(vbox);
+  });
+}
 function renderProfile(uid){
   var v=$("vProfile");v.textContent="";
   if(!(CFG&&SES)||!uid){v.appendChild(loginBox("Log in to see profiles and follow fans."));return}
@@ -2566,20 +2668,24 @@ function renderProfile(uid){
       if(cs||mine){cov.setAttribute("role","button");cov.tabIndex=0;cov.setAttribute("aria-label",mine?"Cover photo: view or change":"View cover photo");
         cov.onclick=function(){photoSheet({kind:"cover",src:cs,mine:mine,c:c,uid:uid})};cov.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();cov.onclick()}}}
       if(mine&&!cs)cov.appendChild(el("span","pcadd","\ud83d\udcf7 Add cover photo"));
-      body.appendChild(cov);
-      var h=el("div","prh pro");var pav=el("button","pav");pav.type="button";pav.setAttribute("aria-label",mine?"Profile picture: view or change":"View profile picture");pav.appendChild(avEl(c,84));
-      if(mine)pav.appendChild(el("span","pcam","\ud83d\udcf7"));
-      pav.onclick=function(){photoSheet({kind:"avatar",src:safeLink(c.avatar),mine:mine,c:c,uid:uid})};h.appendChild(pav);
-      var hd=el("div");var nm=el("h2","vh",c.name);if(c.verified)nm.appendChild(vBadge(24));hd.appendChild(nm);
-      if(c.bio)hd.appendChild(el("p","sub",c.bio));h.appendChild(hd);body.appendChild(h);
-      var stt=el("div","prs"),fcount=null;
-      [[c.posts,"Posts"],[c.followers,"Followers"],[c.likes,"Likes"]].forEach(function(x,i){var d=el("div",null,String(x[0]||0));if(i===1)fcount=d.firstChild;d.appendChild(el("small",null,x[1]));stt.appendChild(d)});
-      body.appendChild(stt);
-      var act=el("div","evb"),editBox=el("form","cf fc");editBox.hidden=true;
+      var hero=el("div","phero");hero.appendChild(cov);body.appendChild(hero);
+      var row=el("div","phrow");var pav=el("button","pav");pav.type="button";pav.setAttribute("aria-label",mine?"Profile picture: view or change":"View profile picture");pav.appendChild(avEl(c,112));
+      if(mine)pav.appendChild(el("span","pcam","📷"));
+      pav.onclick=function(){photoSheet({kind:"avatar",src:safeLink(c.avatar),mine:mine,c:c,uid:uid})};row.appendChild(pav);
+      var act=el("div","evb pbtns");row.appendChild(act);body.appendChild(row);
+      var info=el("div","pinfo");var nm=el("h2","pname",c.name);
+      if(c.verified){var vbb=el("button","pvb");vbb.type="button";vbb.setAttribute("aria-label","Gold tick: see subscription");vbb.title="Gold tick member";vbb.appendChild(vBadge(26));vbb.onclick=function(){setView("gold")};nm.appendChild(vbb)}
+      info.appendChild(nm);
+      if(c.handle){var hl=el("div","phandle");hl.appendChild(el("span",null,"@"+c.handle));info.appendChild(hl)}
+      if(c.bio)info.appendChild(el("p","pbio",c.bio));
+      if(c.handle){var lk=el("a","plink2","🔗 "+location.host+"/@"+c.handle);lk.href="/@"+c.handle;info.appendChild(lk)}
+      var stt=el("div","pstats"),fcount=null;
+      [[c.posts,"posts"],[c.followers,"followers"],[c.likes,"likes"]].forEach(function(x,i){var d=el("span");var b=el("b",null,String(x[0]||0));if(i===1)fcount=b.firstChild;d.appendChild(b);d.appendChild(document.createTextNode(" "+(x[0]===1?x[1].replace(/s$/,""):x[1])));stt.appendChild(d)});
+      info.appendChild(stt);body.appendChild(info);
+      var editBox=el("form","cf fc pedit");editBox.hidden=true;
       if(mine){
-        var np=el("button",null,"\u270d\ufe0f New post");np.type="button";np.style.background="var(--red)";np.style.color="#fff";np.style.borderColor="var(--red)";np.onclick=newPost;act.appendChild(np);
-        var ed=el("button",null,"Edit profile");ed.type="button";ed.onclick=function(){editBox.hidden=!editBox.hidden};act.appendChild(ed);
-        var sh=el("button",null,"Share my page");sh.type="button";sh.onclick=function(){var u=location.origin+"/#u-"+me;if(navigator.share)navigator.share({title:c.name+" on Hottest Gist GH",url:u}).catch(function(){});else copyText(u)};act.appendChild(sh);
+        var ed=el("button","pbtn","\u270f\ufe0f Edit profile");ed.type="button";ed.onclick=function(){editBox.hidden=!editBox.hidden};act.appendChild(ed);
+        var sh=el("button","pbtn","\ud83d\udce4 Share");sh.type="button";sh.onclick=function(){var u=location.origin+"/#u-"+me;if(navigator.share)navigator.share({title:c.name+" on Hottest Gist GH",url:u}).catch(function(){});else copyText(u)};act.appendChild(sh);
       }else{
         var fb=el("button",null,followLabel(uid));fb.type="button";if(!fol[uid]&&followers[uid])fb.className="fbk";
         if(followers[uid]){nm.appendChild(el("span","fyou","Follows you"))}
@@ -2591,37 +2697,21 @@ function renderProfile(uid){
         if(frLoaded)drawF();else loadFriends(drawF);
       }
       if(mine){
-        var vcfg=cfgSet.verify||{};
-        var vb=el("button",null,c.verified?"\u2b50 Renew gold tick":"\u2b50 Get the gold tick");vb.type="button";act.appendChild(vb);
-        var vbox=el("div","fc");vbox.hidden=true;
-        vb.onclick=function(){vbox.hidden=!vbox.hidden};
-        if(c.verified){vbox.appendChild(el("div","none",c.verified_until?"Your gold tick is active until "+new Date(c.verified_until).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+".":"Your gold tick is active."))}
-        if(!vcfg.price){vbox.appendChild(el("p",null,"The gold tick is not open yet. Check back soon."))}
-        else{
-          vbox.appendChild(el("h3",null,"\u2b50 Gold tick: "+vcfg.price+" per month"));
-          vbox.appendChild(el("p",null,"A gold tick shows next to your name on your profile, posts and comments so people know your page is the real you."));
-          if(vcfg.auto&&vcfg.amount){
-            var pb=el("button",null,"Pay GH\u20b5 "+vcfg.amount+" with Mobile Money or card");pb.type="button";pb.style.cssText="background:var(--red);color:#fff;border-color:var(--red);margin:6px 0";
-            var ps=el("div","none","You will pay on Paystack's secure page. Your tick turns on by itself within a minute.");
-            pb.onclick=function(){pb.disabled=true;pb.textContent="Opening payment page...";
-              token().then(function(t){return fetch(CFG.url.replace(/\/$/,"")+"/functions/v1/paystack-init",{method:"POST",headers:{apikey:CFG.key,Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify({origin:location.origin})})}).then(function(r){return r.json()}).then(function(j){if(j&&j.url){location.href=j.url}else throw new Error(j&&j.error||"failed")}).catch(function(er){pb.disabled=false;pb.textContent="Pay GH\u20b5 "+vcfg.amount+" with Mobile Money or card";ps.textContent="Couldn't open the payment page ("+(er&&er.message||"error")+"). Try again in a moment."})};
-            vbox.appendChild(pb);vbox.appendChild(ps);
-          }
-          else if(vcfg.how)vbox.appendChild(el("p",null,vcfg.how));
-          var pl=vcfg.auto&&vcfg.amount?null:safeLink(vcfg.link);if(pl){var pa=el("a","linkbtn","Pay now");pa.href=pl;pa.target="_blank";pa.rel="noopener noreferrer";vbox.appendChild(pa)}
-          var vf=el("form","cf");if(vcfg.auto&&vcfg.amount)vf.hidden=true;var ri=document.createElement("input");ri.placeholder="Payment reference or MoMo number you paid from";ri.maxLength=80;ri.setAttribute("aria-label","Payment reference");
-          var ni2=document.createElement("input");ni2.placeholder="Note (optional)";ni2.maxLength=200;
-          var sb2=el("button",null,"I have paid, verify me");sb2.type="submit";vf.appendChild(ri);vf.appendChild(ni2);vf.appendChild(sb2);
-          var vs=el("div","none","");
-          api("verification_requests?select=status,created_at&order=created_at.desc&limit=1").then(function(r){if(r&&r[0]){vs.textContent=r[0].status==="pending"?"Your last request is waiting for approval. We check payments within 24 hours.":r[0].status==="rejected"?"Your last request was not approved. Check your payment details and try again.":""}}).catch(function(){});
-          vf.onsubmit=function(e){e.preventDefault();if(ri.value.trim().length<3){ri.focus();return}sb2.disabled=true;
-            api("rpc/request_verification",{p_ref:ri.value.trim(),p_note:ni2.value.trim()}).then(function(){ri.value="";ni2.value="";sb2.disabled=false;vs.textContent="Thanks! Your request was sent. We check payments within 24 hours.";toast("Request sent")}).catch(function(er){sb2.disabled=false;vs.textContent="Couldn't send: "+(er.detail||er.message)+(String(er.message)==="404"?" (the database setup for the gold tick is missing, run setup-verify.sql)":er.detail==="already pending"?" (you already have requests waiting)":"");toast("Couldn't send your request")})};
-          vbox.appendChild(vf);vbox.appendChild(vs);
-        }
+        var gb=el("button","pgold"+(c.verified?" on":""));gb.type="button";
+        var gt=el("span","pgt");gt.appendChild(vBadge(30));gb.appendChild(gt);
+        var gx=el("span","pgx");gx.appendChild(el("b",null,c.verified?"Gold tick active":"Get the gold tick"));
+        gx.appendChild(el("small",null,c.verified?(c.verified_until?"Renews "+new Date(c.verified_until).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}):"Thank you for supporting Hottest Gist"):"Show fans your page is the real you"));
+        gb.appendChild(gx);gb.appendChild(el("span","pga",c.verified?"Manage →":"See plan →"));gb.onclick=function(){setView("gold")};body.appendChild(gb);
+        var comp=el("button","pcomp");comp.type="button";comp.appendChild(avEl(c,40));comp.appendChild(el("span",null,"Share something with your fans…"));
+        comp.appendChild(el("span","pci","📷"));comp.onclick=newPost;body.appendChild(comp);
       }
-      body.appendChild(act);
-      if(vbox)body.appendChild(vbox);
-      if(mine)body.appendChild(bioCard(c));
+      var ptabs=el("div","ptabs"),panes={};
+      var tabsL=mine?[["posts","Posts"],["link","🔗 Link page"]]:[["posts","Posts"]];
+      tabsL.forEach(function(t){var b=el("button",null,t[1]);b.type="button";b.setAttribute("aria-pressed",String(t[0]==="posts"));b.onclick=function(){
+        [].forEach.call(ptabs.children,function(x){x.setAttribute("aria-pressed",String(x===b))});Object.keys(panes).forEach(function(k){panes[k].hidden=k!==t[0]})};ptabs.appendChild(b)});
+      if(tabsL.length>1)body.appendChild(ptabs);
+      if(mine){panes.link=el("div");panes.link.hidden=true;panes.link.appendChild(bioCard(c))}
+
       if(mine){
         var ni=document.createElement("input");ni.maxLength=40;ni.value=c.name;ni.setAttribute("aria-label","Display name");
         var bi=document.createElement("input");bi.maxLength=160;bi.value=c.bio||"";bi.placeholder="Short bio (no links)";bi.setAttribute("aria-label","Bio");
@@ -2634,20 +2724,20 @@ function renderProfile(uid){
           up.then(function(u){return api("rpc/save_profile",{p_name:n,p_bio:bi.value.trim(),p_avatar:u})}).then(function(){delete cr[uid];toast("Profile saved");load()}).catch(function(){sb.disabled=false;toast("Couldn't save. Names and bios can't have links or bad words.")});
         };
       }
-      body.appendChild(editBox);
-      var box=el("div");body.appendChild(box);
-      showFans(box,"fan_posts?select=*&hidden=eq.false&user_id=eq."+uid+"&order=created_at.desc&limit=40",mine?"You haven't posted yet. Go to the Fans tab and share your first post!":"No posts yet.");
+      row.after(editBox);
+      var box=el("div");panes.posts=box;body.appendChild(box);if(panes.link)body.appendChild(panes.link);
+      showFans(box,"fan_posts?select=*&hidden=eq.false&user_id=eq."+uid+"&order=created_at.desc&limit=40",mine?"No posts yet. Tap \u201cShare something with your fans\u201d above to post your first one!":"No posts yet.");
     }).catch(function(){body.textContent="";body.appendChild(el("div","none","Couldn't load this profile. Did you run setup-creators.sql?"))});
   }
   load();
 }
 
 function setView(v){
-  viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="profile"||v==="friends"||v==="messages"||v==="chat"||v==="match");document.body.classList.toggle("inchat",v==="chat"||v==="match");document.body.classList.toggle("biomode",v==="bio");
+  viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="gold"||v==="profile"||v==="friends"||v==="messages"||v==="chat"||v==="match");document.body.classList.toggle("inchat",v==="chat"||v==="match");document.body.classList.toggle("biomode",v==="bio");
   setTimeout(navMark,0);syncHash(v);
-  ["gist","bio","matchday","match","search","submit","fans","friends","messages","chat","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
-  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 function buildTabs(){
