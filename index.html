@@ -518,6 +518,34 @@ body.fullpage header,body.fullpage .tabs,body.fullpage .where,body.fullpage .gea
 .fyou{display:inline-block;margin-left:8px;font:800 11px/1 var(--font-body);letter-spacing:.04em;text-transform:uppercase;background:var(--card);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:4px 6px;vertical-align:middle}
 #vProfile .evb button.fbk{background:var(--red);border-color:var(--red);color:#fff}
 .offa>.frb{flex:1 1 100%;padding:11px 14px;font-size:15px}
+
+/* ===== Messages ===== */
+.msgbtn{display:flex;justify-content:space-between;align-items:center;width:100%;margin:12px 0 0;padding:14px 16px;border-radius:16px;border:1.5px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-weight:800;font-size:16px;cursor:pointer}
+.msgbtn b{color:var(--red);font-size:14px}
+.chrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 4px;color:var(--text);font:inherit;cursor:pointer}
+.cht{flex:1;min-width:0;display:block}
+.chn{display:flex;align-items:center;gap:6px}.chn b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chn small{margin-left:auto;color:var(--muted);font-size:12px;flex:none}
+.chl{display:block;color:var(--muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chrow.unread .chl{color:var(--text);font-weight:700}
+.chu{min-width:22px;height:22px;border-radius:99px;background:var(--red);color:#fff;font:800 12px/22px var(--font-body);font-style:normal;text-align:center;padding:0 6px;flex:none}
+.chtop .chwho{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;font:inherit;color:var(--text);cursor:pointer;text-align:left}
+.chtop .chwho b{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chbox{display:flex;flex-direction:column;gap:6px;padding:12px 0 110px}
+.chday{align-self:center;font-size:12px;font-weight:800;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:99px;padding:3px 10px;margin:8px 0}
+.bub{max-width:78%;align-self:flex-start;background:var(--card);border:1px solid var(--line);border-radius:18px 18px 18px 6px;padding:8px 12px;overflow-wrap:anywhere;white-space:pre-wrap}
+.bub.me{align-self:flex-end;background:var(--red);border-color:var(--red);color:#fff;border-radius:18px 18px 6px 18px}
+.bub small{display:block;font-size:11px;opacity:.7;margin-top:2px;text-align:right}
+.chnote{position:fixed;left:0;right:0;bottom:calc(74px + env(safe-area-inset-bottom,0px));margin:0 auto;max-width:640px;width:calc(100% - 32px);background:#3a2a00;color:#ffd77a;border:1px solid #b8860b;border-radius:12px;padding:8px 12px;font-size:14px;z-index:41}
+.chform{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:8px;align-items:flex-end;background:var(--bg);border-top:1px solid var(--line);padding:10px max(12px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.chform textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:16px;line-height:1.4;padding:11px 14px;border-radius:22px;border:1.5px solid var(--line);background:var(--card);color:var(--text);max-height:140px}
+.chform textarea:focus{outline:none;border-color:var(--red)}
+.chsend{flex:none;width:46px;height:46px;border-radius:50%;border:0;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.chsend svg{width:22px;height:22px;fill:#fff}
+.chsend:disabled{opacity:.6}
+body.inchat .bnav{display:none!important}
+body.inchat footer{display:none}
+@media (min-width:760px){body.inchat .bnav{display:flex!important}body.inchat.hasnav .chform,body.inchat.hasnav .chnote{left:88px}}
+@media (min-width:1100px){body.inchat.hasnav .chform,body.inchat.hasnav .chnote{left:232px}}
 </style>
 </head>
 <body>
@@ -548,6 +576,8 @@ body.fullpage header,body.fullpage .tabs,body.fullpage .where,body.fullpage .gea
   </div>
   <div id="vFans" hidden></div>
   <div id="vFriends" hidden></div>
+  <div id="vMessages" hidden></div>
+  <div id="vChat" hidden></div>
   <div id="vSearch" hidden></div>
   <div id="vSubmit" hidden></div>
   <div id="vGigs" hidden></div>
@@ -862,13 +892,13 @@ function pollCard(pl){
 
 
 // ===== Remember the page in the address (refresh and Back keep you there) =====
-var V2H={search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
+var V2H={messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
 var H2V={};Object.keys(V2H).forEach(function(k){H2V[V2H[k]]=k});
 var routing=false;
-function isRouteHash(h){return !!H2V[h]||/^u-[0-9a-f-]{36}$/.test(h)}
+function isRouteHash(h){return !!H2V[h]||/^[um]-[0-9a-f-]{36}$/.test(h)}
 function syncHash(v){
   if(routing)return;
-  var want=v==="profile"&&profUid?"u-"+profUid:(V2H[v]||"");
+  var want=v==="profile"&&profUid?"u-"+profUid:v==="chat"&&chatUid?"m-"+chatUid:(V2H[v]||"");
   var cur=location.hash.slice(1);
   if(cur===want)return;
   if(!want&&cur&&!isRouteHash(cur))return;
@@ -876,6 +906,7 @@ function syncHash(v){
 }
 function routeHash(h){
   if(H2V[h]){setView(H2V[h]);return true}
+  if(/^m-[0-9a-f-]{36}$/.test(h)){if(CFG&&SES){openChat(h.slice(2))}else{setView("gist");needLogin("Log in to read your messages.")}return true}
   if(/^u-[0-9a-f-]{36}$/.test(h)){if(CFG&&SES){openProfile(h.slice(2))}else{setView("gist");needLogin("Log in to see profiles and add friends.")}return true}
   return false;
 }
@@ -884,7 +915,7 @@ window.addEventListener("popstate",function(){
   try{if(!routeHash(h)&&(!h||isRouteHash(h)||viewName!=="gist"))setView("gist")}finally{routing=false}
 });
 // ===== "You are here" line and tap flash =====
-var VIEWNAMES={gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
+var VIEWNAMES={messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
 function drawWhere(){
   var w=$("where");if(!w)return;w.textContent="";
   if(viewName==="search")return;
@@ -1119,13 +1150,81 @@ function followBackRow(p,after){
   b.onclick=function(){b.disabled=true;fol[p.user_id]=1;b.textContent="Following ✔";api("rpc/toggle_follow",{p_user:p.user_id,p_on:true}).then(function(){toast("You follow "+(p.name||"them")+" back 🤝");after&&after()}).catch(function(e){delete fol[p.user_id];b.disabled=false;b.textContent="Follow back";if(!e.login)toast("Couldn't follow. Try again.")})};
   w.appendChild(b);r.appendChild(w);return r;
 }
+
+// ===== Messages (friends only) =====
+var unreadMsgs=0,chats=null,chatUid=null,chatMsgs=[],chatLast=0,chatTimer=null;
+function loadUnread(){if(!(CFG&&SES))return;api("rpc/unread_messages",{}).then(function(n){unreadMsgs=n||0;friendBadge()}).catch(function(){})}
+function openChat(uid){if(viewName!=="chat"&&viewName!=="messages")backTo=viewName;chatUid=uid;chatMsgs=[];chatLast=0;setView("chat")}
+function stopChatPoll(){if(chatTimer){clearInterval(chatTimer);chatTimer=null}}
+function msgTime(d){d=new Date(d);var n=new Date();return d.toDateString()===n.toDateString()?d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})+" "+d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}
+function renderMessages(){
+  var v=$("vMessages");v.textContent="";
+  var bar=el("div","ptop");var bk=el("button","bk","\u2190");bk.type="button";bk.setAttribute("aria-label","Back to friends");bk.onclick=function(){setView("friends")};bar.appendChild(bk);bar.appendChild(el("b",null,"\ud83d\udcac Messages"));v.appendChild(bar);
+  if(!(CFG&&SES)){v.appendChild(loginBox("Log in to message your friends."));return}
+  var list=el("div");v.appendChild(list);list.appendChild(el("div","none","Loading your messages..."));
+  api("rpc/my_chats",{}).then(function(r){
+    chats=r||[];list.textContent="";
+    if(!chats.length){
+      list.appendChild(el("div","snone","No messages yet. Start a chat with one of your friends."));
+      var fr=(friends||[]).filter(function(f){return f.state==="friends"});
+      if(fr.length){list.appendChild(el("div","frh","Your friends"));fr.forEach(function(p){list.appendChild(frRow(p,renderMessages))})}
+      else{var g=el("button","go2","\ud83d\udc6b Find friends");g.type="button";g.onclick=function(){setView("friends")};list.appendChild(g)}
+      return;
+    }
+    chats.forEach(function(c){
+      var b=el("button","chrow"+(c.unread?" unread":""));b.type="button";b.appendChild(avEl(c,48));
+      var t=el("span","cht");var top=el("span","chn");var nm=el("b",null,c.name||"Fan");top.appendChild(nm);if(c.verified)top.appendChild(vBadge(14));top.appendChild(el("small",null,agoTxt(Date.parse(c.last_at))));t.appendChild(top);
+      t.appendChild(el("span","chl",(c.last_mine?"You: ":"")+c.last_body));b.appendChild(t);
+      if(c.unread)b.appendChild(el("i","chu",String(c.unread)));
+      b.onclick=function(){openChat(c.user_id)};list.appendChild(b);
+    });
+  }).catch(function(){list.textContent="";list.appendChild(el("div","snone","Messages aren't ready yet. Did you run setup-messages.sql?"))});
+}
+function renderChat(){
+  var v=$("vChat");v.textContent="";stopChatPoll();
+  var uid=chatUid;
+  var bar=el("div","ptop chtop");var bk=el("button","bk","\u2190");bk.type="button";bk.setAttribute("aria-label","Back to messages");bk.onclick=function(){setView("messages")};bar.appendChild(bk);
+  var who=el("button","chwho");who.type="button";var c=cr[uid]||(friends||[]).find(function(f){return f.user_id===uid})||{name:"Friend"};
+  who.appendChild(avEl(c,38));var nm=el("b",null,c.name||"Friend");who.appendChild(nm);who.onclick=function(){openProfile(uid)};bar.appendChild(who);v.appendChild(bar);
+  if(!(CFG&&SES)){v.appendChild(loginBox("Log in to read your messages."));return}
+  if(!cr[uid])api("creator_stats?select=*&user_id=eq."+uid).then(function(r){if(r&&r[0]){cr[uid]=r[0];nm.textContent=r[0].name;var a=who.firstChild;who.replaceChild(avEl(r[0],38),a)}}).catch(function(){});
+  var box=el("div","chbox");box.setAttribute("aria-live","polite");v.appendChild(box);
+  var note=el("div","chnote");v.appendChild(note);note.hidden=true;
+  var f=el("form","chform");var ta=el("textarea");ta.rows=1;ta.maxLength=1000;ta.placeholder="Write a message…";ta.setAttribute("aria-label","Write a message");ta.id="chin";
+  var sb=el("button","chsend");sb.type="submit";sb.setAttribute("aria-label","Send");sb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8z"/></svg>';
+  f.appendChild(ta);f.appendChild(sb);v.appendChild(f);
+  ta.oninput=function(){ta.style.height="auto";ta.style.height=Math.min(140,ta.scrollHeight)+"px"};
+  ta.onkeydown=function(e){if(e.key==="Enter"&&!e.shiftKey&&window.matchMedia("(hover:hover)").matches){e.preventDefault();f.requestSubmit?f.requestSubmit():f.onsubmit(e)}};
+  var lastDay="";
+  function bubble(m){
+    var d=new Date(m.created_at).toDateString();if(d!==lastDay){lastDay=d;box.appendChild(el("div","chday",new Date(m.created_at).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})))}
+    var b=el("div","bub"+(m.mine?" me":""));b.appendChild(el("span",null,m.body));var meta=el("small",null,new Date(m.created_at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})+(m.mine&&m.read_at?" \u00b7 Seen":""));b.appendChild(meta);box.appendChild(b);
+  }
+  function atBottom(){return window.innerHeight+window.scrollY>=document.body.scrollHeight-120}
+  function down(){window.scrollTo({top:document.body.scrollHeight})}
+  function pull(first){
+    if(viewName!=="chat"||chatUid!==uid)return;
+    api("rpc/chat_with",{p_user:uid,p_after:chatLast}).then(function(r){
+      r=r||[];if(first){box.textContent="";if(!r.length)box.appendChild(el("div","snone","Say hi \ud83d\udc4b Your messages are private between you and "+(c.name||"your friend")+"."))}
+      if(r.length){var stick=first||atBottom();if(first===false&&box.querySelector(".snone"))box.textContent="";r.forEach(function(m){chatMsgs.push(m);bubble(m)});chatLast=r[r.length-1].id;if(stick)down();
+        if(r.some(function(m){return !m.mine}))api("rpc/mark_chat_read",{p_user:uid}).then(loadUnread).catch(function(){})}
+    }).catch(function(e){if(first){box.textContent="";box.appendChild(el("div","snone","Messages aren't ready yet. Did you run setup-messages.sql?"))}});
+  }
+  f.onsubmit=function(e){e&&e.preventDefault&&e.preventDefault();var t=ta.value.trim();if(!t)return;sb.disabled=true;
+    api("rpc/send_message",{p_to:uid,p_body:t}).then(function(){ta.value="";ta.style.height="auto";note.hidden=true;pull(false);ta.focus()}).catch(function(er){note.hidden=false;note.textContent=er.detail||"Couldn't send. Try again."}).then(function(){sb.disabled=false})};
+  pull(true);
+  chatTimer=setInterval(function(){if(!document.hidden)pull(false)},4000);
+  if(!frLoaded)loadFriends(function(){if(frState(uid)!=="friends"){note.hidden=false;note.textContent="You can only message friends. Add "+(c.name||"them")+" as a friend first."}});
+  else if(frState(uid)!=="friends"){note.hidden=false;note.textContent="You can only message friends. Add "+(c.name||"them")+" as a friend first."}
+  setTimeout(function(){ta.focus()},100);
+}
 // ===== Friends =====
 var friends=[],frLoaded=false,frQ="",frRes=null,frTimer=null;
 function loadFriends(cb){
   if(!(CFG&&SES)){friends=[];cb&&cb();return}
   Promise.all([api("rpc/my_friends",{}).then(function(r){friends=r||[]}).catch(function(){friends=friends||[]}),new Promise(function(res){loadFollowers(res)})]).then(function(){frLoaded=true;friendBadge();cb&&cb()});
 }
-function friendBadge(){var b=$("frBadge");if(!b)return;var n=friends.filter(function(f){return f.state==="incoming"}).length;b.hidden=!n;b.textContent=n>9?"9+":String(n)}
+function friendBadge(){var b=$("frBadge");if(!b)return;var n=friends.filter(function(f){return f.state==="incoming"}).length+(unreadMsgs||0);b.hidden=!n;b.textContent=n>9?"9+":String(n)}
 function frState(uid){var f=friends.find(function(x){return x.user_id===uid});return f?f.state:"none"}
 function friendBtns(uid,name,state,onChange){
   var w=el("div","acts");
@@ -1134,7 +1233,7 @@ function friendBtns(uid,name,state,onChange){
   else if(state==="sent"){var c=el("button","frb","Requested ✓");c.type="button";c.title="Tap to cancel";c.onclick=function(){c.disabled=true;act("rpc/friend_remove",{p_user:uid},"Request cancelled")};w.appendChild(c)}
   else if(state==="incoming"){var y=el("button","frb ok","Accept");y.type="button";y.onclick=function(){y.disabled=true;act("rpc/friend_respond",{p_user:uid,p_accept:true},"You and "+name+" are now friends 🎉")};
     var n=el("button","frb","Decline");n.type="button";n.onclick=function(){n.disabled=true;act("rpc/friend_respond",{p_user:uid,p_accept:false},"Request declined")};w.appendChild(y);w.appendChild(n)}
-  else{var f=el("button","frb ok","Friends ✓");f.type="button";f.onclick=function(){openProfile(uid)};w.appendChild(f)}
+  else{var mb=el("button","frb go","\ud83d\udcac Message");mb.type="button";mb.onclick=function(){openChat(uid)};w.appendChild(mb);var f=el("button","frb ok","Friends \u2713");f.type="button";f.onclick=function(){openProfile(uid)};w.appendChild(f)}
   return w;
 }
 function frRow(p,onChange){
@@ -1145,6 +1244,7 @@ function renderFriends(){
   var v=$("vFriends");v.textContent="";
   var bar=el("div","ptop");var bk=el("button","bk","\u2190");bk.type="button";bk.setAttribute("aria-label","Back to home");bk.onclick=function(){setView("gist")};bar.appendChild(bk);
   bar.appendChild(el("b",null,"\ud83d\udc6b Friends"));v.appendChild(bar);
+  if(CFG&&SES){var mbtn=el("button","msgbtn");mbtn.type="button";mbtn.appendChild(el("span",null,"\ud83d\udcac Messages"));var mc=el("b",null,unreadMsgs?unreadMsgs+" new":"Open \u2192");mbtn.appendChild(mc);mbtn.onclick=function(){setView("messages")};v.appendChild(mbtn)}
   var ofw=el("div");v.appendChild(ofw);drawOfficial(ofw);
   setTimeout(officialPopup,400);
   if(!(CFG&&SES)){v.appendChild(loginBox("Log in to add friends and see who's on Hottest Gist GH."));return}
@@ -1805,11 +1905,11 @@ function renderProfile(uid){
 }
 
 function setView(v){
-  viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="profile"||v==="friends");
+  viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="profile"||v==="friends"||v==="messages"||v==="chat");document.body.classList.toggle("inchat",v==="chat");
   setTimeout(navMark,0);syncHash(v);
-  ["gist","search","submit","fans","friends","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","search","submit","fans","friends","messages","chat","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
-  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 function buildTabs(){
@@ -2081,7 +2181,8 @@ function startNotes(){
   if(!(CFG&&SES))return;
   loadFriends();
   $("bell").hidden=false;loadNotes();
-  if(!noteTimer)noteTimer=setInterval(function(){if(!document.hidden)loadNotes()},60000);
+  loadUnread();
+  if(!noteTimer)noteTimer=setInterval(function(){if(!document.hidden){loadNotes();loadUnread()}},60000);
   document.addEventListener("visibilitychange",function(){if(!document.hidden)loadNotes()});
 }
 function start(){
