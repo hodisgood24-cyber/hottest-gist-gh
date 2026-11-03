@@ -657,6 +657,9 @@ body.inchat footer{display:none}
 .vnt{flex:none;font:600 12px/1 system-ui;color:#666;min-width:30px;text-align:right}.vsend{font-size:11px;color:#777;margin-left:4px}
 .bub.me .vnp{background:#fff}.bub.me .vni{border-left-color:#c8102e}.bub.me.vn.pl .vni,.bub.me .vn.pl .vni{background:linear-gradient(90deg,#c8102e 0 35%,transparent 35% 65%,#c8102e 65%)}
 .bub.me .vnb i{background:#fff6}.bub.me .vnb i.on{background:#fff}.bub.me .vnt,.bub.me .vsend{color:#fffc}
+.avw{position:relative;display:inline-flex;flex:none}.pdot{position:absolute;right:0;bottom:0;width:28%;height:28%;min-width:9px;min-height:9px;border-radius:50%;background:#25d366;border:2px solid var(--bg);display:none}.avw.on .pdot{display:block}
+.chwt{display:flex;flex-direction:column;min-width:0;line-height:1.2}.chseen{font-size:12px;font-weight:600;color:var(--muted)}.chseen.on{color:#25a85a}.chseen:empty{display:none}
+.hidon{display:block;margin:6px 4px 10px;font-size:13px;color:var(--muted)}
 .vns{flex:none;border:0;border-radius:999px;background:#0002;color:#333;font:700 11px/1 system-ui;padding:6px 7px;cursor:pointer}.vns.fast{background:#c8102e;color:#fff}.bub.me .vns{background:#fff3;color:#fff}.bub.me .vns.fast{background:#fff;color:#c8102e}.vnb{touch-action:none}
 .chmic{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .bub.sending{opacity:.75;padding:10px 14px}
@@ -1756,7 +1759,7 @@ function buildMsgTab(p){
     list.textContent="";
     if(!npChats||!npChats.length){list.appendChild(el("div","none","No messages yet. Add friends, then message them anytime."));}
     (npChats||[]).slice(0,8).forEach(function(c){
-      var b=el("button","nt npm"+(c.unread?" new":""));b.type="button";b.appendChild(avEl(c,36));
+      var b=el("button","nt npm"+(c.unread?" new":""));b.type="button";b.appendChild(avw(c,36));
       var x=el("span","nx");x.appendChild(el("b",null,c.name||"Fan"));x.appendChild(el("small",null,(c.last_mine?"You: ":"")+String(c.last_body||"").replace(/^~\d+$/,"\ud83c\udf99\ufe0f Voice note")));b.appendChild(x);
       var r=el("span","npr");r.appendChild(el("small",null,agoTxt(Date.parse(c.last_at))));if(c.unread)r.appendChild(el("i","npc",String(c.unread)));b.appendChild(r);
       b.onclick=function(){closeNotes();openChat(c.user_id)};list.appendChild(b);
@@ -1779,6 +1782,8 @@ function renderMessages(){
   var v=$("vMessages");v.textContent="";
   var bar=el("div","ptop");var bk=el("button","bk","\u2190");bk.type="button";bk.setAttribute("aria-label","Back to friends");bk.onclick=function(){setView("friends")};bar.appendChild(bk);bar.appendChild(el("b",null,"\ud83d\udcac Messages"));v.appendChild(bar);
   if(!(CFG&&SES)){v.appendChild(loginBox("Log in to message your friends."));return}
+  var hl=el("label","hidon");var hc=document.createElement("input");hc.type="checkbox";hc.checked=!hideOn();hl.appendChild(hc);hl.appendChild(document.createTextNode(" Show when I'm online"));
+  hc.onchange=function(){try{localStorage.setItem("gh-hideon",hc.checked?"0":"1")}catch(e){}presPing();toast(hc.checked?"Friends can see when you're online":"Your online status is hidden")};v.appendChild(hl);
   var list=el("div");v.appendChild(list);list.appendChild(el("div","none","Loading your messages..."));
   api("rpc/my_chats",{}).then(function(r){
     chats=r||[];list.textContent="";
@@ -1790,7 +1795,7 @@ function renderMessages(){
       return;
     }
     chats.forEach(function(c){
-      var b=el("button","chrow"+(c.unread?" unread":""));b.type="button";b.appendChild(avEl(c,48));
+      var b=el("button","chrow"+(c.unread?" unread":""));b.type="button";b.appendChild(avw(c,48));
       var t=el("span","cht");var top=el("span","chn");var nm=el("b",null,c.name||"Fan");top.appendChild(nm);if(c.verified)top.appendChild(vBadge(14));top.appendChild(el("small",null,agoTxt(Date.parse(c.last_at))));t.appendChild(top);
       t.appendChild(el("span","chl",(c.last_mine?"You: ":"")+String(c.last_body||"").replace(/^~\d+$/,"\ud83c\udf99\ufe0f Voice note")));b.appendChild(t);
       if(c.unread)b.appendChild(el("i","chu",String(c.unread)));
@@ -1803,7 +1808,7 @@ function renderChat(){
   var uid=chatUid;
   var bar=el("div","ptop chtop");var bk=el("button","bk","\u2190");bk.type="button";bk.setAttribute("aria-label","Back to messages");bk.onclick=function(){setView("messages")};bar.appendChild(bk);
   var who=el("button","chwho");who.type="button";var c=cr[uid]||(friends||[]).find(function(f){return f.user_id===uid})||{name:"Friend"};
-  who.appendChild(avEl(c,38));var nm=el("b",null,c.name||"Friend");who.appendChild(nm);who.onclick=function(){openProfile(uid)};bar.appendChild(who);v.appendChild(bar);
+  who.appendChild(avw({user_id:uid,name:c.name,avatar:c.avatar},38));var nm=el("b",null,c.name||"Friend");var wtx=el("span","chwt");wtx.appendChild(nm);var cs=el("small","chseen");cs.dataset.uid=uid;wtx.appendChild(cs);who.appendChild(wtx);who.onclick=function(){openProfile(uid)};bar.appendChild(who);v.appendChild(bar);
   if(!(CFG&&SES)){v.appendChild(loginBox("Log in to read your messages."));return}
   if(!cr[uid])api("creator_stats?select=*&user_id=eq."+uid).then(function(r){if(r&&r[0]){cr[uid]=r[0];nm.textContent=r[0].name;var a=who.firstChild;who.replaceChild(avEl(r[0],38),a)}}).catch(function(){});
   var box=el("div","chbox");box.setAttribute("aria-live","polite");v.appendChild(box);
@@ -2005,7 +2010,7 @@ function renderChat(){
   f.onsubmit=function(e){e&&e.preventDefault&&e.preventDefault();var t=ta.value.trim();if(!t)return;sb.disabled=true;
     api("rpc/send_message",{p_to:uid,p_body:t}).then(function(){ta.value="";ta.style.height="auto";swap();note.hidden=true;pull(false);ta.focus()}).catch(function(er){note.hidden=false;note.textContent=er.detail||"Couldn't send. Try again."}).then(function(){sb.disabled=false})};
   pull(true);
-  chatTimer=setInterval(function(){if(!document.hidden)pull(false)},4000);
+  var pc=0;presFetch();chatTimer=setInterval(function(){if(!document.hidden){pull(false);if(++pc%5===0)presFetch()}},4000);
   if(!frLoaded)loadFriends(function(){if(frState(uid)!=="friends"){note.hidden=false;note.textContent="You can only message friends. Add "+(c.name||"them")+" as a friend first."}});
   else if(frState(uid)!=="friends"){note.hidden=false;note.textContent="You can only message friends. Add "+(c.name||"them")+" as a friend first."}
   setTimeout(function(){ta.focus()},100);
@@ -2415,7 +2420,7 @@ function friendBtns(uid,name,state,onChange){
   return w;
 }
 function frRow(p,onChange){
-  var r=el("div","frw");var who=el("button","who");who.type="button";who.appendChild(avEl(p,40));var nm=el("span",null,p.name||"Fan");who.appendChild(nm);if(p.verified)who.appendChild(vBadge(14));
+  var r=el("div","frw");var who=el("button","who");who.type="button";who.appendChild(avw(p,40));var nm=el("span",null,p.name||"Fan");who.appendChild(nm);if(p.verified)who.appendChild(vBadge(14));
   who.onclick=function(){openProfile(p.user_id)};r.appendChild(who);r.appendChild(friendBtns(p.user_id,p.name||"Fan",p.state||frState(p.user_id),onChange));return r;
 }
 function renderFriends(){
@@ -3308,6 +3313,34 @@ function renderEvents(){
     var l=safeLink(p.link);if(l){var t2=el("a",null,linkLabel(l));t2.href=l;t2.target="_blank";t2.rel="noopener noreferrer";b.appendChild(t2)}
     c.appendChild(b);v.appendChild(c);
   });
+}
+/* ===== Online / last seen ===== */
+var PRES={},presT=null;
+function hideOn(){try{return localStorage.getItem("gh-hideon")==="1"}catch(e){return false}}
+function presPing(){if(!(CFG&&SES)||document.hidden)return;api("rpc/presence_ping",{p_hide:hideOn()}).catch(function(){})}
+function isOn(u){return PRES[u]&&Date.now()-PRES[u]<150000}
+function seenTxt(u){if(!PRES[u])return"";return isOn(u)?"online":"last seen "+agoTxt(PRES[u])}
+function avw(c,size){var w=el("span","avw");if(c&&c.user_id)w.dataset.uid=c.user_id;w.appendChild(avEl(c,size));w.appendChild(el("i","pdot"));return w}
+function paintDots(){
+  document.querySelectorAll(".avw[data-uid]").forEach(function(w){w.classList.toggle("on",!!isOn(w.dataset.uid))});
+  document.querySelectorAll(".chseen[data-uid]").forEach(function(e){var t=seenTxt(e.dataset.uid);e.textContent=t;e.classList.toggle("on",!!isOn(e.dataset.uid))});
+}
+function presFetch(){
+  if(!(CFG&&SES))return;var ids={};
+  document.querySelectorAll(".avw[data-uid],.chseen[data-uid]").forEach(function(e){if(e.dataset.uid&&e.dataset.uid!==SES.user.id)ids[e.dataset.uid]=1});
+  var l=Object.keys(ids).slice(0,200);if(!l.length)return;
+  api("rpc/presence_get",{p_users:l}).then(function(r){(r||[]).forEach(function(x){PRES[x.user_id]=Date.parse(x.seen_at)});paintDots()}).catch(function(){});
+}
+var presTried={},presTm=null;
+function presWatch(){
+  if(!window.MutationObserver)return;
+  new MutationObserver(function(){clearTimeout(presTm);presTm=setTimeout(function(){
+    paintDots();var need=false;document.querySelectorAll(".avw[data-uid],.chseen[data-uid]").forEach(function(e){var u=e.dataset.uid;if(u&&!presTried[u]){presTried[u]=1;need=true}});
+    if(need)presFetch()},400)}).observe(document.body,{childList:true,subtree:true});
+}
+function presStart(){
+  if(presT)return;presPing();presT=setInterval(function(){presPing();presFetch()},60000);
+  document.addEventListener("visibilitychange",function(){if(!document.hidden){presPing();presFetch()}});
 }
 /* ===== WhatsApp-style voice note player ===== */
 var vnCur=null;
@@ -4259,7 +4292,7 @@ function startNotes(){
 function start(){
   started=true;routing=true;setTimeout(function(){routing=false},0);
   document.body.classList.remove("locked");$("gate").hidden=true;
-  renderWho();buildTabs();buildNav();buildShowcase();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();loadMusicExtras();startNotes();
+  renderWho();buildTabs();buildNav();buildShowcase();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();loadMusicExtras();startNotes();presStart();presWatch();
   var wa=$("wach");wa.textContent="";
   if(CFG&&CFG.whatsapp&&!document.querySelector(".wfab")){var wl=el("a","wfab");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wl.setAttribute("aria-label","Join our WhatsApp channel");wl.appendChild(svg("wa"));wl.appendChild(el("span",null,"Join our channel"));document.body.appendChild(wl)}
   try{
