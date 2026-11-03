@@ -44,17 +44,17 @@ insert into match_sources (code, label, ghana_only, prio) values
   ('por.1',               'Liga Portugal',           false, 21),
   ('sco.1',               'Scottish Premiership',    false, 22),
   ('tur.1',               'Turkish Super Lig',       false, 23),
-  ('sau.1',               'Saudi Pro League',        false, 24),
+  ('ksa.1',               'Saudi Pro League',        false, 24),
   ('usa.1',               'MLS',                     false, 25),
   ('nga.1',               'Nigeria Premier League',  false, 26),
   ('rsa.1',               'South Africa PSL',        false, 27),
-  ('egy.1',               'Egyptian Premier League', false, 28),
   ('bra.1',               'Brasileirao',             false, 29),
   ('arg.1',               'Argentina Primera',       false, 30),
   ('mex.1',               'Liga MX',                 false, 31)
 on conflict (code) do update set label = excluded.label, ghana_only = excluded.ghana_only, prio = excluded.prio, enabled = true;
 alter table match_sources enable row level security;
 revoke all on match_sources from anon, authenticated;
+delete from match_sources where code in ('sau.1', 'egy.1');
 -- Earlier versions called Ghana friendlies "Black Stars"
 update matches set competition = 'International friendly' where ext_id like 'fifa.friendly:%' and competition = 'Black Stars';
 
