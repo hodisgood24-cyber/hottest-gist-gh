@@ -924,6 +924,11 @@ body.biomode main.wrap{max-width:560px}
 .pbar .rx.on{border-color:var(--red);background:rgba(200,16,46,.12)}
 .rx.pop2{animation:rxpop .55s cubic-bezier(.2,1.6,.4,1)}
 @keyframes rxpop{0%{transform:scale(1)}30%{transform:scale(1.45) rotate(-12deg)}55%{transform:scale(.9) rotate(8deg)}100%{transform:scale(1)}}
+.rxring{position:fixed;z-index:119;pointer-events:none;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:3px solid var(--red);animation:rxring .6s ease-out forwards}
+@keyframes rxring{from{transform:scale(.5);opacity:.9}to{transform:scale(4.5);opacity:0}}
+.rxbig{position:fixed;z-index:121;pointer-events:none;font-size:96px;line-height:1;transform:translate(-50%,-50%) scale(0);filter:drop-shadow(0 6px 14px rgba(0,0,0,.35));animation:rxbig .95s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes rxbig{0%{transform:translate(-50%,-50%) scale(0);opacity:0}25%{transform:translate(-50%,-50%) scale(1.25);opacity:1}55%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-80%) scale(1.1);opacity:0}}
+@media (prefers-reduced-motion:reduce){.rxring,.rxbig{display:none}}
 .rxf{position:fixed;z-index:120;pointer-events:none;transform:translate(-50%,-50%);animation:rxfly 1s ease-out forwards;opacity:0}
 @keyframes rxfly{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}15%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.2) rotate(var(--rot))}}
 .pacts{display:flex;justify-content:space-between;gap:2px;border-top:1px solid var(--line);padding-top:6px}
@@ -3631,12 +3636,20 @@ function shareSheet(p,url){
 // Little emojis float up when you react
 function rxBurst(btn,e){
   if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
-  var r=btn.getBoundingClientRect();
-  for(var i=0;i<6;i++){(function(i){var f=el("span","rxf",e);
-    f.style.left=(r.left+r.width/2)+"px";f.style.top=(r.top+r.height/2)+"px";
-    f.style.setProperty("--dx",(Math.random()*90-45)+"px");f.style.setProperty("--dy",(-70-Math.random()*70)+"px");f.style.setProperty("--rot",(Math.random()*60-30)+"deg");
-    f.style.animationDelay=(i*45)+"ms";f.style.fontSize=(16+Math.random()*12)+"px";
-    document.body.appendChild(f);setTimeout(function(){f.remove()},1100+i*45)})(i)}
+  var r=btn.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  // ripple ring
+  var rg=el("span","rxring");rg.style.left=cx+"px";rg.style.top=cy+"px";document.body.appendChild(rg);setTimeout(function(){rg.remove()},700);
+  // big emoji that pops up over the post
+  var card=btn.closest&&btn.closest(".post,article,.card"),cr2=card?card.getBoundingClientRect():null;
+  var bx=cr2?cr2.left+cr2.width/2:window.innerWidth/2,by=cr2?Math.max(110,Math.min(window.innerHeight-130,cr2.top+cr2.height/2)):window.innerHeight/2;
+  var big=el("span","rxbig",e);big.style.left=bx+"px";big.style.top=by+"px";document.body.appendChild(big);setTimeout(function(){big.remove()},1000);
+  // confetti of the same emoji flying out
+  for(var i=0;i<14;i++){(function(i){var f=el("span","rxf",e);
+    var a=(Math.PI*2*i/14)+Math.random()*.4,d=60+Math.random()*70;
+    f.style.left=cx+"px";f.style.top=cy+"px";
+    f.style.setProperty("--dx",Math.cos(a)*d+"px");f.style.setProperty("--dy",(Math.sin(a)*d-50)+"px");f.style.setProperty("--rot",(Math.random()*120-60)+"deg");
+    f.style.animationDelay=(i*25)+"ms";f.style.fontSize=(16+Math.random()*16)+"px";
+    document.body.appendChild(f);setTimeout(function(){f.remove()},1300+i*25)})(i)}
 }
 
 function renderChips(){setTimeout(function(){if(typeof drawWhere==="function")drawWhere()},0);
