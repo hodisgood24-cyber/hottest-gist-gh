@@ -650,6 +650,26 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+/* ===== Header v2: slim and calm ===== */
+header.hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:14px 6px;padding-right:164px;position:relative;min-height:70px}
+@media(min-width:1200px){header.hdr{padding-right:0}}
+header.hdr h1{display:flex;align-items:center;gap:9px;font:400 clamp(22px,6.2vw,30px)/1 var(--font-display);margin:0;min-width:0}
+header.hdr h1 .logo{width:38px;height:38px;margin:0;flex:none}
+header.hdr h1 .hw{background:none;color:inherit;padding:0;margin:0;white-space:nowrap;display:inline}
+header.hdr h1 .gh{display:inline-block;background:var(--green);color:var(--on-green);padding:3px 7px 2px;border-radius:6px;margin:0;font-size:.62em;letter-spacing:.04em}
+header.hdr .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0}
+header.hdr .who{margin:0;position:fixed;top:calc(16px + env(safe-area-inset-top,0px));right:calc(max(14px,env(safe-area-inset-right,0px)) + 100px);z-index:60}
+.wchip{display:flex;align-items:center;justify-content:center;width:42px;height:42px;background:var(--card);border:1px solid var(--line);border-radius:50%;padding:0;cursor:pointer;overflow:hidden}
+.wchip .wn{display:none}
+.wchip .av{width:100%!important;height:100%!important;border-radius:50%}
+.who .wjoin{background:var(--red);color:#fff;border:0;border-radius:99px;height:42px;padding:0 14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;text-decoration:none}
+.wmenu{position:absolute;right:0;top:calc(100% + 8px);z-index:70;min-width:180px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.wmenu[hidden]{display:none}
+.wmh{padding:8px 10px 6px;font-weight:800;color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wmenu button{display:block;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:10px;font:inherit;font-weight:700;font-size:15px;color:var(--text);cursor:pointer;text-decoration:none}
+.wmenu button:hover{background:var(--bg)}.wmenu .wout{color:var(--red)}
+@media(max-width:480px){header.hdr h1{font-size:clamp(16px,4.6vw,24px);gap:7px}header.hdr h1 .logo{width:32px;height:32px}}
+
 /* ===== Explore showcase ===== */
 .xp{margin:4px 0 16px}
 .xph{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.xph h2{margin:0;font-size:18px}
@@ -968,9 +988,9 @@ body.biomode main.wrap{max-width:560px}
 <div class="sp" id="sp" role="dialog" aria-label="Settings" hidden></div>
 <button class="bell" id="bell" type="button" aria-label="Notifications" aria-expanded="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
 <div class="sp np" id="np" role="dialog" aria-label="Notifications" hidden></div>
-<header class="wrap">
-  <h1><img class="logo" src="/favicon.svg" alt="" width="44" height="44">Hottest Gist<span>GH</span></h1>
-  <p class="sub">Fresh music, movies and culture from Ghana and beyond.</p>
+<header class="wrap hdr">
+  <h1><img class="logo" src="/favicon.svg" alt="" width="40" height="40"><span class="hw">Hottest Gist</span><span class="gh">GH</span></h1>
+  <p class="sub sr">Fresh music, movies and culture from Ghana and beyond.</p>
   <div class="who" id="who" hidden></div>
 </header>
 <nav class="wrap tabs" id="tabs" aria-label="Sections" hidden></nav>
@@ -1212,9 +1232,19 @@ function logout(){
 }
 function renderWho(){
   var w=$("who");if(!CFG){w.hidden=true;return}
-  if(!SES){w.hidden=false;w.textContent="";w.appendChild(el("span",null,"Reading as a guest"));var lb=el("button",null,"Log in / Join");lb.type="button";lb.onclick=function(){showGate("signup")};w.appendChild(lb);return}
-  w.hidden=false;w.textContent="";w.appendChild(el("span",null,"Hi, "+myName()));
-  var b=el("button",null,"Log out");b.type="button";b.onclick=logout;w.appendChild(b);
+  w.hidden=false;w.textContent="";w.className="who";
+  if(!SES){var lb=el("button","wjoin","Join");lb.type="button";lb.onclick=function(){showGate("signup")};w.appendChild(lb);return}
+  var me=SES.user&&SES.user.id,c=(me&&cr&&cr[me])||{name:myName()};
+  var chip=el("button","wchip");chip.type="button";chip.setAttribute("aria-haspopup","true");chip.setAttribute("aria-expanded","false");chip.setAttribute("aria-label","Your account");
+  chip.appendChild(avEl(c,40));chip.appendChild(el("span","wn",(c.name||myName()).split(" ")[0]));w.appendChild(chip);
+  var menu=el("div","wmenu");menu.hidden=true;
+  menu.appendChild(el("div","wmh",c.name||myName()));
+  var pf=el("button",null,"My profile");pf.type="button";pf.onclick=function(){menu.hidden=true;chip.setAttribute("aria-expanded","false");if(me)openProfile(me)};
+  var lo=el("button","wout","Log out");lo.type="button";lo.onclick=logout;
+  menu.appendChild(pf);menu.appendChild(lo);w.appendChild(menu);
+  function close(){menu.hidden=true;chip.setAttribute("aria-expanded","false");document.removeEventListener("click",close)}
+  chip.onclick=function(e){e.stopPropagation();if(!menu.hidden){close();return}menu.hidden=false;chip.setAttribute("aria-expanded","true");setTimeout(function(){document.addEventListener("click",close)},0)};
+  if(me&&!(cr&&cr[me]&&cr[me].avatar!==undefined)&&!renderWho.busy){renderWho.busy=true;api("creator_stats?select=user_id,name,avatar,verified&user_id=eq."+me).then(function(r){if(r&&r[0]){cr[me]=Object.assign(cr[me]||{},r[0]);renderWho()}}).catch(function(){}).then(function(){renderWho.busy=false})}
 }
 var likeN={},comN={},liked={};
 var R=[["fire","🔥"],["lol","😂"],["love","😍"],["clap","👏"]];
