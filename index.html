@@ -650,6 +650,19 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+/* ===== Explore showcase ===== */
+.xp{margin:4px 0 16px}
+.xph{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.xph h2{margin:0;font-size:18px}
+.xpn{display:none;gap:6px}.xpn button{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--text);font-size:20px;line-height:1;cursor:pointer}
+@media (hover:hover) and (min-width:700px){.xpn{display:flex}}
+.xpr{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.xpr::-webkit-scrollbar{display:none}
+.xpc{flex:0 0 min(78%,250px);scroll-snap-align:start;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;color:#fff;border:0;border-radius:18px;padding:16px;min-height:158px;cursor:pointer;font:inherit;box-shadow:0 6px 18px rgba(0,0,0,.18);transition:transform .15s}
+.xpc:hover{transform:translateY(-3px)}
+.xpc .xpi{font-size:30px;line-height:1;margin-bottom:6px}.xpc b{font-size:18px}
+.xpc .xps{font-size:13px;line-height:1.35;opacity:.9;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.xpc .xpg{margin-top:auto;font-weight:800;font-size:13px;background:rgba(255,255,255,.2);border-radius:99px;padding:5px 12px}
+
 /* ===== Top display: categories with logos ===== */
 #tabs{display:block;overflow:visible;flex-wrap:nowrap;padding-block:6px}
 #tabs .cats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
@@ -964,6 +977,7 @@ body.biomode main.wrap{max-width:560px}
 <div class="wrap where" id="where" aria-live="polite"></div>
 <main class="wrap">
   <div id="vGist">
+    <section id="show" class="xp" aria-label="Explore Hottest Gist"></section>
     <div id="wach"></div>
     <aside class="side" id="side" aria-label="Highlights">
       <div id="extras"></div>
@@ -2461,6 +2475,38 @@ function installApp(){
   var ok=el("button","go2","Got it");ok.type="button";ok.onclick=function(){m.remove()};c.appendChild(ok);
   m.onclick=function(e){if(e.target===m)m.remove()};m.appendChild(c);document.body.appendChild(m);ok.focus();
 }
+
+var SHOWX=0;
+function buildShowcase(){
+  var box=$("show");if(!box)return;box.textContent="";
+  var nowT=Date.now();
+  var ev=(typeof all!=="undefined"?all:[]).filter(function(p){return p.eventAt&&p.eventAt>nowT}).sort(function(a,b){return a.eventAt-b.eventAt})[0];
+  var evSub="Concerts, shows and releases coming up";
+  if(ev){var d=Math.ceil((ev.eventAt-nowT)/864e5);evSub=ev.title+" · "+(d<=1?"tomorrow":"in "+d+" days")}
+  var pl=(typeof POLLS!=="undefined"&&POLLS[0])?POLLS[0].q:"Vote in today's poll";
+  var cards=[
+   ["matchday","⚽","Match day","Live scores, fixtures and the match chat","#7c3aed,#4c1d95"],
+   ["chart","🎵","Ghana Top 10","Vote for your favourite songs this week","#c8102e,#7a0a1c"],
+   ["market","🛍️","Market","Buy and sell near you. Sellers get paid directly","#15803d,#064e2b"],
+   ["gigs","💼","Services","Hire a CapCut editor or a promo creator","#0e7490,#164e63"],
+   ["events","📅","Events",evSub,"#d97706,#92400e"],
+   ["polls","📊","Poll of the day",pl,"#2563eb,#1e3a8a"],
+   ["quiz","🧠","Quiz","Test your Ghana music and football knowledge","#db2777,#831843"],
+   ["fans","🌟","Fans","Post, follow and grow your page. TikTok trending sounds","#9333ea,#581c87"],
+   ["submit","🎤","Submit your song","Artists: send your music to be featured","#111827,#374151"]
+  ];
+  var head=el("div","xph");head.appendChild(el("h2",null,"✨ Explore"));
+  var nav=el("div","xpn");var pv=el("button",null,"‹"),nx=el("button",null,"›");pv.type=nx.type="button";pv.setAttribute("aria-label","Previous");nx.setAttribute("aria-label","Next");nav.appendChild(pv);nav.appendChild(nx);head.appendChild(nav);box.appendChild(head);
+  var rail=el("div","xpr");rail.tabIndex=0;
+  cards.forEach(function(c){
+    var b=el("button","xpc");b.type="button";b.style.background="linear-gradient(135deg,"+c[4]+")";
+    b.appendChild(el("span","xpi",c[1]));b.appendChild(el("b",null,c[2]));b.appendChild(el("span","xps",c[3]));b.appendChild(el("span","xpg","Open →"));
+    b.onclick=function(){setView(c[0])};rail.appendChild(b);
+  });
+  box.appendChild(rail);
+  function step(d){rail.scrollBy({left:d*(rail.firstChild?rail.firstChild.getBoundingClientRect().width+12:240),behavior:"smooth"})}
+  pv.onclick=function(){step(-1)};nx.onclick=function(){step(1)};
+}
 function renderExtras(){
   var x=$("extras");if(!x)return;x.textContent="";
   var sp=cfgSet.sponsor;
@@ -3430,7 +3476,7 @@ function startNotes(){
 function start(){
   started=true;routing=true;setTimeout(function(){routing=false},0);
   document.body.classList.remove("locked");$("gate").hidden=true;
-  renderWho();buildTabs();buildNav();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();loadMusicExtras();startNotes();
+  renderWho();buildTabs();buildNav();buildShowcase();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();loadMusicExtras();startNotes();
   var wa=$("wach");wa.textContent="";
   if(CFG&&CFG.whatsapp&&!document.querySelector(".wfab")){var wl=el("a","wfab");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wl.setAttribute("aria-label","Join our WhatsApp channel");wl.appendChild(svg("wa"));wl.appendChild(el("span",null,"Join our channel"));document.body.appendChild(wl)}
   try{
