@@ -616,6 +616,8 @@ body.inchat footer{display:none}
 @media (prefers-reduced-motion:reduce){.vbtn.on{animation:none}}
 .vtime{font:400 34px/1 var(--font-display)}.vhint{color:var(--muted);font-size:14px;font-weight:700}
 .vplay audio{width:min(420px,90vw);margin-top:8px}
+
+.cmpkeep{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;font-weight:700;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -1292,6 +1294,48 @@ function renderChat(){
 }
 
 
+
+// ===== Edit your own post =====
+function editPost(p,cardEl){
+  var m=el("div","cmp");m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","Edit post");
+  var top=el("div","cmptop");var x=el("button","cmpx","Cancel");x.type="button";top.appendChild(x);top.appendChild(el("b",null,"Edit post"));
+  var go=el("button","cmpgo","Save");go.type="button";top.appendChild(go);m.appendChild(top);
+  var body=el("div","cmpb");m.appendChild(body);
+  var media=el("div","cmpm");body.appendChild(media);
+  var st=el("div","cmpst");st.setAttribute("role","status");body.appendChild(st);
+  var tx=el("textarea","cmptx"+((p.images||[]).length||p.link?"":" big"));tx.maxLength=500;tx.rows=5;tx.value=p.body||"";tx.setAttribute("aria-label","Your post");body.appendChild(tx);
+  var cnt=el("div","cmpc",tx.value.length+" / 500");body.appendChild(cnt);
+  var imgs=(p.images||[]).slice(),pending=0,orig=JSON.stringify([p.body||"",p.images||[]]);
+  function dirty(){return JSON.stringify([tx.value.trim(),imgs])!==orig}
+  function ready(){go.disabled=pending>0||!dirty()||(!tx.value.trim()&&!imgs.length&&!p.link)}
+  tx.oninput=function(){cnt.textContent=tx.value.length+" / 500";ready()};
+  function tile(u,uploading,file){
+    var t=el("div","cmpt"+(uploading?" up":""));var im=document.createElement("img");im.src=file?URL.createObjectURL(file):u;im.alt="";t.appendChild(im);
+    if(uploading)t.appendChild(el("span","cmpsp","Uploading…"));
+    else{var rm=el("button","cmprm","×");rm.type="button";rm.setAttribute("aria-label","Remove picture");rm.onclick=function(){imgs=imgs.filter(function(z){return z!==u});t.remove();addBtn();ready()};t.appendChild(rm)}
+    return t;
+  }
+  function addBtn(){
+    var ab=media.querySelector(".cmpadd");if(p.link||imgs.length+pending>=3){if(ab)ab.remove();return}if(ab)return;
+    ab=el("button","cmpadd","+ Add picture");ab.type="button";ab.onclick=function(){var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.multiple=true;
+      fi.onchange=function(){[].slice.call(fi.files).slice(0,3-imgs.length-pending).forEach(function(f){var t=tile(null,true,f);media.insertBefore(t,ab);pending++;ready();
+        shrinkImg(f,1400).then(function(b){return upFan(b,"jpg","image/jpeg")}).then(function(u){imgs.push(u);var nt=tile(u);t.replaceWith(nt)}).catch(function(){t.remove();toast("A picture couldn't upload")}).then(function(){pending--;addBtn();ready()})})};fi.click()};
+    media.appendChild(ab);
+  }
+  if(p.link){var emb=embedUrl(p.link);media.appendChild(el("div","cmpkeep",emb&&emb.audio?"🎙️ Your voice note stays the same. You can change the caption.":"🎬 Your video stays the same. You can change the caption."))}
+  else{media.classList.add("grid");imgs.forEach(function(u){media.appendChild(tile(u))});addBtn()}
+  function close(){m.remove();document.removeEventListener("keydown",esc);document.body.style.overflow=""}
+  function esc(e){if(e.key==="Escape")close()}
+  x.onclick=function(){if(dirty()&&!x.dataset.sure){x.dataset.sure="1";x.textContent="Discard?";setTimeout(function(){x.textContent="Cancel";delete x.dataset.sure},2500);return}close()};
+  go.onclick=function(){if(go.disabled)return;go.disabled=true;go.textContent="Saving…";
+    api("rpc/edit_fan_post",{p_id:p.fanId,p_text:tx.value.trim(),p_images:imgs}).then(function(){
+      p.body=tx.value.trim();p.images=imgs;p.edited=true;p.title=((p.fan&&p.fan.name)||"Fan")+" on Hottest Gist GH: "+p.body.slice(0,80);
+      var nc=card(p);if(cardEl&&cardEl.isConnected)cardEl.replaceWith(nc);close();toast("Post updated ✔");
+    }).catch(function(er){go.disabled=false;go.textContent="Save";var d=String(er.detail||er.message||"");st.className="cmpst err";
+      st.textContent=/slow down/.test(d)?"Wait a minute before editing again.":/function|edit_fan_post|404/i.test(d)?"Editing isn't switched on yet. Run setup-edit.sql in Supabase.":"Couldn't save. Check your connection and try again."})};
+  document.addEventListener("keydown",esc);document.body.style.overflow="hidden";document.body.appendChild(m);ready();
+  setTimeout(function(){tx.focus();var n=tx.value.length;try{tx.setSelectionRange(n,n)}catch(e){}},120);
+}
 // ===== Simple posting: choose Picture, Video, Text or Voice =====
 function postChooser(){
   if(!SES){needLogin("Create a free account to post your own gist, photos and videos.");return}
@@ -1884,7 +1928,7 @@ function fetchCreators(ids){
 }
 function fanToPost(f){
   var c=cr[f.user_id]||{name:"Fan"};
-  return{id:"fp-"+f.id,fanId:f.id,fan:{uid:f.user_id,name:c.name||"Fan",verified:!!c.verified,avatar:c.avatar},title:(c.name||"Fan")+" on Hottest Gist GH: "+(f.text||"").slice(0,80),cat:"Fan post",by:"",body:f.text||"",link:f.video||f.link||null,images:Array.isArray(f.images)?f.images:[],ts:Date.parse(f.created_at),status:"live"};
+  return{edited:!!f.edited_at,video:f.video||null,id:"fp-"+f.id,fanId:f.id,fan:{uid:f.user_id,name:c.name||"Fan",verified:!!c.verified,avatar:c.avatar},title:(c.name||"Fan")+" on Hottest Gist GH: "+(f.text||"").slice(0,80),cat:"Fan post",by:"",body:f.text||"",link:f.video||f.link||null,images:Array.isArray(f.images)?f.images:[],ts:Date.parse(f.created_at),status:"live"};
 }
 function showFans(box,q,emptyMsg){
   box.textContent="";box.appendChild(el("div","none","Loading..."));
@@ -1904,7 +1948,7 @@ function renderFans(){
   var snc=soundsCard();if(snc)v.appendChild(snc);
   var box=el("div");
   function loadFeed(){
-    var q="fan_posts?select=id,user_id,text,images,link,video,created_at&hidden=eq.false&order=created_at.desc&limit=40";
+    var q="fan_posts?select=*&hidden=eq.false&order=created_at.desc&limit=40";
     if(fanFilter==="following"){var ids=Object.keys(fol);if(!ids.length){box.textContent="";box.appendChild(el("div","empty","You're not following anyone yet. Tap a name to open a profile and follow."));return}q+="&user_id=in.("+ids.join(",")+")"}
     showFans(box,q,fanFilter==="following"?"No posts from people you follow yet.":"No fan posts yet. Be the first!");
   }
@@ -2103,7 +2147,7 @@ function renderProfile(uid){
       }
       body.appendChild(editBox);
       var box=el("div");body.appendChild(box);
-      showFans(box,"fan_posts?select=id,user_id,text,images,link,video,created_at&hidden=eq.false&user_id=eq."+uid+"&order=created_at.desc&limit=40",mine?"You haven't posted yet. Go to the Fans tab and share your first post!":"No posts yet.");
+      showFans(box,"fan_posts?select=*&hidden=eq.false&user_id=eq."+uid+"&order=created_at.desc&limit=40",mine?"You haven't posted yet. Go to the Fans tab and share your first post!":"No posts yet.");
     }).catch(function(){body.textContent="";body.appendChild(el("div","none","Couldn't load this profile. Did you run setup-creators.sql?"))});
   }
   load();
@@ -2194,7 +2238,7 @@ function card(p){
   if(p.pin)head.appendChild(el("span","pin","Pinned"));
   a.appendChild(head);
   if(!p.fan)a.appendChild(el("h2",null,p.title));
-  a.appendChild(el("div","meta",(p.by&&!p.fan?"By "+p.by+" · ":"")+fmt(p.ts)));
+  a.appendChild(el("div","meta",(p.by&&!p.fan?"By "+p.by+" · ":"")+fmt(p.ts)+(p.edited?" · Edited":"")));
   var imgs=(Array.isArray(p.images)?p.images:[]).slice(0,3);
   if(imgs.length){
     var g=el("div","photos n"+imgs.length);
@@ -2234,7 +2278,7 @@ function card(p){
   }
   var sv=pill("save",saved[p.id]?"Saved":"Save");sv.classList.toggle("on",!!saved[p.id]);sv.onclick=function(){toggleSave(p,sv)};row.appendChild(sv);
   if(p.fan&&SES){
-    if(SES.user&&SES.user.id===p.fan.uid){var dl=el("button","rl","Delete");dl.type="button";dl.onclick=function(){if(confirm("Delete this post?"))api("rpc/delete_fan_post",{p_id:p.fanId}).then(function(){a.remove();toast("Deleted")}).catch(function(){toast("Couldn't delete")})};row.appendChild(dl)}
+    if(SES.user&&SES.user.id===p.fan.uid){var eb=el("button","rl","\u270f\ufe0f Edit");eb.type="button";eb.onclick=function(){editPost(p,a)};row.appendChild(eb);var dl=el("button","rl","Delete");dl.type="button";dl.onclick=function(){if(confirm("Delete this post?"))api("rpc/delete_fan_post",{p_id:p.fanId}).then(function(){a.remove();toast("Deleted")}).catch(function(){toast("Couldn't delete")})};row.appendChild(dl)}
     else{var rf=el("button","rl","Report");rf.type="button";rf.onclick=function(){reportItem("fan",p.fanId,rf)};row.appendChild(rf)}
   }
   var cdv=countdown(p);if(cdv)row.appendChild(el("span","cd",cdv));
