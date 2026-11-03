@@ -702,6 +702,38 @@ body.biomode main.wrap{max-width:560px}
 .bioq{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 10px;font-size:13px;color:var(--muted);font-weight:700}
 .bioq button{font:inherit;font-size:13px;font-weight:800;border-radius:99px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);padding:6px 10px;cursor:pointer}
 .biomsg{font-size:14px;font-weight:700;color:#ff7a8a;margin-top:6px}.biomsg.ok{color:#3fbf7f}.biomsg:empty{display:none}
+
+/* ===== Match day ===== */
+.mdbar{background:#0f2a18;border-color:#25D366}.mdbar b{color:#25D366}
+.mdc{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:0 0 12px}
+.mdc.live{border-color:#e0102e;box-shadow:0 0 0 2px rgba(224,16,46,.25)}
+.mdtop{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.mdc.live .mdstat{color:#ff5a6e}
+.mdteams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin:12px 0 6px;text-align:center}
+.mdteams b{font:400 22px/1.1 var(--font-display);text-transform:uppercase;overflow-wrap:anywhere}
+.mdsc{font:400 28px/1 var(--font-display);color:var(--red);min-width:56px}
+.mdleft{text-align:center;font-size:13px;font-weight:800;color:#d39b06;margin-bottom:10px}
+.mdpred{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mdstep{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:8px;flex-wrap:wrap}
+.mdstep small{width:100%;text-align:center;font-weight:800;color:var(--muted);font-size:12px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mdstep button{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--text);font-size:20px;cursor:pointer}
+.mdstep span{font:400 30px/1 var(--font-display);min-width:28px;text-align:center}
+.mdsave{width:100%;margin:10px 0 0!important}.mdsave.done{background:#1f8a4c}
+.mdchat{width:100%;margin:10px 0 0!important;background:#e0102e}
+.mdmine{margin-top:6px;text-align:center;font-weight:800;color:var(--muted)}
+.mdbar2{display:flex;height:8px;border-radius:9px;overflow:hidden;margin:12px 0 4px;background:var(--line)}
+.mdbar2 i{display:block}.mdbar2 .s0{background:#ce1126}.mdbar2 .s1{background:#fcd116}.mdbar2 .s2{background:#006b3f}
+.mdfans{font-size:12px;color:var(--muted);font-weight:700;text-align:center}
+.mdlb{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:16px 0}
+.mdlb h3{margin:0 0 8px;font-size:16px}
+.mdrow{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:8px 2px;color:var(--text);font:inherit;cursor:pointer;text-align:left}
+.mdrow b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mdrk{width:26px;text-align:center;font-weight:800}.mdpts{font-weight:800;color:var(--red)}
+.mdlive{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px;margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;text-align:center}
+.mdlive b{font:400 22px/1.15 var(--font-display);text-transform:uppercase}
+.mdcomp{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.mdlive .mdstat{font-size:13px;font-weight:800;color:#ff5a6e}
+.mdwho{display:block;background:none;border:0;padding:0;margin-bottom:2px;font:inherit;font-size:12px;font-weight:800;color:var(--red);cursor:pointer}
+.mdhide{background:none;border:0;color:var(--muted);font-size:11px;cursor:pointer;text-decoration:underline;padding:0;margin-top:2px}
 </style>
 </head>
 <body>
@@ -733,6 +765,8 @@ body.biomode main.wrap{max-width:560px}
   <div id="vFans" hidden></div>
   <div id="vFriends" hidden></div>
   <div id="vBio" hidden></div>
+  <div id="vMatchday" hidden></div>
+  <div id="vMatch" hidden></div>
   <div id="vMessages" hidden></div>
   <div id="vChat" hidden></div>
   <div id="vSearch" hidden></div>
@@ -1051,13 +1085,13 @@ function pollCard(pl){
 
 
 // ===== Remember the page in the address (refresh and Back keep you there) =====
-var V2H={messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
+var V2H={matchday:"matchday",messages:"messages",search:"search",submit:"submit",fans:"fans",friends:"friends",gigs:"services",chart:"top10",events:"events",polls:"polls",top:"top-fans",wall:"wall",quiz:"quiz"};
 var H2V={};Object.keys(V2H).forEach(function(k){H2V[V2H[k]]=k});
 var routing=false;
-function isRouteHash(h){return !!H2V[h]||/^[um]-[0-9a-f-]{36}$/.test(h)}
+function isRouteHash(h){return !!H2V[h]||/^[um]-[0-9a-f-]{36}$/.test(h)||/^match-\d+$/.test(h)}
 function syncHash(v){
   if(routing)return;
-  var want=v==="profile"&&profUid?"u-"+profUid:v==="chat"&&chatUid?"m-"+chatUid:(V2H[v]||"");
+  var want=v==="profile"&&profUid?"u-"+profUid:v==="chat"&&chatUid?"m-"+chatUid:v==="match"&&matchId?"match-"+matchId:(V2H[v]||"");
   var cur=location.hash.slice(1);
   if(cur===want)return;
   if(!want&&cur&&!isRouteHash(cur))return;
@@ -1065,6 +1099,7 @@ function syncHash(v){
 }
 function routeHash(h){
   if(H2V[h]){setView(H2V[h]);return true}
+  if(/^match-\d+$/.test(h)){openMatch(+h.slice(6));return true}
   if(/^m-[0-9a-f-]{36}$/.test(h)){if(CFG&&SES){openChat(h.slice(2))}else{setView("gist");needLogin("Log in to read your messages.")}return true}
   if(/^u-[0-9a-f-]{36}$/.test(h)){if(CFG&&SES){openProfile(h.slice(2))}else{setView("gist");needLogin("Log in to see profiles and add friends.")}return true}
   return false;
@@ -1074,7 +1109,7 @@ window.addEventListener("popstate",function(){
   try{if(!routeHash(h)&&(!h||isRouteHash(h)||viewName!=="gist"))setView("gist")}finally{routing=false}
 });
 // ===== "You are here" line and tap flash =====
-var VIEWNAMES={messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
+var VIEWNAMES={matchday:"Match day",match:"Match chat",messages:"Messages",chat:"Chat",gist:"Home",search:"Search",submit:"Submit your song",fans:"Fans",friends:"Friends",gigs:"Services",chart:"Top 10",profile:"Profile",events:"Events",polls:"Polls",top:"Top fans",wall:"Wall",quiz:"Quiz"};
 function drawWhere(){
   var w=$("where");if(!w)return;w.textContent="";
   if(viewName==="search")return;
@@ -1096,6 +1131,7 @@ function loadMusicExtras(){
   if(!CFG)return;
   api("featured_spotlight?select=id,artist,song,story,link,image&limit=3").then(function(r){spotRows=r||[];renderExtras()}).catch(function(){spotRows=[]});
   api("new_releases?select=id,artist,song,link,image&limit=20").then(function(r){relRows=r||[];renderExtras()}).catch(function(){relRows=[]});
+  api("matches?select=*&status=in.(upcoming,live)&order=kickoff.asc&limit=1").then(function(r){nextMatch=r&&r[0]||null;renderExtras()}).catch(function(){});
 }
 function spotCard(x){
   var c=el("section","spot");var si=el("div","si");
@@ -1467,6 +1503,105 @@ function renderChat(){
 
 
 
+
+// ===== Match day: predictions, live chat, leaderboard =====
+var nextMatch=null,matchId=null,matchTimer=null,mdCache=null;
+function mdWhen(t){var d=new Date(t);return d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})+", "+d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}
+function mdLeft(t){var ms=new Date(t)-Date.now();if(ms<=0)return"Kick-off!";var h=Math.floor(ms/36e5),d=Math.floor(h/24);return d>0?d+"d "+(h%24)+"h to kick-off":h>0?h+"h "+Math.floor(ms%36e5/6e4)+"m to kick-off":Math.max(1,Math.floor(ms/6e4))+" min to kick-off"}
+function openMatch(id){if(viewName!=="match")backTo=viewName==="match"?backTo:viewName;matchId=id;setView("match")}
+function stopMatchPoll(){if(matchTimer){clearInterval(matchTimer);matchTimer=null}}
+function chatOpen(m){var k=new Date(m.kickoff).getTime(),n=Date.now();return n>=k-2*36e5&&n<=k+4*36e5}
+function renderMatchday(){
+  var v=$("vMatchday");v.textContent="";
+  v.appendChild(el("h2","vh","⚽ Match day"));
+  v.appendChild(el("p","sub","Predict the score before kick-off, chat live during the match and climb the leaderboard. Exact score = 3 points, right result = 1 point."));
+  var box=el("div");v.appendChild(box);box.appendChild(el("div","none","Loading matches…"));
+  var lb=el("section","mdlb");v.appendChild(lb);
+  if(!CFG){box.textContent="";return}
+  var month=new Date().toISOString().slice(0,7);
+  Promise.all([
+    api("matches?select=*&order=kickoff.asc&limit=60").catch(function(){return null}),
+    SES?api("predictions?select=match_id,home,away").catch(function(){return[]}):Promise.resolve([]),
+    api("match_pred_stats?select=*").catch(function(){return[]})
+  ]).then(function(r){
+    box.textContent="";
+    if(r[0]===null){box.appendChild(el("div","snone","Match day isn't switched on yet. Run setup-matchday.sql in Supabase."));return}
+    var all=r[0]||[],mine={},stats={};(r[1]||[]).forEach(function(p){mine[p.match_id]=p});(r[2]||[]).forEach(function(x){stats[x.match_id]=x});
+    var now=Date.now();
+    var up=all.filter(function(m){return m.status==="live"||(m.status==="upcoming"&&new Date(m.kickoff).getTime()>now-6*36e5)});
+    var done=all.filter(function(m){return m.status==="finished"}).reverse().slice(0,5);
+    if(!up.length&&!done.length){box.appendChild(el("div","snone","No matches yet. Check back before the next Black Stars or Premier League game ⚽"));}
+    if(up.length){box.appendChild(el("div","frh","Coming up"));up.forEach(function(m){box.appendChild(matchCard(m,mine[m.id],stats[m.id]))})}
+    if(done.length){box.appendChild(el("div","frh","Results"));done.forEach(function(m){box.appendChild(matchCard(m,mine[m.id],stats[m.id]))})}
+  });
+  api("predictor_board?select=*&month=eq."+month+"&order=points.desc,exact.desc&limit=10").then(function(rows){
+    lb.textContent="";lb.appendChild(el("h3",null,"🏆 Top predictors this month"));
+    if(!rows||!rows.length){lb.appendChild(el("div","none","No points yet this month. Predict the next match to get on the board!"));return}
+    rows.forEach(function(x,i){var r=el("button","mdrow");r.type="button";r.appendChild(el("span","mdrk",["🥇","🥈","🥉"][i]||String(i+1)));r.appendChild(avEl(x,32));r.appendChild(el("b",null,x.name||"Fan"));r.appendChild(el("span","mdpts",x.points+" pts"));r.onclick=function(){openProfile(x.user_id)};lb.appendChild(r)});
+  }).catch(function(){});
+}
+function matchCard(m,mine,st){
+  var c=el("section","mdc "+m.status);
+  var tp=el("div","mdtop");tp.appendChild(el("span","mdcomp",m.competition||"Match"));
+  tp.appendChild(el("span","mdstat",m.status==="live"?"🔴 LIVE":m.status==="finished"?"Full time":m.status==="postponed"?"Postponed":mdWhen(m.kickoff)));c.appendChild(tp);
+  var tm=el("div","mdteams");tm.appendChild(el("b",null,m.home));
+  tm.appendChild(el("span","mdsc",m.status==="finished"||m.status==="live"?((m.home_score==null?"-":m.home_score)+" – "+(m.away_score==null?"-":m.away_score)):"vs"));
+  tm.appendChild(el("b",null,m.away));c.appendChild(tm);
+  if(m.status==="upcoming"&&new Date(m.kickoff)>Date.now()){
+    c.appendChild(el("div","mdleft",mdLeft(m.kickoff)));
+    var h=mine?mine.home:0,a=mine?mine.away:0;var pr=el("div","mdpred");
+    function step(lbl,get,set){var w=el("div","mdstep");w.appendChild(el("small",null,lbl));var mi=el("button",null,"−");mi.type="button";mi.setAttribute("aria-label","Less goals for "+lbl);var n=el("span",null,String(get()));var pl=el("button",null,"+");pl.type="button";pl.setAttribute("aria-label","More goals for "+lbl);
+      mi.onclick=function(){set(Math.max(0,get()-1));n.textContent=get();dirty()};pl.onclick=function(){set(Math.min(20,get()+1));n.textContent=get();dirty()};w.appendChild(mi);w.appendChild(n);w.appendChild(pl);return w}
+    pr.appendChild(step(m.home,function(){return h},function(x){h=x}));pr.appendChild(step(m.away,function(){return a},function(x){a=x}));c.appendChild(pr);
+    var sv=el("button","go2 mdsave",mine?"Your pick: "+mine.home+" – "+mine.away+" ✔":"Save my prediction");sv.type="button";if(mine)sv.classList.add("done");
+    function dirty(){sv.classList.remove("done");sv.textContent="Save my prediction"}
+    sv.onclick=function(){if(!SES){needLogin("Create a free account to predict and win points.");return}sv.disabled=true;
+      api("rpc/predict_match",{p_match:m.id,p_home:h,p_away:a}).then(function(){mine={home:h,away:a};sv.textContent="Your pick: "+h+" – "+a+" ✔";sv.classList.add("done");toast("Prediction saved ⚽")}).catch(function(er){if(!er.login)toast(er.detail||"Couldn't save. Try again.")}).then(function(){sv.disabled=false})};
+    c.appendChild(sv);
+  }else if(mine){
+    var pts=m.status==="finished"&&m.home_score!=null?(mine.home===m.home_score&&mine.away===m.away_score?3:Math.sign(mine.home-mine.away)===Math.sign(m.home_score-m.away_score)?1:0):null;
+    c.appendChild(el("div","mdmine","Your pick: "+mine.home+" – "+mine.away+(pts!==null?" · "+(pts?"+"+pts+" point"+(pts>1?"s":"")+" 🎉":"0 points"):"")));
+  }
+  if(st&&st.n){var bar=el("div","mdbar2");var tot=st.n;[[st.home_win,m.home],[st.draw,"Draw"],[st.away_win,m.away]].forEach(function(x,i){var seg=el("i","s"+i);seg.style.flexGrow=Math.max(x[0],0.0001);seg.title=x[1]+": "+Math.round(x[0]/tot*100)+"%";bar.appendChild(seg)});c.appendChild(bar);
+    c.appendChild(el("div","mdfans",st.n+" fan"+(st.n>1?"s":"")+" predicted · "+m.home+" "+Math.round(st.home_win/tot*100)+"% · Draw "+Math.round(st.draw/tot*100)+"% · "+m.away+" "+Math.round(st.away_win/tot*100)+"%"))}
+  if(chatOpen(m)||m.status==="live"){var cb=el("button","go2 mdchat",m.status==="live"?"🔴 Join the live chat":"💬 Match chat is open");cb.type="button";cb.onclick=function(){openMatch(m.id)};c.appendChild(cb)}
+  return c;
+}
+function renderMatch(){
+  var v=$("vMatch");v.textContent="";stopMatchPoll();var id=matchId,last=0;
+  var bar=el("div","ptop chtop");var bk=el("button","bk","←");bk.type="button";bk.setAttribute("aria-label","Back to Match day");bk.onclick=function(){setView("matchday")};bar.appendChild(bk);
+  var ttl=el("b",null,"Match chat");bar.appendChild(ttl);v.appendChild(bar);
+  var sc=el("div","mdlive");v.appendChild(sc);
+  var box=el("div","chbox mdbox");box.setAttribute("aria-live","polite");v.appendChild(box);
+  var note=el("div","chnote");note.hidden=true;v.appendChild(note);
+  var f=el("form","chform");var ta=el("textarea");ta.rows=1;ta.maxLength=300;ta.placeholder="Say something about the match…";ta.setAttribute("aria-label","Chat message");ta.id="mdin";
+  var sb=el("button","chsend");sb.type="submit";sb.setAttribute("aria-label","Send");sb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8z"/></svg>';f.appendChild(ta);f.appendChild(sb);v.appendChild(f);
+  ta.onfocus=function(){if(!SES){ta.blur();needLogin("Create a free account to join the match chat.")}};
+  var M=null;
+  function head(){api("matches?select=*&id=eq."+id).then(function(r){M=r&&r[0];if(!M){ttl.textContent="Match not found";return}ttl.textContent=M.home+" vs "+M.away;
+    sc.textContent="";sc.appendChild(el("span","mdcomp",M.competition));sc.appendChild(el("b",null,M.home+"  "+(M.home_score==null?"":M.home_score)+(M.status==="upcoming"?" vs ":" – ")+(M.away_score==null?"":M.away_score)+"  "+M.away));
+    sc.appendChild(el("span","mdstat",M.status==="live"?"🔴 LIVE":M.status==="finished"?"Full time":mdWhen(M.kickoff)));
+    if(!chatOpen(M)&&M.status!=="live"){note.hidden=false;note.textContent=new Date(M.kickoff)>Date.now()?"The chat opens 2 hours before kick-off.":"The chat for this match is closed."}}).catch(function(){})}
+  function pull(first){
+    if(viewName!=="match"||matchId!==id)return;
+    api("match_chat?select=id,user_id,name,body,created_at&match_id=eq."+id+"&id=gt."+last+"&order=id.asc&limit=100").then(function(r){
+      r=r||[];if(first){box.textContent="";if(!r.length)box.appendChild(el("div","snone","Be the first to say something ⚽"))}
+      var stick=first||window.innerHeight+window.scrollY>=document.body.scrollHeight-120;
+      if(r.length&&box.querySelector(".snone"))box.textContent="";
+      r.forEach(function(x){var mine=SES&&SES.user&&SES.user.id===x.user_id;var b=el("div","bub"+(mine?" me":""));
+        if(!mine){var who=el("button","mdwho",x.name);who.type="button";who.onclick=function(){openProfile(x.user_id)};b.appendChild(who)}
+        b.appendChild(el("span",null,x.body));b.appendChild(el("small",null,new Date(x.created_at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})));
+        if(isAdm){var hd=el("button","mdhide","Hide");hd.type="button";hd.onclick=function(){api("rpc/admin_hide_chat",{p_id:x.id}).then(function(){b.remove()})};b.appendChild(hd)}
+        box.appendChild(b);last=x.id});
+      if(r.length&&stick)window.scrollTo({top:document.body.scrollHeight});
+    }).catch(function(){if(first){box.textContent="";box.appendChild(el("div","snone","Match day isn't switched on yet. Run setup-matchday.sql in Supabase."))}});
+  }
+  f.onsubmit=function(e){e.preventDefault();if(!SES){needLogin("Create a free account to join the match chat.");return}var t=ta.value.trim();if(!t)return;sb.disabled=true;
+    api("rpc/match_say",{p_match:id,p_body:t}).then(function(){ta.value="";note.hidden=true;pull(false)}).catch(function(er){note.hidden=false;note.textContent=er.detail||"Couldn't send. Try again."}).then(function(){sb.disabled=false})};
+  ta.onkeydown=function(e){if(e.key==="Enter"&&!e.shiftKey&&window.matchMedia("(hover:hover)").matches){e.preventDefault();f.requestSubmit?f.requestSubmit():f.onsubmit(e)}};
+  head();pull(true);
+  matchTimer=setInterval(function(){if(!document.hidden){pull(false);if(Math.random()<.25)head()}},4000);
+}
 // ===== Free link-in-bio pages: /@name =====
 var BIOH=((location.pathname||"").match(/^\/@([A-Za-z0-9_.]{3,24})\/?$/)||[])[1]||null;
 function bioUrl(h){return location.origin+"/@"+h}
@@ -2039,6 +2174,9 @@ function renderExtras(){
   if(spotRows&&spotRows.length)spotRows.forEach(function(r){x.appendChild(spotCard(r))});
   var rs=relSection();if(rs)x.appendChild(rs);
   var sbb=el("button","wabar chtz subbar");sbb.type="button";sbb.appendChild(el("span",null,"\ud83c\udfa4 Artist? Submit your song to Hottest Gist"));sbb.appendChild(el("b",null,"Send \u2192"));sbb.onclick=function(){setView("submit")};x.appendChild(sbb);
+  if(nextMatch&&new Date(nextMatch.kickoff)-Date.now()<8*864e5){var nm2=nextMatch,live=nm2.status==="live";var mt=el("button","wabar chtz mdbar");mt.type="button";
+    mt.appendChild(el("span",null,(live?"\ud83d\udd34 LIVE: ":"\u26bd ")+nm2.home+" vs "+nm2.away+(live?"":" \u00b7 "+mdWhen(nm2.kickoff))));mt.appendChild(el("b",null,live?"Chat \u2192":"Predict \u2192"));
+    mt.onclick=function(){if(live)openMatch(nm2.id);else setView("matchday")};x.appendChild(mt)}
   var ct=el("button","wabar chtz");ct.type="button";ct.appendChild(el("span",null,"\ud83c\udfb5 Ghana Top 10: vote for your song"));ct.appendChild(el("b",null,"Vote \u2192"));ct.onclick=function(){setView("chart")};x.appendChild(ct);
   if(CFG&&CFG.whatsapp){var wb=el("a","wabar");wb.href=CFG.whatsapp;wb.target="_blank";wb.rel="noopener noreferrer";wb.appendChild(svg("wa"));wb.appendChild(el("span",null,"Get the gist first on our WhatsApp channel"));wb.appendChild(el("b",null,"Join \u2192"));x.appendChild(wb)}
   var so=cfgSet.song;
@@ -2397,16 +2535,16 @@ function renderProfile(uid){
 }
 
 function setView(v){
-  viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="profile"||v==="friends"||v==="messages"||v==="chat");document.body.classList.toggle("inchat",v==="chat");document.body.classList.toggle("biomode",v==="bio");
+  viewName=v;setTimeout(drawWhere,0);document.body.classList.toggle("insearch",v==="search");document.body.classList.toggle("fullpage",v==="search"||v==="profile"||v==="friends"||v==="messages"||v==="chat"||v==="match");document.body.classList.toggle("inchat",v==="chat"||v==="match");document.body.classList.toggle("biomode",v==="bio");
   setTimeout(navMark,0);syncHash(v);
-  ["gist","bio","search","submit","fans","friends","messages","chat","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","bio","matchday","match","search","submit","fans","friends","messages","chat","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
-  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 function buildTabs(){
   var t=$("tabs");t.textContent="";t.hidden=false;
-  [["gist","🔥 Gist"],["chart","🎵 Top 10"],["fans","🌟 Fans"],["gigs","💼 Services"],["events","📅 Events"],["polls","📊 Polls"],["top","🏆 Top fans"],["wall","💬 Wall"],["quiz","🧠 Quiz"]].forEach(function(x){
+  [["gist","🔥 Gist"],["matchday","⚽ Match day"],["chart","🎵 Top 10"],["fans","🌟 Fans"],["gigs","💼 Services"],["events","📅 Events"],["polls","📊 Polls"],["top","🏆 Top fans"],["wall","💬 Wall"],["quiz","🧠 Quiz"]].forEach(function(x){
     var b=el("button",null,x[1]);b.type="button";b.setAttribute("data-v",x[0]);b.setAttribute("aria-pressed",String(x[0]===viewName));b.onclick=function(){setView(x[0])};t.appendChild(b);
   });
 }

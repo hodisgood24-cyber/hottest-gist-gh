@@ -60,6 +60,13 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
  <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="fo" style="width:auto"> Paid featuring is on</label>
  <div class="row"><button>Save</button></div></form>
  <h2>Services listings</h2><div id="gigs" class="card">Loading...</div>
+ <h2>⚽ Match day</h2>
+ <form id="mdf" class="card"><label>Home team</label><input id="mh" maxlength="40" placeholder="Ghana" required>
+ <label>Away team</label><input id="ma" maxlength="40" placeholder="Nigeria" required>
+ <label>Competition</label><input id="mc" maxlength="40" placeholder="Black Stars, Premier League, Ghana Premier League…" value="Black Stars">
+ <label>Kick-off (your local time)</label><input id="mk" type="datetime-local" required>
+ <div class="row"><button>Add match</button></div></form>
+ <div id="mdl" class="card">Loading...</div>
  <h2>Song submissions</h2><div id="subm" class="card">Loading...</div>
  <h2>Featured artist price (homepage spotlight)</h2>
  <form id="spf" class="card"><label>Price shown (example: GH₵ 50)</label><input id="spp" maxlength="30">
@@ -226,8 +233,33 @@ function loadSubm(){
     });
   }).catch(function(){$("subm").textContent="Couldn't load. Did you run setup-submissions.sql?"});
 }
+
+function loadMatches(){
+  api("matches?select=*&order=kickoff.desc&limit=30").then(function(m){
+    var b=$("mdl");b.textContent="";
+    if(!(m||[]).length){b.textContent="No matches yet. Add one above and fans can start predicting.";return}
+    m.forEach(function(x){
+      var d=el("div","it"),L=el("div");
+      L.appendChild(el("p",null,x.home+" vs "+x.away+(x.home_score!=null?"  ("+x.home_score+" – "+x.away_score+")":"")));
+      L.appendChild(el("p","m",x.status.toUpperCase()+" · "+x.competition+" · "+new Date(x.kickoff).toLocaleString()));
+      d.appendChild(L);
+      function act(t,cls,fn){var y=el("button",cls,t);y.onclick=function(){var pr=fn();if(!pr)return;y.disabled=true;pr.then(loadMatches).catch(function(){alert("Failed. Did you run setup-matchday.sql?");y.disabled=false})};d.appendChild(y)}
+      function score(){var h=prompt("Goals for "+x.home+"?",x.home_score==null?"0":x.home_score);if(h===null)return null;var a=prompt("Goals for "+x.away+"?",x.away_score==null?"0":x.away_score);if(a===null)return null;h=parseInt(h,10);a=parseInt(a,10);if(isNaN(h)||isNaN(a)||h<0||a<0){alert("Type numbers only");return null}return{h:h,a:a}}
+      if(x.status==="upcoming")act("Kick-off (LIVE)","g",function(){return rpc("admin_save_match",{p:{id:x.id,status:"live",home_score:0,away_score:0}})});
+      if(x.status==="live")act("Update score","g",function(){var s=score();return s&&rpc("admin_save_match",{p:{id:x.id,home_score:s.h,away_score:s.a}})});
+      if(x.status!=="finished")act("Full time + final score","g",function(){var s=score();return s&&rpc("admin_save_match",{p:{id:x.id,status:"finished",home_score:s.h,away_score:s.a}})});
+      if(x.status==="finished")act("Fix score","",function(){var s=score();return s&&rpc("admin_save_match",{p:{id:x.id,home_score:s.h,away_score:s.a}})});
+      if(x.status==="upcoming")act("Postpone","",function(){return rpc("admin_save_match",{p:{id:x.id,status:"postponed"}})});
+      if(x.status==="postponed")act("Back on","",function(){return rpc("admin_save_match",{p:{id:x.id,status:"upcoming"}})});
+      act("Delete","d",function(){return confirm("Delete "+x.home+" vs "+x.away+"? Predictions and chat for it go too.")?rpc("admin_delete_match",{p_id:x.id}):null});
+      b.appendChild(d);
+    });
+  }).catch(function(){$("mdl").textContent="Couldn't load. Did you run setup-matchday.sql?"});
+}
 function init(){
-  loadPosts();loadMod();loadCreators();loadGigs();loadVer();loadPays();loadSubm();
+  loadPosts();loadMod();loadCreators();loadGigs();loadVer();loadPays();loadSubm();loadMatches();
+  $("mdf").onsubmit=function(e){e.preventDefault();var k=new Date($("mk").value);if(isNaN(k)){alert("Pick the kick-off date and time");return}
+    rpc("admin_save_match",{p:{home:$("mh").value.trim(),away:$("ma").value.trim(),competition:$("mc").value.trim(),kickoff:k.toISOString()}}).then(function(){$("mh").value="";$("ma").value="";$("mk").value="";say("Match added. Fans can predict now ⚽");loadMatches()}).catch(function(){alert("Failed. Did you run setup-matchday.sql?")})};
   api("site_settings?select=key,value").then(function(r){(r||[]).forEach(function(x){var v=x.value||{};if(x.key==="song"){$("s1").value=v.title||"";$("s2").value=v.artist||"";$("s3").value=v.note||"";$("s4").value=v.link||""}if(x.key==="sounds"){var it=Array.isArray(x.value)?x.value:(x.value&&x.value.items)||[];$("snd").value=it.map(function(i){return [i.title||"",i.artist||"",i.link||""].join(" | ")}).join("\n")}if(x.key==="verify"){$("vp").value=v.price||"";$("va").value=v.amount||"";$("vo").checked=!!v.auto;$("vh").value=v.how||"";$("vl").value=v.link||""}if(x.key==="spotlight"){$("spp").value=v.price||"";$("spa").value=v.amount||"";$("spd").value=v.days||7;$("spo").checked=!!v.auto;$("sph").value=v.how||""}if(x.key==="feature"){$("fp").value=v.price||"";$("fa").value=v.amount||"";$("fd").value=v.days||7;$("fo").checked=!!v.auto}if(x.key==="sponsor"){$("p1").value=v.text||"";$("p2").value=v.link||""}})}).catch(function(){});
   $("f").onchange=function(){
     var fs=[].slice.call(this.files).slice(0,3-imgs.length);if(!fs.length)return;$("sv").disabled=true;$("sv").textContent="Uploading...";
