@@ -60,7 +60,7 @@ button.g{background:transparent;color:var(--text);border:1.5px solid var(--line)
  <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="fo" style="width:auto"> Paid featuring is on</label>
  <div class="row"><button>Save</button></div></form>
  <h2>Seller plans (Market)</h2>
- <form id="pf" class="card">
+ <form id="plf" class="card">
  <label>Standard: price shown (example: GH₵ 30) and number (example: 30)</label><div class="row"><input id="pp1" maxlength="30"><input id="pa1" type="number" min="1" step="0.5"></div>
  <label>Premium: price shown and number</label><div class="row"><input id="pp2" maxlength="30"><input id="pa2" type="number" min="1" step="0.5"></div>
  <label>Star: price shown and number</label><div class="row"><input id="pp3" maxlength="30"><input id="pa3" type="number" min="1" step="0.5"></div>
@@ -322,7 +322,7 @@ function init(){
   $("sndx").onclick=function(){rpc("admin_set_setting",{p_key:"sounds",p_value:{}}).then(function(){$("snd").value="";say("Cleared.");setTimeout(function(){say("")},2500)})};
   $("vf2").onsubmit=function(e){e.preventDefault();rpc("admin_set_setting",{p_key:"verify",p_value:{price:$("vp").value.trim(),amount:Number($("va").value)||0,auto:$("vo").checked&&Number($("va").value)>0,how:$("vh").value.trim(),link:$("vl").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("spf").onsubmit=function(e){e.preventDefault();var a=Number($("spa").value)||0;rpc("admin_set_setting",{p_key:"spotlight",p_value:{price:$("spp").value.trim(),amount:a,days:Math.min(30,Math.max(1,Number($("spd").value)||7)),auto:$("spo").checked&&a>0,how:$("sph").value.trim()}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
-  $("pf").onsubmit=function(e){e.preventDefault();var o={days:Math.min(365,Math.max(1,Number($("pd").value)||30))},any=false;["standard","premium","star"].forEach(function(k,i){var n=Number($("pa"+(i+1)).value)||0;if(n>0)any=true;o[k]={price:$("pp"+(i+1)).value.trim(),amount:n}});o.auto=$("po").checked&&any;rpc("admin_set_setting",{p_key:"plans",p_value:o}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
+  $("plf").onsubmit=function(e){e.preventDefault();var o={days:Math.min(365,Math.max(1,Number($("pd").value)||30))},any=false;["standard","premium","star"].forEach(function(k,i){var n=Number($("pa"+(i+1)).value)||0;if(n>0)any=true;o[k]={price:$("pp"+(i+1)).value.trim(),amount:n}});o.auto=$("po").checked&&any;rpc("admin_set_setting",{p_key:"plans",p_value:o}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("ff").onsubmit=function(e){e.preventDefault();var a=Number($("fa").value)||0;rpc("admin_set_setting",{p_key:"feature",p_value:{price:$("fp").value.trim(),amount:a,days:Math.min(30,Math.max(1,Number($("fd").value)||7)),auto:$("fo").checked&&a>0}}).then(function(){say("Saved.");setTimeout(function(){say("")},2500)}).catch(function(){alert("Couldn't save")})};
   $("vx").onclick=function(){rpc("admin_set_setting",{p_key:"verify",p_value:{}}).then(function(){$("vf2").reset();say("Sign-ups closed.");setTimeout(function(){say("")},2500)})};
   setting("sf","song",function(){return{title:$("s1").value.trim(),artist:$("s2").value.trim(),note:$("s3").value.trim(),link:$("s4").value.trim()}},"sx");
