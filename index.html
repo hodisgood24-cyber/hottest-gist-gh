@@ -333,6 +333,29 @@ body.hasnav .wfab{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 .frb.go{background:var(--red);border-color:var(--red);color:#fff}
 .frb.ok{background:#1f8a4c;border-color:#1f8a4c;color:#fff}
 .frb:disabled{opacity:.6}
+#vSearch{min-height:70vh}
+body.insearch header,body.insearch .tabs,body.insearch .gear,body.insearch .bell,body.insearch .wfab{display:none!important}
+.sbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);display:flex;align-items:center;gap:8px;padding:10px 0;margin-bottom:6px}
+.sbar .bk{flex:none;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sbox{flex:1;min-width:0;position:relative}
+.sbox input{width:100%;box-sizing:border-box;font:inherit;font-size:17px;padding:12px 40px 12px 42px;border:2px solid var(--line);border-radius:999px;background:var(--card);color:var(--text)}
+.sbox input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.sbox input:focus{border-color:var(--red);outline:none}
+.sbox svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round}
+.sbox .cl{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;border:0;background:var(--line);color:var(--text);font-size:16px;cursor:pointer}
+.sh{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800;margin:18px 0 8px;display:flex;justify-content:space-between;align-items:center}
+.sh button{background:none;border:0;color:var(--red);font:inherit;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.04em}
+.schips{display:flex;flex-wrap:wrap;gap:8px}
+.schips button{font:inherit;font-weight:700;font-size:14px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);color:var(--text);padding:8px 14px;cursor:pointer}
+.sres{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 2px;color:var(--text);font:inherit;cursor:pointer}
+.sres img,.sres .sth{width:76px;height:56px;border-radius:10px;object-fit:cover;flex:none;background:var(--card)}
+.sres .sth{display:flex;align-items:center;justify-content:center;font-size:24px}
+.sres .st{flex:1;min-width:0}
+.sres b{display:block;font-size:15px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sres small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.sres mark{background:rgba(252,209,22,.35);color:inherit;border-radius:3px;padding:0 1px}
+.sres .rk{font:400 22px/1 var(--font-display);color:var(--red);width:22px;text-align:center;flex:none}
+.snone{color:var(--muted);text-align:center;padding:26px 8px}
 .wabar{display:flex;align-items:center;gap:10px;margin:14px 0;padding:12px 14px;border-radius:14px;background:#0f3d24;border:1px solid #25D366;color:#fff;text-decoration:none;font-weight:800;font-size:14px}
 .chtz{width:100%;font:inherit;font-weight:800;text-align:left;cursor:pointer;background:#2a1030;border-color:#e100ff}.chtz b{color:#ff7ae6}
 .wabar svg{width:22px;height:22px;flex:none;fill:#25D366}
@@ -372,13 +395,14 @@ body.hasnav .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     <div id="extras"></div>
     <div id="topPoll"></div>
     <div class="hot" id="hot" hidden></div>
-    <input id="q" type="search" placeholder="Search posts" aria-label="Search posts">
+    <input id="q" type="search" placeholder="Search posts" aria-label="Search posts" hidden>
     <div class="arts" id="arts" hidden></div>
     <div class="chips" id="chips" hidden></div>
     <div id="feed"></div>
   </div>
   <div id="vFans" hidden></div>
   <div id="vFriends" hidden></div>
+  <div id="vSearch" hidden></div>
   <div id="vGigs" hidden></div>
   <div id="vChart" hidden></div>
   <div id="vProfile" hidden></div>
@@ -685,6 +709,73 @@ function pollCard(pl){
 }
 
 
+
+// ===== Search page =====
+var sQ="",sTimer=null,sPeople=null;
+function openSearch(q){sQ=q||"";setView("search");setTimeout(function(){var i=$("sq");if(i){i.focus();var n=i.value.length;try{i.setSelectionRange(n,n)}catch(e){}}},60)}
+function recentS(){try{return JSON.parse(ls("gh-recent")||"[]")||[]}catch(e){return[]}}
+function saveRecent(q){q=(q||"").trim();if(q.length<2)return;var r=recentS().filter(function(x){return x.toLowerCase()!==q.toLowerCase()});r.unshift(q);ls("gh-recent",JSON.stringify(r.slice(0,8)))}
+function hl(text,words){
+  var f=document.createDocumentFragment();text=String(text||"");if(!words.length){f.appendChild(document.createTextNode(text));return f}
+  var re=new RegExp("("+words.map(function(w){return w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}).join("|")+")","ig");
+  text.split(re).forEach(function(part,i){if(i%2)f.appendChild(el("mark",null,part));else if(part)f.appendChild(document.createTextNode(part))});return f;
+}
+function postThumb(p){
+  var im=(p.images||[])[0];
+  if(im){var i=document.createElement("img");i.src=im;i.alt="";i.loading="lazy";return i}
+  return el("div","sth",p.fan?"🌟":"🔥");
+}
+function sResult(p,words,rank){
+  var b=el("button","sres");b.type="button";
+  if(rank)b.appendChild(el("span","rk",String(rank)));
+  b.appendChild(postThumb(p));
+  var t=el("span","st");var tt=el("b");tt.appendChild(hl(p.title,words));t.appendChild(tt);
+  t.appendChild(el("small",null,(p.cat||"News")+" · "+new Date(p.ts).toLocaleDateString("en-GB",{day:"numeric",month:"short"})));b.appendChild(t);
+  b.onclick=function(){if(words.length)saveRecent(sQ);goPost(p.id)};return b;
+}
+function renderSearch(){
+  var v=$("vSearch");v.textContent="";
+  var bar=el("div","sbar");var bk=el("button","bk","←");bk.type="button";bk.setAttribute("aria-label","Back to home");bk.onclick=function(){setView("gist")};bar.appendChild(bk);
+  var box=el("div","sbox");box.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>';
+  var inp=el("input");inp.type="search";inp.id="sq";inp.placeholder="Search stories, artists, people…";inp.setAttribute("aria-label","Search");inp.value=sQ;inp.autocomplete="off";inp.enterKeyHint="search";box.appendChild(inp);
+  var cl=el("button","cl","×");cl.type="button";cl.setAttribute("aria-label","Clear search");cl.hidden=!sQ;cl.onclick=function(){sQ="";inp.value="";cl.hidden=true;draw();inp.focus()};box.appendChild(cl);
+  bar.appendChild(box);v.appendChild(bar);
+  var out=el("div");v.appendChild(out);
+  inp.oninput=function(){sQ=inp.value;cl.hidden=!sQ;clearTimeout(sTimer);sTimer=setTimeout(draw,200)};
+  inp.onkeydown=function(e){if(e.key==="Enter"){saveRecent(inp.value);inp.blur()}};
+  function chips(title,items,onPick,clear){
+    if(!items.length)return;var h=el("div","sh");h.appendChild(el("span",null,title));
+    if(clear){var c=el("button",null,"Clear");c.type="button";c.onclick=function(){ls("gh-recent","[]");draw()};h.appendChild(c)}
+    out.appendChild(h);var w=el("div","schips");items.forEach(function(x){var b=el("button",null,x[0]);b.type="button";b.onclick=function(){onPick(x[1])};w.appendChild(b)});out.appendChild(w);
+  }
+  function draw(){
+    out.textContent="";var q=sQ.trim().toLowerCase();
+    if(!q){
+      chips("Recent searches",recentS().map(function(r){return["🕒 "+r,r]}),function(r){sQ=r;inp.value=r;cl.hidden=false;draw()},true);
+      var txt=all.map(function(p){return(p.title||"")+" "+(p.body||"")}).join(" ").toLowerCase();
+      chips("Popular artists",ARTISTS.filter(function(a){return txt.indexOf(a.toLowerCase())>-1}).slice(0,12).map(function(a){return["🎤 "+a,a]}),function(a){sQ=a;inp.value=a;cl.hidden=false;draw()});
+      var cats={};all.forEach(function(p){if(p.cat&&p.status==="live")cats[p.cat]=(cats[p.cat]||0)+1});
+      chips("Browse by topic",Object.keys(cats).sort(function(a,b){return cats[b]-cats[a]}).map(function(c){return[c+" ("+cats[c]+")",c]}),function(c){filter=c;term="";setView("gist");renderChips();render();var f=$("feed");if(f)window.scrollTo({top:f.offsetTop-70})});
+      var hot=all.filter(function(p){return p.status==="live"}).slice().sort(function(a,b){return score(b)-score(a)||b.ts-a.ts}).slice(0,5);
+      if(hot.length){var h=el("div","sh");h.appendChild(el("span",null,"🔥 Trending now"));out.appendChild(h);hot.forEach(function(p,i){out.appendChild(sResult(p,[],i+1))})}
+      return;
+    }
+    var words=q.split(/\s+/).filter(function(w){return w.length>0});
+    var res=all.filter(function(p){if(p.status!=="live")return false;var hay=((p.title||"")+" "+(p.body||"")+" "+(p.cat||"")+" "+(p.by||"")+" "+(p.fan&&p.fan.name||"")).toLowerCase();return words.every(function(w){return hay.indexOf(w)>-1})})
+      .map(function(p){var t=(p.title||"").toLowerCase();var sc=words.reduce(function(a,w){return a+(t.indexOf(w)>-1?3:0)},0)+(t.indexOf(q)>-1?5:0);return{p:p,sc:sc}})
+      .sort(function(a,b){return b.sc-a.sc||b.p.ts-a.p.ts}).map(function(x){return x.p});
+    var ppl=el("div");out.appendChild(ppl);
+    var h=el("div","sh");h.appendChild(el("span",null,"Stories"+(res.length?" ("+res.length+")":"")));out.appendChild(h);
+    if(!res.length)out.appendChild(el("div","snone","No stories match “"+sQ.trim()+"”. Try a different word or an artist's name."));
+    res.slice(0,40).forEach(function(p){out.appendChild(sResult(p,words))});
+    if(CFG&&SES&&q.length>=2){
+      var myQ=q;api("rpc/find_people",{p_q:q}).then(function(r){if(myQ!==sQ.trim().toLowerCase()||!r||!r.length)return;
+        var hh=el("div","sh");hh.appendChild(el("span",null,"People"));ppl.appendChild(hh);r.slice(0,5).forEach(function(x){ppl.appendChild(frRow(x,function(){draw()}))});
+      }).catch(function(){});
+    }
+  }
+  draw();
+}
 // ===== Friends =====
 var friends=[],frLoaded=false,frQ="",frRes=null,frTimer=null;
 function loadFriends(cb){
@@ -897,7 +988,7 @@ function renderArtists(){
   var txt=all.map(function(p){return(p.title||"")+" "+(p.body||"")}).join(" ").toLowerCase();
   var found=ARTISTS.filter(function(a){return txt.indexOf(a.toLowerCase())>-1});
   box.hidden=!found.length;
-  found.forEach(function(a){var b=el("button","art","\ud83c\udfa4 "+a);b.type="button";b.onclick=function(){filter="All";term=a.toLowerCase();$("q").value=a;renderChips();render();window.scrollTo({top:$("feed").offsetTop-80,behavior:"smooth"})};box.appendChild(b)});
+  found.forEach(function(a){var b=el("button","art","\ud83c\udfa4 "+a);b.type="button";b.onclick=function(){openSearch(a);return;filter="All";term=a.toLowerCase();$("q").value=a;renderChips();render();window.scrollTo({top:$("feed").offsetTop-80,behavior:"smooth"})};box.appendChild(b)});
 }
 function makePlayer(emb){
   var pl=el("div","player");pl.hidden=true;
@@ -1091,14 +1182,14 @@ function buildNav(){
   var n=$("bnav");if(!n)return;
   if(!CFG){n.hidden=true;document.body.classList.remove("hasnav");return}
   n.hidden=false;document.body.classList.add("hasnav");n.textContent="";
-  [["home","home","Home",function(){setView("gist")}],["search","search","Search",function(){setView("gist");setTimeout(function(){var q=$("q");if(q){q.scrollIntoView({block:"center"});q.focus()}},50)}],["add","plus","Post",newPost],["friends","addf","Friends",function(){setView("friends")}],["me","user","Profile",function(){if(!SES){needLogin();return}openProfile(SES.user.id)}]].forEach(function(x){
+  [["home","home","Home",function(){setView("gist")}],["search","search","Search",function(){openSearch("")}],["add","plus","Post",newPost],["friends","addf","Friends",function(){setView("friends")}],["me","user","Profile",function(){if(!SES){needLogin();return}openProfile(SES.user.id)}]].forEach(function(x){
     var b=el("button",x[0]==="add"?"add":"");b.type="button";b.setAttribute("data-nav",x[0]);b.setAttribute("aria-label",x[2]);
     var w=el("span",x[0]==="add"?"pl":"");w.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+NAVI[x[1]]+'</svg>';b.appendChild(w);b.appendChild(el("span",null,x[2]));if(x[0]==="friends"){var fbd=el("i","nbd");fbd.id="frBadge";fbd.hidden=true;w.appendChild(fbd)}b.onclick=x[3];n.appendChild(b);
   });
   navMark();friendBadge();
 }
 function navMark(){
-  var m={gist:"home",friends:"friends"};var cur=viewName==="profile"?(profUid&&SES&&SES.user&&profUid===SES.user.id?"me":"friends"):m[viewName];
+  var m={gist:"home",friends:"friends",search:"search"};var cur=viewName==="profile"?(profUid&&SES&&SES.user&&profUid===SES.user.id?"me":"friends"):m[viewName];
   var b=document.querySelectorAll("#bnav button");for(var i=0;i<b.length;i++){if(b[i].getAttribute("data-nav")===cur)b[i].setAttribute("aria-current","true");else b[i].removeAttribute("aria-current")}
 }
 var backTo="gist";
@@ -1358,11 +1449,11 @@ function renderProfile(uid){
 }
 
 function setView(v){
-  viewName=v;
+  viewName=v;document.body.classList.toggle("insearch",v==="search");
   setTimeout(navMark,0);
-  ["gist","fans","friends","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
+  ["gist","search","fans","friends","gigs","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   var tb=document.querySelectorAll("#tabs button");for(var i=0;i<tb.length;i++)tb[i].setAttribute("aria-pressed",String(tb[i].getAttribute("data-v")===v));
-  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 function buildTabs(){
@@ -1643,7 +1734,6 @@ function start(){
   renderWho();buildTabs();buildNav();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();startNotes();
   var wa=$("wach");wa.textContent="";
   if(CFG&&CFG.whatsapp&&!document.querySelector(".wfab")){var wl=el("a","wfab");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wl.setAttribute("aria-label","Join our WhatsApp channel");wl.appendChild(svg("wa"));wl.appendChild(el("span",null,"Join our channel"));document.body.appendChild(wl)}
-  $("q").hidden=!all.length;
   try{
     var qp=new URLSearchParams(location.search);
     if(qp.get("paid")==="gig"&&CFG&&SES){history.replaceState(null,"",location.pathname);toast("Payment received. Your listing will show as Featured within a minute.");setView("gigs");return}
