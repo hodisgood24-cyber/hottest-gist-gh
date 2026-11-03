@@ -1,6 +1,31 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "afestacc-2026-accra",
+    "title": "AFESTACC 2026 heads to Accra from December 9 to 12",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "Mark your calendar, creatives 🎨\n\nGhana will host the African Festival of Arts, Culture and Creatives (AFESTACC) 2026 in Accra from December 9 to 12, alongside Industrial Skills Week Africa. Both gatherings are put together by the Ministry of Tourism, Culture and Creative Arts and the African Union Development Agency (AUDA-NEPAD), and they sit on the official \"December in GH\" calendar.\n\nThe arts side is set to include cultural showcases, exhibitions, fashion, food, investment talks and platforms for young people and women running creative businesses. The main programme runs December 9 to 11, and the event wraps up on December 12 with a public wellness walk.\n\nOrganisers are inviting creatives, industry leaders, investors and members of the African diaspora. A venue has not been announced yet, so stay tuned.\nSource: Pulse Ghana",
+    "ts": 1793710451943,
+    "link": "https://www.pulse.com.gh/story/ghana-host-afestacc-industrial-skills-week-2026-2026110212250373676",
+    "images": [],
+    "pin": false,
+    "status": "live",
+    "eventAt": 1796774400000
+  },
+  {
+    "id": "king-promise-own-lane",
+    "title": "King Promise says his only rival is himself, hints at more music before year end",
+    "cat": "Afrobeats",
+    "by": "News desk",
+    "body": "King Promise says he does not see other artists as competition 🔥\n\nSpeaking on Joy FM's Drive Time, the singer said he stays in his own lane and measures himself against his own progress. He feels fans often stir up rivalries by comparing awards and milestones, even when the artists themselves do not think that way.\n\nHe pointed to Wizkid selling out London's O2 Arena as proof that Ghanaian acts can reach that level too, and said he wants to get there one day. He also spoke warmly about his long friendship with Mr Eazi, as well as his bond with R2Bees and Sarkodie.\n\nOn what is coming, he mentioned new music, videos, an album and his Promise Land event, and teased another song before 2026 ends, with no date yet.\nSource: Pulse Ghana",
+    "ts": 1793710450943,
+    "link": "https://www.pulse.com.gh/story/king-promise-competes-with-himself-wizkid-mr-eazi-2026110209582081680",
+    "images": [],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "martell-swift-academy-accra",
     "title": "Gyakie, M.anifest and Juls to mentor Accra talent at Martell Swift Academy",
     "cat": "Events",
