@@ -618,6 +618,18 @@ body.inchat footer{display:none}
 .vplay audio{width:min(420px,90vw);margin-top:8px}
 
 .cmpkeep{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;font-weight:700;color:var(--muted)}
+
+/* ===== Bell tabs ===== */
+.nptabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 10px;padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:14px}
+.nptabs button{display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:9px 6px;background:none;color:var(--muted);font:inherit;font-weight:800;font-size:14px;cursor:pointer}
+.nptabs button[aria-selected=true]{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.npc{min-width:18px;height:18px;border-radius:99px;background:var(--red);color:#fff;font:800 11px/18px var(--font-body);font-style:normal;text-align:center;padding:0 5px}
+.np .npm{align-items:center}
+.np .npm .nx b{display:block;font-size:15px}
+.np .npm .nx small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.npr{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}.npr small{color:var(--muted);font-size:11px}
+.npact{display:flex;gap:8px;margin-top:12px}.npact .go2{flex:1;margin:0;padding:10px 8px;font-size:14px;text-align:center}
+.npact .go2.alt{background:var(--card);color:var(--text);border:1.5px solid var(--line)}
 </style>
 </head>
 <body>
@@ -1225,9 +1237,41 @@ function followBackRow(p,after){
   w.appendChild(b);r.appendChild(w);return r;
 }
 
+
+// ===== Bell panel tabs: Alerts | Messages =====
+var npTab="alerts",npChats=null;
+function npTabs(p){
+  var t=el("div","nptabs");t.setAttribute("role","tablist");
+  var na=notes.filter(function(x){return!x.read}).length+newStories().length;
+  [["alerts","🔔 Alerts",na],["msgs","💬 Messages",unreadMsgs||0]].forEach(function(k){
+    var b=el("button",null,k[1]);b.type="button";b.setAttribute("role","tab");b.setAttribute("aria-selected",String(npTab===k[0]));
+    if(k[2])b.appendChild(el("i","npc",k[2]>99?"99+":String(k[2])));
+    b.onclick=function(e){e.stopPropagation();npTab=k[0];buildNotes()};t.appendChild(b)});
+  p.appendChild(t);
+}
+function buildMsgTab(p){
+  if(!(CFG&&SES)){p.appendChild(el("div","none","Log in to message your friends."));return}
+  var list=el("div");p.appendChild(list);
+  function draw(){
+    list.textContent="";
+    if(!npChats||!npChats.length){list.appendChild(el("div","none","No messages yet. Add friends, then message them anytime."));}
+    (npChats||[]).slice(0,8).forEach(function(c){
+      var b=el("button","nt npm"+(c.unread?" new":""));b.type="button";b.appendChild(avEl(c,36));
+      var x=el("span","nx");x.appendChild(el("b",null,c.name||"Fan"));x.appendChild(el("small",null,(c.last_mine?"You: ":"")+c.last_body));b.appendChild(x);
+      var r=el("span","npr");r.appendChild(el("small",null,agoTxt(Date.parse(c.last_at))));if(c.unread)r.appendChild(el("i","npc",String(c.unread)));b.appendChild(r);
+      b.onclick=function(){closeNotes();openChat(c.user_id)};list.appendChild(b);
+    });
+    var row=el("div","npact");
+    var all=el("button","go2","Open all messages");all.type="button";all.onclick=function(){closeNotes();setView("messages")};row.appendChild(all);
+    var nw=el("button","go2 alt","✍️ New message");nw.type="button";nw.onclick=function(){closeNotes();setView("friends")};row.appendChild(nw);
+    list.appendChild(row);
+  }
+  if(npChats)draw();else list.appendChild(el("div","none","Loading messages..."));
+  api("rpc/my_chats",{}).then(function(r){npChats=r||[];if(npOpen&&npTab==="msgs")draw()}).catch(function(){if(!npChats){list.textContent="";list.appendChild(el("div","none","Messages aren't ready yet. Run setup-messages.sql in Supabase."))}});
+}
 // ===== Messages (friends only) =====
 var unreadMsgs=0,chats=null,chatUid=null,chatMsgs=[],chatLast=0,chatTimer=null;
-function loadUnread(){if(!(CFG&&SES))return;api("rpc/unread_messages",{}).then(function(n){unreadMsgs=n||0;friendBadge()}).catch(function(){})}
+function loadUnread(){if(!(CFG&&SES))return;api("rpc/unread_messages",{}).then(function(n){unreadMsgs=n||0;friendBadge();badge();if(npOpen&&npTab==="msgs")buildNotes()}).catch(function(){})}
 function openChat(uid){if(viewName!=="chat"&&viewName!=="messages")backTo=viewName;chatUid=uid;chatMsgs=[];chatLast=0;setView("chat")}
 function stopChatPoll(){if(chatTimer){clearInterval(chatTimer);chatTimer=null}}
 function msgTime(d){d=new Date(d);var n=new Date();return d.toDateString()===n.toDateString()?d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})+" "+d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}
@@ -2383,7 +2427,7 @@ function newStories(){var t=seenTs();if(!t)return[];return all.filter(function(p
 function agoTxt(ms){var m=Math.max(1,Math.round((Date.now()-ms)/60000));if(m<60)return m+"m ago";var h=Math.round(m/60);if(h<24)return h+"h ago";var d=Math.round(h/24);return d+"d ago"}
 function badge(){
   var b=$("bell");if(!b)return;
-  var n=notes.filter(function(x){return!x.read}).length+newStories().length;
+  var n=notes.filter(function(x){return!x.read}).length+newStories().length+(unreadMsgs||0);
   var bd=b.querySelector(".bd");
   if(n){if(!bd){bd=el("span","bd");b.appendChild(bd)}var was=bd.textContent;bd.textContent=n>99?"99+":String(n);if(was!==bd.textContent){b.classList.remove("ring");void b.offsetWidth;b.classList.add("ring")}}
   else if(bd)bd.remove();
@@ -2401,7 +2445,7 @@ function noteRow(icon,text,sub,isNew,go){
 }
 function buildNotes(){
   var p=$("np");p.textContent="";
-  p.appendChild(el("h3",null,"Notifications"));
+  npTabs(p);if(npTab==="msgs"){buildMsgTab(p);return}
   if(pushOk()){var pr=el("div","tg");pr.appendChild(el("span",null,"\ud83d\udcf2 Phone alerts for new stories"));var pbt=el("button","go2","\u2026");pbt.type="button";pbt.style.margin="0";pbt.style.padding="6px 12px";pr.appendChild(pbt);p.appendChild(pr);
     pushState().then(function(st){pbt.textContent=st==="on"?"Turn off":st==="blocked"?"Blocked":"Turn on";pbt.disabled=st==="blocked";pbt.onclick=function(){pbt.disabled=true;(st==="on"?pushOff():pushOn()).then(function(){if(npOpen)buildNotes()})}})}
   var ns=newStories(),any=false;
@@ -2417,6 +2461,7 @@ function buildNotes(){
 }
 function openNotes(){
   if(setOpen)closeSettings();
+  npTab=(!notes.some(function(n){return!n.read})&&!newStories().length&&unreadMsgs>0)?"msgs":"alerts";
   npOpen=true;buildNotes();$("np").hidden=false;$("bell").setAttribute("aria-expanded","true");
   ls("gh-seen",String(Date.now()));
   if(notes.some(function(n){return!n.read}))api("rpc/mark_notes_read",{}).catch(function(){});
