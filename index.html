@@ -650,6 +650,9 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+#streakbar{margin:10px 0}.skc{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fdba74;border-radius:16px;padding:10px 12px}
+.skc.done{background:#f0fdf4;border-color:#86efac}.skf{font-size:28px}.skt{flex:1;min-width:0;display:flex;flex-direction:column;font-size:13px;color:#555}.skt b{font-size:15px;color:#111}
+.skb{background:#c8102e;color:#fff;border:0;border-radius:999px;padding:9px 16px;font-weight:700;cursor:pointer}.skb:disabled{opacity:.6}
 .tipamts{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
 .ergrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.erc{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px}.erc.big{grid-column:1/-1;border-color:var(--red)}.erc b{font:400 26px/1.1 var(--font-display)}
 .adpk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
@@ -1103,6 +1106,7 @@ body.biomode main.wrap{max-width:560px}
 <main class="wrap">
   <div id="vGist">
     <div id="stories" hidden aria-label="Stories"></div>
+    <div id="streakbar" hidden></div>
     <div id="adbar" hidden></div>
     <section id="show" class="xp" aria-label="Explore Hottest Gist"></section>
     <div id="wach"></div>
@@ -3281,10 +3285,37 @@ function renderEvents(){
     c.appendChild(b);v.appendChild(c);
   });
 }
+/* ===== Daily check-in streak ===== */
+var STK=null;
+function loadStreak(){
+  var b=$("streakbar");if(!b)return;
+  if(!CFG||!SES){b.hidden=true;return}
+  api("rpc/my_streak",{}).then(function(r){STK=r;drawStreak()}).catch(function(){b.hidden=true});
+}
+function drawStreak(){
+  var b=$("streakbar");if(!b||!STK)return;b.hidden=false;b.textContent="";
+  var c=el("div","skc"+(STK.done?" done":""));
+  c.appendChild(el("div","skf",STK.done?"\ud83d\udd25":"\ud83c\udf81"));
+  var t=el("div","skt");
+  t.appendChild(el("b","",STK.done?STK.streak+"-day streak":"Daily check-in"));
+  t.appendChild(el("span","",STK.done?"Come back tomorrow to keep it going":(STK.streak?"Claim today to reach "+(STK.streak+1)+" days":"Claim points and start a streak")+" \u00b7 "+STK.points+" pts"));
+  c.appendChild(t);
+  if(!STK.done){var g=el("button","skb","Claim");g.type="button";g.onclick=function(){
+    g.disabled=true;
+    api("rpc/daily_checkin",{}).then(function(r){
+      STK={streak:r.streak,done:true,points:r.points,best:r.best};drawStreak();
+      toast("+"+r.today+" points \ud83d\udd25 "+r.streak+"-day streak"+(r.streak%7===0?" \u2014 week bonus!":""));
+      try{GSND&&GSND.play&&GSND.play("win")}catch(e){}
+    }).catch(function(){g.disabled=false;toast("Couldn't check in. Try again.")});
+  };c.appendChild(g)}
+  b.appendChild(c);
+}
 function renderTop(){
   var v=$("vTop");v.textContent="";
   v.appendChild(el("h2","vh","\ud83c\udfc6 Top fans"));
   v.appendChild(el("p","sub","Earn points: visit daily (5), comment (3), vote (2), like or react (1)."));
+  var skb=el("div");v.appendChild(skb);
+  if(SES&&CFG)api("rpc/my_streak",{}).then(function(r){skb.appendChild(el("div","streak","\ud83d\udd25 Streak: "+r.streak+" day"+(r.streak===1?"":"s")+" \u00b7 Best: "+r.best+" \u00b7 "+r.points+" check-in pts"+(r.done?" \u2713":"")))}).catch(function(){});
   var st=streak();v.appendChild(el("div","streak",st?"\ud83d\udd25 Your streak: "+st+" day"+(st===1?"":"s")+" in a row":"Come back tomorrow to start a streak \ud83d\udd25"));
   v.appendChild(el("h2","vh","\u2b50 Top creators"));
   var cbox=el("div");v.appendChild(cbox);
@@ -3743,7 +3774,7 @@ function setView(v){
   setTimeout(navMark,0);syncHash(v);
   ["gist","bio","gold","matchday","match","search","submit","fans","friends","messages","chat","gigs","market","play","movies","earn","ads","tix","chart","profile","events","polls","top","wall","quiz"].forEach(function(n){var e=$("v"+n.charAt(0).toUpperCase()+n.slice(1));if(e)e.hidden=n!==v});
   if($("tabs")&&!$("tabs").hidden)buildTabs();
-  if(v==="gist"){loadStories();loadAds()}if(v==="earn")renderEarn();if(v==="ads")renderAds();if(v==="tix")renderTix();if(v==="movies")renderMovies();if(v!=="play")stopPlay();if(v==="play")renderPlay();if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
+  if(v==="gist"){loadStories();loadAds();loadStreak()}if(v==="earn")renderEarn();if(v==="ads")renderAds();if(v==="tix")renderTix();if(v==="movies")renderMovies();if(v!=="play")stopPlay();if(v==="play")renderPlay();if(v==="market")renderMarket();if(v==="polls")renderPolls();if(v==="wall")loadWall();if(v==="quiz")renderQuiz();if(v==="events")renderEvents();if(v==="top")renderTop();if(v==="fans")renderFans();if(v==="search")renderSearch();if(v==="matchday")renderMatchday();if(v==="gold")renderGold();if(v==="match")renderMatch();if(v!=="match")stopMatchPoll();if(v==="bio")renderBio();if(v==="messages")renderMessages();if(v==="chat")renderChat();if(v!=="chat")stopChatPoll();if(v==="submit")renderSubmit();if(v==="friends")renderFriends();if(v==="gigs")renderGigs();if(v==="chart")renderChart();if(v==="profile")renderProfile(profUid);
   window.scrollTo({top:0});
 }
 var TCATS=[
