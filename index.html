@@ -650,6 +650,17 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+.glob{display:grid;gap:12px;margin:10px 0}
+.gcard{border-radius:18px;overflow:hidden;background:var(--card);border:1.5px solid var(--line)}
+.gart{height:110px;background:linear-gradient(135deg,var(--ga,#444),var(--gb,#222))}.gart svg{width:100%;height:100%;display:block}
+.gbody{padding:12px 14px 14px}.ghd{display:flex;align-items:center;gap:8px;justify-content:space-between}.ghd h3{margin:0;font-size:18px}
+.gtag{font-size:11px;font-weight:800;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap}
+.gdesc{color:var(--muted);font-size:14px;margin:6px 0 8px}
+.gchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.gchips span{font-size:12px;font-weight:700;background:var(--bg);border-radius:99px;padding:4px 10px}
+.gstats{font-size:13px;font-weight:700;margin:4px 0 10px}
+.gplay{width:100%;background:var(--red);color:#fff;border:0;border-radius:12px;padding:11px;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
+.gsoon{display:flex;align-items:center;gap:12px;border-style:dashed;opacity:.85}.gsoon .gart{width:90px;height:auto;min-height:90px;display:flex;align-items:center;justify-content:center;font-size:40px;background:var(--bg)}.gsoon .gbody{padding:12px}
+
 .gbub{margin-top:6px;background:var(--red);color:#fff;border:0;border-radius:99px;padding:7px 14px;font:inherit;font-weight:800;cursor:pointer}.gbub:disabled{opacity:.6}
 .pen{position:relative}.psnd{position:absolute;right:2px;top:-4px;z-index:2;background:none;border:0;font-size:20px;cursor:pointer}
 
@@ -2490,19 +2501,33 @@ var DIRN=["Left","Centre","Right"],DIRX=[17,50,83];
 function stopPlay(){clearInterval(playTimer);playTimer=null;clearInterval(playListT);playListT=null}
 function pName(st,i){return st["p"+i+"_name"]||"Friend"}
 function pAv(st,i,sz){return avEl({name:pName(st,i),avatar:st["p"+i+"_avatar"]},sz)}
+var GAMES=[{kind:"penalty",icon:"⚽",title:"Penalty shootout",tag:"2 players",c1:"#1b5e20",c2:"#2e7d32",desc:"Five kicks each. Pick where to shoot or where to dive. Nobody sees the other's choice until both have picked. Most goals wins.",chips:["👥 Friends only","⏱ About 3 min","🔊 Sound"],
+ art:'<svg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="gs" width="40" height="120" patternUnits="userSpaceOnUse"><rect width="20" height="120" fill="#2e7d32"/><rect x="20" width="20" height="120" fill="#2a7330"/></pattern></defs><rect width="320" height="120" fill="url(#gs)"/><rect x="95" y="14" width="130" height="64" fill="none" stroke="#fff" stroke-width="4"/><path d="M95 14l130 64M225 14L95 78" stroke="rgba(255,255,255,.25)" stroke-width="1"/><circle cx="160" cy="98" r="3" fill="#fff"/><text x="160" y="62" font-size="34" text-anchor="middle">🧤</text><text x="215" y="108" font-size="26" text-anchor="middle">⚽</text></svg>'}];
 function renderPlay(){
   var v=$("vPlay");stopPlay();v.textContent="";
   if(!(CFG&&SES)){v.appendChild(el("div","empty","Log in to play with friends."));return}
   if(playId){roomView(v,playId);return}
   v.appendChild(el("h2","vh","🎮 Play with a friend"));
   v.appendChild(el("p","sub","Challenge a friend. You each play on your own phone, wherever you are."));
-  var gc=el("div","fc");gc.appendChild(el("h3",null,"⚽ Penalty shootout"));gc.appendChild(el("p","none","Five kicks each. Pick where to shoot, or where to dive. Nobody sees the other's choice until both have picked. Most goals wins."));v.appendChild(gc);
+  var gl=el("div","glob");v.appendChild(gl);var statEl={};
+  GAMES.forEach(function(g){
+    var c=el("article","gcard");c.style.setProperty("--ga",g.c1);c.style.setProperty("--gb",g.c2);
+    var art=el("div","gart");art.innerHTML=g.art;c.appendChild(art);
+    var bd=el("div","gbody");var hd=el("div","ghd");hd.appendChild(el("h3",null,g.icon+" "+g.title));hd.appendChild(el("span","gtag",g.tag));bd.appendChild(hd);
+    bd.appendChild(el("p","gdesc",g.desc));
+    var ch=el("div","gchips");g.chips.forEach(function(t){ch.appendChild(el("span",null,t))});bd.appendChild(ch);
+    var st=el("div","gstats");st.textContent="Loading your record…";statEl[g.kind]=st;bd.appendChild(st);
+    var pb=el("button","gplay","🎮 Challenge a friend");pb.type="button";pb.onclick=function(){v.querySelector(".gfl").scrollIntoView({behavior:"smooth",block:"start"})};bd.appendChild(pb);
+    c.appendChild(bd);gl.appendChild(c);
+  });
+  var soon=el("div","gcard gsoon");soon.appendChild(el("div","gart gq","❓"));var sb2=el("div","gbody");sb2.appendChild(el("h3",null,"More games coming"));sb2.appendChild(el("p","gdesc","New games for you and your friends are on the way. Check back soon."));soon.appendChild(sb2);gl.appendChild(soon);
   var mine=el("div");v.appendChild(el("h3","vh2","Your games"));v.appendChild(mine);
-  var fl=el("div");v.appendChild(el("h3","vh2","Challenge a friend"));v.appendChild(fl);
+  var fl=el("div","gfl");v.appendChild(el("h3","vh2","Challenge a friend"));v.appendChild(fl);
   function openR(id){playId=id;playLen=null;playSig="";renderPlay()}
   function drawGames(){
     api("rpc/game_list",{}).then(function(rows){
       rows=rows||[];mine.textContent="";
+      GAMES.forEach(function(g){var e2=statEl[g.kind];if(!e2)return;var fin=rows.filter(function(r){return r.kind===g.kind&&r.status==="done"}),w=fin.filter(function(r){return r.winner===SES.user.id}).length,d=fin.filter(function(r){return !r.winner}).length;e2.textContent=fin.length?("Last 2 days:  🏆 "+w+" won  ·  "+(fin.length-w-d)+" lost  ·  "+d+" draw"):"No games yet. Be the first to play!"});
       if(!rows.length){mine.appendChild(el("div","none","No games yet. Challenge a friend below."));return}
       rows.forEach(function(g){
         var me=g.mine,opp=me===1?2:1,r=el("div","lbr");r.style.cursor="pointer";
