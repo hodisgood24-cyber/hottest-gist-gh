@@ -659,6 +659,15 @@ body.inchat footer{display:none}
 .bub.me .vnb i{background:#fff6}.bub.me .vnb i.on{background:#fff}.bub.me .vnt,.bub.me .vsend{color:#fffc}
 .avw{position:relative;display:inline-flex;flex:none}.pdot{position:absolute;right:0;bottom:0;width:28%;height:28%;min-width:9px;min-height:9px;border-radius:50%;background:#25d366;border:2px solid var(--bg);display:none}.avw.on .pdot{display:block}
 .chwt{display:flex;flex-direction:column;min-width:0;line-height:1.2}.chseen{font-size:12px;font-weight:600;color:var(--muted)}.chseen.on{color:#25a85a}.chseen:empty{display:none}
+.msgear{margin-left:auto;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;cursor:pointer;padding:0}
+.msgear svg{width:22px;height:22px;fill:none;stroke:var(--text);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mssec{margin:14px 0 4px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.msrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.msx{flex:1;min-width:0;display:flex;flex-direction:column}.msx small{color:var(--muted);font-weight:500;margin-top:2px;line-height:1.35}
+.msw{appearance:none;-webkit-appearance:none;flex:none;width:46px;height:28px;border-radius:999px;background:#8884;position:relative;cursor:pointer;transition:background .15s;border:0;margin:0}
+.msw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px #0005}
+.msw:checked{background:#25d366}.msw:checked::after{transform:translateX(18px)}.msw:disabled{opacity:.5}
+body.mtxt-s .bub{font-size:14px}body.mtxt-l .bub{font-size:18px}
 .pushask{display:block;width:100%;margin:6px 0 10px;padding:12px 14px;border-radius:14px;border:1.5px dashed var(--red);background:var(--card);color:var(--text);font:inherit;font-weight:700;cursor:pointer;text-align:left}
 .hidon{display:block;margin:6px 4px 10px;font-size:13px;color:var(--muted)}
 .vns{flex:none;border:0;border-radius:999px;background:#0002;color:#333;font:700 11px/1 system-ui;padding:6px 7px;cursor:pointer}.vns.fast{background:#c8102e;color:#fff}.bub.me .vns{background:#fff3;color:#fff}.bub.me .vns.fast{background:#fff;color:#c8102e}.vnb{touch-action:none}
@@ -1782,10 +1791,9 @@ function stopChatPoll(){if(chatTimer){clearInterval(chatTimer);chatTimer=null}}
 function msgTime(d){d=new Date(d);var n=new Date();return d.toDateString()===n.toDateString()?d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})+" "+d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}
 function renderMessages(){
   var v=$("vMessages");v.textContent="";
-  var bar=el("div","ptop");var bk=el("button","bk","\u2190");bk.type="button";bk.setAttribute("aria-label","Back to friends");bk.onclick=function(){setView("friends")};bar.appendChild(bk);bar.appendChild(el("b",null,"\ud83d\udcac Messages"));v.appendChild(bar);
+  var bar=el("div","ptop");var bk=el("button","bk","\u2190");bk.type="button";bk.setAttribute("aria-label","Back to friends");bk.onclick=function(){setView("friends")};bar.appendChild(bk);bar.appendChild(el("b",null,"\ud83d\udcac Messages"));var gr=el("button","msgear");gr.type="button";gr.setAttribute("aria-label","Message settings");gr.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';gr.onclick=msgSettings;bar.appendChild(gr);v.appendChild(bar);
   if(!(CFG&&SES)){v.appendChild(loginBox("Log in to message your friends."));return}
-  var hl=el("label","hidon");var hc=document.createElement("input");hc.type="checkbox";hc.checked=!hideOn();hl.appendChild(hc);hl.appendChild(document.createTextNode(" Show when I'm online"));
-  hc.onchange=function(){try{localStorage.setItem("gh-hideon",hc.checked?"0":"1")}catch(e){}presPing();toast(hc.checked?"Friends can see when you're online":"Your online status is hidden")};v.appendChild(hl);
+
   var pb=el("div");v.appendChild(pb);
   pushState().then(function(st){if(st==="off"||(st==="none"&&/iphone|ipad|ipod/i.test(navigator.userAgent))){
     var bt=el("button","pushask","\ud83d\udd14 Get a notification when a friend messages you");bt.type="button";
@@ -1895,7 +1903,7 @@ function renderChat(){
   function swap(){var has=!!ta.value.trim();sb.hidden=!has;mic.hidden=has}
   swap();
   ta.oninput=function(){ta.style.height="auto";ta.style.height=Math.min(140,ta.scrollHeight)+"px";swap()};
-  ta.onkeydown=function(e){if(e.key==="Enter"&&!e.shiftKey&&window.matchMedia("(hover:hover)").matches){e.preventDefault();f.requestSubmit?f.requestSubmit():f.onsubmit(e)}};
+  ta.onkeydown=function(e){if(e.key==="Enter"&&!e.shiftKey&&window.matchMedia("(hover:hover)").matches&&ls("gh-ents")!=="0"){e.preventDefault();f.requestSubmit?f.requestSubmit():f.onsubmit(e)}};
   var lastDay="";
   function bubble(m){
     var d=new Date(m.created_at).toDateString(),newDay=d!==lastDay;if(newDay){lastDay=d;box.appendChild(el("div","chday",new Date(m.created_at).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})))}
@@ -1954,7 +1962,7 @@ function renderChat(){
     api("rpc/chat_with",{p_user:uid,p_after:after}).then(function(r){
       r=r||[];var fresh=[];r.forEach(function(m){if(m.id>chatLast)fresh.push(m);else if(m.mine&&m.read_at){var cm=chatMsgs.filter(function(x){return x.id===m.id})[0];if(cm&&!cm.read_at){cm.read_at=m.read_at;var t=box.querySelector('[data-tk="'+m.id+'"]');if(t){t.textContent="\u2713\u2713";t.classList.add("seen");t.setAttribute("aria-label","Seen")}}}});r=fresh;
       if(first){box.textContent="";if(!r.length)box.appendChild(el("div","snone","Say hi \ud83d\udc4b Your messages are private between you and "+(c.name||"your friend")+"."))}
-      if(r.length){var stick=first||atBottom();if(first===false&&box.querySelector(".snone"))box.textContent="";r.forEach(function(m){chatMsgs.push(m);bubble(m)});chatLast=r[r.length-1].id;if(stick)down();
+      if(r.length){var stick=first||atBottom();if(first===false&&box.querySelector(".snone"))box.textContent="";r.forEach(function(m){chatMsgs.push(m);bubble(m)});chatLast=r[r.length-1].id;if(stick)down();if(!first&&r.some(function(m){return !m.mine}))GSND.ping("msg");
         if(r.some(function(m){return !m.mine}))api("rpc/mark_chat_read",{p_user:uid}).then(loadUnread).catch(function(){})}
       pullRx();
     }).catch(function(e){if(first){box.textContent="";box.appendChild(el("div","snone","Messages aren't ready yet. Did you run setup-messages.sql?"))}});
@@ -1965,7 +1973,7 @@ function renderChat(){
     else tmp.appendChild(el("span",null,{image:"\ud83d\udcf7 Sending photo\u2026",video:"\ud83c\udfac Sending video\u2026"}[kind]));
     box.appendChild(tmp);down();
     var up=kind==="image"?shrinkImg(blobOrFile,1600).then(function(b){return upFan(b,"jpg","image/jpeg","chat-")}):upFan(blobOrFile,ext,ct,pre);
-    up.then(function(u){return api("rpc/send_message",{p_to:uid,p_body:caption||"",p_kind:kind,p_media:u})}).then(function(){tmp.remove();note.hidden=true;pull(false)})
+    up.then(function(u){return api("rpc/send_message",{p_to:uid,p_body:caption||"",p_kind:kind,p_media:u})}).then(function(){GSND.ping("sent");tmp.remove();note.hidden=true;pull(false)})
       .catch(function(er){tmp.remove();note.hidden=false;var d=String(er.detail||er.message||"");note.textContent=/friends/.test(d)?d:/kind|media|p_kind|function/i.test(d)?"Photos, videos and voice notes need setup-chat-media.sql in Supabase.":"Couldn't send. Check your connection and try again."});
   }
   function preview(fl){
@@ -2015,7 +2023,7 @@ function renderChat(){
   mic.oncontextmenu=function(e){e.preventDefault()};
   rx.onclick=function(){recStop(true)};rs.onclick=function(){recStop(false)};
   f.onsubmit=function(e){e&&e.preventDefault&&e.preventDefault();var t=ta.value.trim();if(!t)return;sb.disabled=true;
-    api("rpc/send_message",{p_to:uid,p_body:t}).then(function(){ta.value="";ta.style.height="auto";swap();note.hidden=true;pull(false);ta.focus()}).catch(function(er){note.hidden=false;note.textContent=er.detail||"Couldn't send. Try again."}).then(function(){sb.disabled=false})};
+    api("rpc/send_message",{p_to:uid,p_body:t}).then(function(){GSND.ping("sent");ta.value="";ta.style.height="auto";swap();note.hidden=true;pull(false);ta.focus()}).catch(function(er){note.hidden=false;note.textContent=er.detail||"Couldn't send. Try again."}).then(function(){sb.disabled=false})};
   pull(true);
   var pc=0;presFetch();chatTimer=setInterval(function(){if(!document.hidden){pull(false);if(++pc%5===0)presFetch()}},4000);
   if(!frLoaded)loadFriends(function(){if(frState(uid)!=="friends"){note.hidden=false;note.textContent="You can only message friends. Add "+(c.name||"them")+" as a friend first."}});
@@ -2713,9 +2721,11 @@ var GSND=(function(){
     turn:function(){tone(880,0,.1,"sine",.18);tone(1175,.1,.14,"sine",.18)},
     win:function(){[523,659,784,1047].forEach(function(f,i){tone(f,i*.14,.3,"triangle",.28)});noise(.3,1.2,.2,2800)},
     lose:function(){tone(392,0,.25,"sawtooth",.18);tone(330,.22,.25,"sawtooth",.18);tone(262,.44,.45,"sawtooth",.18)},
-    whistle:function(){tone(2600,0,.35,"sine",.18,2400);tone(2600,.4,.35,"sine",.18,2300)}
+    whistle:function(){tone(2600,0,.35,"sine",.18,2400);tone(2600,.4,.35,"sine",.18,2300)},
+    msg:function(){tone(880,0,.09,"sine",.16);tone(1319,.09,.16,"sine",.16)},
+    sent:function(){tone(660,0,.07,"sine",.12,990)}
   };
-  return{play:function(n){if(on()&&S[n])try{S[n]()}catch(e){}},on:on,set:function(v){try{ls("gh-gsnd",v?"1":"0")}catch(e){}}}
+  return{ping:function(n){if(ls("gh-msnd")!=="0"&&S[n])try{S[n]()}catch(e){}},play:function(n){if(on()&&S[n])try{S[n]()}catch(e){}},on:on,set:function(v){try{ls("gh-gsnd",v?"1":"0")}catch(e){}}}
 })();
 function roomView(v,gid,o){
   o=o||{};var sig0="",len0=null,tm=null,sigTurn=0,doneSnd=false;
@@ -3319,6 +3329,29 @@ function renderEvents(){
     };b.appendChild(ic);
     var l=safeLink(p.link);if(l){var t2=el("a",null,linkLabel(l));t2.href=l;t2.target="_blank";t2.rel="noopener noreferrer";b.appendChild(t2)}
     c.appendChild(b);v.appendChild(c);
+  });
+}
+/* ===== Message settings ===== */
+function mflag(k,def){var v=ls(k);return v==null||v===""?def:v==="1"}
+function applyMsgPrefs(){var b=document.body;b.classList.remove("mtxt-s","mtxt-l");var t=ls("gh-mtxt");if(t==="s")b.classList.add("mtxt-s");else if(t==="l")b.classList.add("mtxt-l")}
+function msgSettings(){
+  sheet(function(c,close){
+    c.appendChild(el("h3",null,"\u2699\ufe0f Message settings"));
+    function row(t,d,on,set){var r=el("label","msrow");var x=el("span","msx");x.appendChild(el("b",null,t));if(d)x.appendChild(el("small",null,d));r.appendChild(x);
+      var cb=document.createElement("input");cb.type="checkbox";cb.className="msw";cb.checked=!!on;cb.onchange=function(){set(cb.checked,cb)};r.appendChild(cb);c.appendChild(r);return cb}
+    c.appendChild(el("div","mssec","Privacy"));
+    row("Show when I'm online","Friends see a green dot and your last seen. Turn off to hide both.",!hideOn(),function(v){ls("gh-hideon",v?"0":"1");presPing();toast(v?"Friends can see when you're online":"Your online status is hidden")});
+    c.appendChild(el("div","mssec","Alerts and sounds"));
+    var pc=row("Phone alerts for new messages","Get a notification when a friend messages you and you're not on the site.",false,function(v,cb){cb.disabled=true;(v?pushOn():pushOff().then(function(){return false})).then(function(ok){cb.checked=v?!!ok:false;cb.disabled=false})});
+    pushState().then(function(st){if(st==="on")pc.checked=true;else if(st==="blocked"||st==="none"){pc.disabled=st==="blocked";pc.parentNode.querySelector("small").textContent=st==="blocked"?"Blocked in your browser settings. Allow notifications for this site first.":"On iPhone, install the app first (Share, then Add to Home Screen)."}});
+    row("Message sounds","A soft sound when you send or receive a message in a chat.",mflag("gh-msnd",true),function(v){ls("gh-msnd",v?"1":"0");if(v)GSND.ping("msg")});
+    row("Game sounds","Sounds in Penalty Shootout and Hide and Seek.",GSND.on(),function(v){GSND.set(v)});
+    c.appendChild(el("div","mssec","Chat"));
+    row("Enter sends the message","On computers, press Enter to send. Turn off to use Enter for a new line.",mflag("gh-ents",true),function(v){ls("gh-ents",v?"1":"0")});
+    var tr=el("div","msrow");var tx=el("span","msx");tx.appendChild(el("b",null,"Text size"));tr.appendChild(tx);
+    var sel=el("select");[["s","Small"],["m","Normal"],["l","Large"]].forEach(function(o){var op=el("option",null,o[1]);op.value=o[0];sel.appendChild(op)});sel.value=ls("gh-mtxt")||"m";
+    sel.onchange=function(){ls("gh-mtxt",sel.value);applyMsgPrefs()};tr.appendChild(sel);c.appendChild(tr);
+    var ok=el("button",null,"Done");ok.type="button";ok.onclick=close;var w=el("div","evb");w.appendChild(ok);c.appendChild(w);
   });
 }
 /* ===== Online / last seen ===== */
@@ -4304,7 +4337,7 @@ function startNotes(){
 function start(){
   started=true;routing=true;setTimeout(function(){routing=false},0);
   document.body.classList.remove("locked");$("gate").hidden=true;
-  renderWho();buildTabs();buildNav();buildShowcase();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();loadMusicExtras();startNotes();presStart();presWatch();
+  renderWho();buildTabs();buildNav();buildShowcase();setView(viewName);renderChips();render();renderPolls();loadCounts();if(CFG)loadRemote();renderExtras();loadMusicExtras();startNotes();presStart();presWatch();applyMsgPrefs();
   var wa=$("wach");wa.textContent="";
   if(CFG&&CFG.whatsapp&&!document.querySelector(".wfab")){var wl=el("a","wfab");wl.href=CFG.whatsapp;wl.target="_blank";wl.rel="noopener noreferrer";wl.setAttribute("aria-label","Join our WhatsApp channel");wl.appendChild(svg("wa"));wl.appendChild(el("span",null,"Join our channel"));document.body.appendChild(wl)}
   try{
