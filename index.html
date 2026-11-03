@@ -649,6 +649,17 @@ body.inchat footer{display:none}
 .bvid{display:block;width:100%;max-height:420px;border-radius:14px;background:#000}
 .baud{display:block;width:250px;max-width:100%;margin:4px}
 .bub.sending{opacity:.75;padding:10px 14px}
+
+/* ===== Chat photo/video preview with caption ===== */
+.cpv{position:fixed;inset:0;z-index:92;background:#070707;color:#fff;display:flex;flex-direction:column;padding:max(10px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px))}
+.cpvtop{display:flex;align-items:center;gap:12px;padding:4px 0 10px}
+.cpvtop b{flex:1;min-width:0;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cpvch{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:999px;padding:8px 14px;font:inherit;font-weight:800;cursor:pointer}
+.cpv .phstage video,.cpv .phstage img{max-width:100%;max-height:100%;border-radius:12px;object-fit:contain}
+.cpvbot{display:flex;gap:8px;align-items:flex-end;padding:10px 0 calc(12px + env(safe-area-inset-bottom,0px))}
+.cpvbot textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:16px;line-height:1.4;padding:11px 14px;border-radius:22px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;max-height:120px}
+.cpvbot textarea::placeholder{color:rgba(255,255,255,.6)}
+.cpvbot textarea:focus{outline:none;border-color:var(--red)}
 </style>
 </head>
 <body>
@@ -1363,11 +1374,29 @@ function renderChat(){
     up.then(function(u){return api("rpc/send_message",{p_to:uid,p_body:caption||"",p_kind:kind,p_media:u})}).then(function(){tmp.remove();note.hidden=true;pull(false)})
       .catch(function(er){tmp.remove();note.hidden=false;var d=String(er.detail||er.message||"");note.textContent=/friends/.test(d)?d:/kind|media|p_kind|function/i.test(d)?"Photos, videos and voice notes need setup-chat-media.sql in Supabase.":"Couldn't send. Check your connection and try again."});
   }
-  ab.onclick=function(){var fi=document.createElement("input");fi.type="file";fi.accept="image/*,video/*";fi.onchange=function(){var fl=fi.files[0];if(!fl)return;
-    if(/^video\//.test(fl.type)){if(fl.size>50*1024*1024){note.hidden=false;note.textContent="That video is over 50 MB. Trim it and try again.";return}
-      var ext=/webm$/i.test(fl.name)?"webm":/mov$/i.test(fl.name)||/quicktime/.test(fl.type)?"mov":"mp4";sendMedia("video",fl,ext,fl.type||"video/mp4","chat-",ta.value.trim())}
-    else sendMedia("image",fl,"jpg","image/jpeg","chat-",ta.value.trim());
-    ta.value="";swap()};fi.click()};
+  function preview(fl){
+    var isV=/^video\//.test(fl.type);
+    if(isV&&fl.size>50*1024*1024){note.hidden=false;note.textContent="That video is over 50 MB. Trim it and try again.";return}
+    var url=URL.createObjectURL(fl);
+    var m=el("div","cpv");m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","Send "+(isV?"video":"photo"));
+    var top=el("div","cpvtop");var cx=el("button","phx","\u00d7");cx.type="button";cx.setAttribute("aria-label","Cancel");top.appendChild(cx);top.appendChild(el("b",null,"Send to "+(nm.textContent||"your friend")));
+    var ch=el("button","cpvch","Change");ch.type="button";top.appendChild(ch);m.appendChild(top);
+    var stage=el("div","phstage cov");var mm;if(isV){mm=document.createElement("video");mm.src=url;mm.controls=true;mm.playsInline=true;mm.autoplay=true;mm.muted=true}else{mm=document.createElement("img");mm.src=url;mm.alt="Photo to send"}stage.appendChild(mm);m.appendChild(stage);
+    var bot=el("div","cpvbot");var cap=el("textarea");cap.rows=1;cap.maxLength=1000;cap.placeholder="Add a caption\u2026";cap.setAttribute("aria-label","Caption");cap.value=ta.value.trim();
+    var go=el("button","chsend");go.type="button";go.setAttribute("aria-label","Send");go.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8z"/></svg>';
+    bot.appendChild(cap);bot.appendChild(go);m.appendChild(bot);
+    cap.oninput=function(){cap.style.height="auto";cap.style.height=Math.min(120,cap.scrollHeight)+"px"};
+    function close(){URL.revokeObjectURL(url);m.remove();document.removeEventListener("keydown",esc);document.body.style.overflow=""}
+    function esc(e){if(e.key==="Escape")close()}
+    cx.onclick=close;ch.onclick=function(){close();pick()};
+    go.onclick=function(){var t=cap.value.trim();close();ta.value="";ta.style.height="auto";swap();
+      if(isV){var ext=/webm$/i.test(fl.name)?"webm":/mov$/i.test(fl.name)||/quicktime/.test(fl.type)?"mov":"mp4";sendMedia("video",fl,ext,fl.type||"video/mp4","chat-",t)}
+      else sendMedia("image",fl,"jpg","image/jpeg","chat-",t)};
+    cap.onkeydown=function(e){if(e.key==="Enter"&&!e.shiftKey&&window.matchMedia("(hover:hover)").matches){e.preventDefault();go.click()}};
+    document.addEventListener("keydown",esc);document.body.style.overflow="hidden";document.body.appendChild(m);setTimeout(function(){cap.focus()},150);
+  }
+  function pick(){var fi=document.createElement("input");fi.type="file";fi.accept="image/*,video/*";fi.onchange=function(){var fl=fi.files[0];if(fl)preview(fl)};fi.click()}
+  ab.onclick=pick;
   var mrec=null,mchunks=[],mtimer=null,msecs=0,mtype="",mcancel=false;
   function recStop(cancel){mcancel=!!cancel;if(mrec&&mrec.state==="recording")mrec.stop()}
   mic.onclick=function(){
