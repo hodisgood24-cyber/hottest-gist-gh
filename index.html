@@ -3595,7 +3595,7 @@ function callUser(uid,name,avatar,kind){
     C.stream=stream;var pc=callPc();
     return pc.createOffer().then(function(o){return pc.setLocalDescription(o)}).then(function(){return callGather(pc)}).then(function(){
       return api("rpc/call_start",{p_to:uid,p_kind:kind,p_offer:JSON.stringify(pc.localDescription)})}).then(function(id){
-      C.id=id;C.sendIce=true;C.ui.st.textContent="Calling…";ringOn("back");C.poll=setInterval(callPollState,1200);
+      C.id=id;C.sendIce=true;C.ui.st.textContent=isOn(uid)?"Ringing…":"Calling…";api("rpc/presence_get",{p_users:[uid]}).then(function(r){(r||[]).forEach(function(x){PRES[x.user_id]=Date.parse(x.seen_at)});if(CALL===C&&!C.gotAns)C.ui.st.textContent=isOn(uid)?"Ringing…":"Calling…"}).catch(function(){});ringOn("back");C.poll=setInterval(callPollState,1200);
       setTimeout(function(){if(CALL===C&&!C.gotAns){api("rpc/call_end",{p_id:C.id}).catch(function(){});toast("No answer");callClose()}},50000)});
   }).catch(function(e){var d=String(e&&(e.detail||e.message||e.name)||"");toast(/denied|permission|NotAllowed/i.test(d)?"Allow the microphone (and camera) to make calls.":/friends/.test(d)?"You can only call your friends.":/busy/.test(d)?"They're on another call.":/function|call_start/i.test(d)?"Calls need setup-calls.sql in Supabase.":"Couldn't start the call. Try again.");callHang(false)});
 }
