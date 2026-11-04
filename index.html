@@ -222,7 +222,7 @@ body.locked.hasnav{padding-left:0!important;padding-bottom:0!important}
 .gc .gbtn:hover{box-shadow:0 4px 14px rgba(0,0,0,.18)}
 /* Bible */
 .bhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.bhead .vh{margin:0}
-.bvbar{display:flex;gap:6px;margin:8px 0}
+.bvbar{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
 .bsrch{display:flex;gap:8px;margin:10px 0}.bsrch input{flex:1;min-width:0;font:inherit;font-size:16px;padding:12px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--text)}
 .bsrch button{border:0;border-radius:999px;background:var(--red);color:var(--on-red);font:inherit;font-weight:800;padding:0 20px;cursor:pointer}
 .bvotd{margin:12px 0;padding:16px;border-radius:18px;background:linear-gradient(135deg,#7c5a1e,#3d2a0b);color:#fff}
@@ -2957,7 +2957,7 @@ function renderBible(){
   }).catch(function(){v.appendChild(el("div","none","The Bible couldn't load. Check your connection and try again."))});
 }
 function bibVerBar(v,rerender){
-  var bar=el("div","bvbar");[["kjv","KJV"],["web","WEB"]].forEach(function(x){var b=el("button","chip",x[1]);b.type="button";b.setAttribute("aria-pressed",String(BIB.ver===x[0]));b.title=x[0]==="kjv"?"King James Version":"World English Bible (modern English)";b.onclick=function(){BIB.ver=x[0];ls("gh-bver",x[0]);rerender()};bar.appendChild(b)});
+  var bar=el("div","bvbar");[["kjv","KJV","King James Version (1611)"],["web","WEB","World English Bible, modern English"],["asv","ASV","American Standard Version (1901)"],["ylt","YLT","Young's Literal Translation (1898), word for word"]].forEach(function(x){var b=el("button","chip",x[1]);b.type="button";b.setAttribute("aria-pressed",String(BIB.ver===x[0]));b.title=x[2];b.onclick=function(){BIB.ver=x[0];ls("gh-bver",x[0]);rerender()};bar.appendChild(b)});
   return bar;
 }
 function bibHome(v,books){
@@ -2975,7 +2975,7 @@ function bibHome(v,books){
   var last=ls("gh-bread");if(last){var p=last.split(":"),lb=+p[0],lc=+p[1];if(books[lb]){var cb=el("button","bcont","▶ Continue reading: "+books[lb].n+" "+lc);cb.type="button";cb.onclick=function(){BIB.b=lb;BIB.c=lc;BIB.mode="read";BIB.sel={};renderBible()};v.appendChild(cb)}}
   [["Old Testament",0,39],["New Testament",39,66]].forEach(function(g){v.appendChild(el("h3","bsec",g[0]));var grid=el("div","bgrid");
     for(var i=g[1];i<g[2];i++)(function(i){var b=el("button","bbk",books[i].n);b.type="button";b.onclick=function(){BIB.b=i;BIB.mode="chap";renderBible()};grid.appendChild(b)})(i);v.appendChild(grid)});
-  v.appendChild(el("p","sub","KJV: King James Version. WEB: World English Bible, in modern English. Both are free to use. Twi, Ga and Ewe Bibles belong to the Bible Society of Ghana, so we can't copy them here, but you can read them in the free YouVersion app."));
+  v.appendChild(el("p","sub","KJV: King James Version. WEB: World English Bible, in modern English. ASV: American Standard Version. YLT: Young's Literal Translation, close to the original word order. All are free to use. Twi, Ga and Ewe Bibles belong to the Bible Society of Ghana, so we can't copy them here, but you can read them in the free YouVersion app."));
 }
 function bibChaps(v,books){
   var bk=books[BIB.b];var bar=el("div","ptop");var back=el("button","bk","←");back.type="button";back.setAttribute("aria-label","Back to all books");back.onclick=function(){BIB.mode="home";renderBible()};bar.appendChild(back);bar.appendChild(el("b",null,bk.n));v.appendChild(bar);
