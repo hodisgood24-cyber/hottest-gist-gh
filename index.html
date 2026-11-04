@@ -215,6 +215,11 @@ body.locked.hasnav{padding-left:0!important;padding-bottom:0!important}
 .gc .go{border-radius:999px;padding:15px;font-size:16px;box-shadow:0 8px 20px -8px var(--red)}
 .gc .pwrap{position:relative}.gc .pwrap input{padding-right:48px}
 .gc .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer;color:var(--muted);text-decoration:none}.gc .eye svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.gc .eye.on{color:var(--red)}
+.gc .eye{border-radius:50%;transition:background .12s,color .12s,transform .12s}
+.gc .eye:hover,.gc .eye:focus-visible{background:rgba(206,17,38,.14);color:var(--red);transform:translateY(-50%) scale(1.12);outline:0}
+.gc .eye:active{transform:translateY(-50%) scale(.94)}
+.gc .go{transition:filter .12s,transform .12s}.gc .go:hover{filter:brightness(1.08)}.gc .go:active{transform:scale(.98)}
+.gc .gbtn:hover{box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .gc .fgrow{display:flex;justify-content:flex-end;margin:-4px 0 -2px}.gc .fgrow .lnk{font-size:14px;text-decoration:none;padding:0}
 .gc .or{margin:18px 0 12px}
 .gc .gbtn{border-radius:999px;padding:13px}
@@ -1329,9 +1334,9 @@ function showGate(mode,note){
   var em=recovery?null:field("email","Email","email");
   var pw=magic?null:field("password",recovery?"New password":(signup?"Create a password (6+ characters)":"Password"),signup||recovery?"new-password":"current-password");
   var pwrap=null;if(pw){pwrap=el("div","pwrap");pwrap.appendChild(pw);var EYE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.600-7 10-7 10 7 10 7-3.600 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',EYEX='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.900 17.900A10.500 10.500 0 0 1 12 19C5.600 19 2 12 2 12a18.500 18.500 0 0 1 5.100-5.900M9.900 5.200A9.800 9.800 0 0 1 12 5c6.400 0 10 7 10 7a18.600 18.600 0 0 1-2.200 3.200M14.100 14.100a3 3 0 1 1-4.200-4.200M2 2l20 20"/></svg>';
-    var ey=el("button","eye");ey.type="button";ey.innerHTML=EYE;ey.setAttribute("aria-label","Show password");
+    var ey=el("button","eye");ey.type="button";ey.innerHTML=EYE;ey.setAttribute("aria-label","Show password");ey.title="Show password";
     ey.onpointerdown=function(e){e.preventDefault()};
-    ey.onclick=function(){var sh=pw.type==="password";pw.type=sh?"text":"password";ey.innerHTML=sh?EYEX:EYE;ey.classList.toggle("on",sh);ey.setAttribute("aria-label",sh?"Hide password":"Show password");pw.focus()};pwrap.appendChild(ey)}
+    ey.onclick=function(){var sh=pw.type==="password";pw.type=sh?"text":"password";ey.innerHTML=sh?EYEX:EYE;ey.classList.toggle("on",sh);ey.setAttribute("aria-label",sh?"Hide password":"Show password");ey.title=sh?"Hide password":"Show password";pw.focus()};pwrap.appendChild(ey)}
   if(nm)f.appendChild(nm);if(em)f.appendChild(em);if(pwrap)f.appendChild(pwrap);
   var go=el("button","go",recovery?"Save password":(magic?"Send me the link":(signup?"Create my account":"Log in")));go.type="submit";
   if(!signup&&!recovery&&!magic){var fgw=el("div","fgrow");f.appendChild(fgw);var fg=el("button","lnk","Forgot password?");fg.type="button";fg.onclick=function(){
