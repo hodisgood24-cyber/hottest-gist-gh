@@ -220,6 +220,15 @@ body.locked.hasnav{padding-left:0!important;padding-bottom:0!important}
 .gc .eye:active{transform:translateY(-50%) scale(.94)}
 .gc .go{transition:filter .12s,transform .12s}.gc .go:hover{filter:brightness(1.08)}.gc .go:active{transform:scale(.98)}
 .gc .gbtn:hover{box-shadow:0 4px 14px rgba(0,0,0,.18)}
+/* hover, press and keyboard feedback on every button and link (zero specificity, so specific styles win) */
+:where(button,[role=button],a[href],select,summary,label.msrow,input[type=checkbox],input[type=file]){cursor:pointer;transition:filter .12s,box-shadow .12s,background-color .12s}
+:where(button:disabled){cursor:not-allowed}
+@media (hover:hover){
+:where(button:not(:disabled),[role=button],a[href],summary,label.msrow):hover{filter:brightness(.93)}
+:where(button:not(:disabled),[role=button],a[href]):hover:not(.go):not(.eye):not(.stov *){box-shadow:0 3px 12px rgba(0,0,0,.14)}
+}
+:where(button:not(:disabled),[role=button],a[href],summary):active{filter:brightness(.85)}
+:where(button,[role=button],a[href],select,summary,input):focus-visible{outline:2px solid var(--gold,#fcd116);outline-offset:2px}
 .gc .fgrow{display:flex;justify-content:flex-end;margin:-4px 0 -2px}.gc .fgrow .lnk{font-size:14px;text-decoration:none;padding:0}
 .gc .or{margin:18px 0 12px}
 .gc .gbtn{border-radius:999px;padding:13px}
