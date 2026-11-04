@@ -2,7 +2,7 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
-  Permissions-Policy: camera=(), microphone=(self), geolocation=(), payment=()
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=(), payment=()
   Strict-Transport-Security: max-age=31536000
 
 /admin.html
