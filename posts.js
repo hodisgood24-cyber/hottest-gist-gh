@@ -1,6 +1,34 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+        "id": "kweku-smoke-bra-no1-apple-music-ghana",
+        "title": "Kweku Smoke's \"Bra\" takes No. 1 on Apple Music Ghana, and he now holds 13 of the top 20",
+        "cat": "Afrobeats",
+        "by": "News desk",
+        "body": "Kweku Smoke is having a monster run on the charts 🔥\n\nOn the Apple Music Ghana Top 20 for November 2, his song \"Bra\" jumped from No. 2 to No. 1, pushing \"Faith\" (with Lasmid) down to second. \"Bombele\" sits at No. 3 and \"Survivor\" at No. 5, with Kofi Mole's \"BALOTELLI (SUPA)\" splitting them at No. 4.\n\nIn total Kweku Smoke owns 13 of the 20 places, eight of them in the top 10, and his September album No Days Off is still feeding the chart, with its title track at No. 16.\n\nElsewhere, Asake and Blaqbonez's \"IKEBE 3000\" climbed from 12 to 8, and Black Sherif's \"Jolie\" moved up one spot to 17.\nSource: Pulse Ghana",
+        "ts": 1793783393956,
+        "link": "https://www.pulse.com.gh/story/kweku-smoke-apple-music-ghana-top-100-bra-number-one-2026110211071562627",
+        "images": [
+              "images/kweku-smoke-bra-no1-apple-music-ghana.jpg"
+        ],
+        "pin": false,
+        "status": "live"
+    },
+  {
+        "id": "longest-running-no1-apple-music-ghana-2026",
+        "title": "\"Bra\" is now the longest-running No. 1 on Apple Music Ghana this year, at 36 days",
+        "cat": "Trending",
+        "by": "News desk",
+        "body": "Numbers don't lie 📊\n\nA Pulse Ghana tally of Apple Music Ghana's 2026 chart shows Kweku Smoke's \"Bra\" has spent 36 days at No. 1, the most of any song this year. \"Popstar\" is right behind on 35 days and \"Darkest Style\" has 34.\n\nNext come \"Sacrifice\" (21 days), \"Don't Come Too Close II\" (20) and \"Biggest Nathaniel\" (18). \"Faith\" has held the top spot for 12 days, and \"Bombele\" for 10.\n\nSixteen different songs have reached No. 1 so far in 2026, so the race for the top is busy.\nSource: Pulse Ghana",
+        "ts": 1793783333956,
+        "link": "https://www.pulse.com.gh/story/ghana-apple-music-longest-running-number-one-hits-2026110215525784182",
+        "images": [
+              "images/longest-running-no1-apple-music-ghana-2026.jpg"
+        ],
+        "pin": false,
+        "status": "live"
+    },
+  {
       "id": "piesie-esther-flora-grace-2026",
       "title": "Piesie Esther's Flora Made By Grace marks five years, with Kuami Eugene on stage",
       "cat": "Gospel",
