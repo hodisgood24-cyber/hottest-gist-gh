@@ -3530,11 +3530,17 @@ function callBtns(){
   mk("no","End",PH,function(){callHang(true)});
 }
 function callMedia(kind){
-  return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true},video:kind==="video"?{facingMode:"user",width:{ideal:640}}:false});
+  var au={echoCancellation:true,noiseSuppression:true},md=navigator.mediaDevices;
+  if(kind!=="video")return md.getUserMedia({audio:au,video:false});
+  return md.getUserMedia({audio:au,video:{facingMode:"user",width:{ideal:640}}}).catch(function(){
+    return md.getUserMedia({audio:au,video:true}).catch(function(){
+      return md.getUserMedia({audio:au,video:false}).then(function(st){toast("Camera isn't available (blocked or in use). Allow the camera for this site, then try again. Continuing with voice only.");return st});
+    });
+  });
 }
 function callPc(){
   var C=CALL,pc=new RTCPeerConnection({iceServers:iceServers()});C.pc=pc;C.stream.getTracks().forEach(function(t){pc.addTrack(t,C.stream)});
-  pc.ontrack=function(e){C.remote=e.streams[0];C.ui.rv.srcObject=C.remote;C.ui.ra.srcObject=C.remote;if(C.kind!=="video")C.ui.rv.style.display="none";var p=C.ui.ra.play();p&&p.catch&&p.catch(function(){})};
+  pc.ontrack=function(e){C.remote=e.streams[0];C.ui.rv.srcObject=C.remote;C.ui.ra.srcObject=C.remote;var rp=C.ui.rv.play();rp&&rp.catch&&rp.catch(function(){});if(C.kind!=="video")C.ui.rv.style.display="none";var p=C.ui.ra.play();p&&p.catch&&p.catch(function(){})};
   pc.onicecandidate=function(e){if(e.candidate&&C.id&&C.sendIce)api("rpc/call_ice_add",{p_id:C.id,p_cand:JSON.stringify(e.candidate)}).catch(function(){})};
   pc.onconnectionstatechange=function(){
     if(!CALL||CALL!==C)return;
