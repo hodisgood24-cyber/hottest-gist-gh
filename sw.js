@@ -24,6 +24,9 @@ self.addEventListener("push", (e) => {
     badge: "/favicon-48.png",
     image: d.image || undefined,
     tag: d.tag || "gist",
+    requireInteraction: !!d.ring,
+    renotify: !!d.ring,
+    vibrate: d.ring ? [300, 150, 300, 150, 300] : undefined,
     data: { url: d.url || "/" }
   });
   }));

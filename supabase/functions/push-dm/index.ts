@@ -10,9 +10,43 @@ webpush.setVapidDetails(SITE, Deno.env.get("VAPID_PUBLIC_KEY")!, Deno.env.get("V
 const H = { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, "Content-Type": "application/json" };
 const ONLINE_MS = 75 * 1000; // seen this recently = looking at the site, so no alert
 
+async function sendTo(userId: string, payload: string, ttl: number) {
+  const sr = await fetch(`${SUPABASE_URL}/rest/v1/push_subs?user_id=eq.${userId}&select=endpoint,p256dh,auth`, { headers: H });
+  const subs: { endpoint: string; p256dh: string; auth: string }[] = sr.ok ? await sr.json() : [];
+  let sent = 0;
+  await Promise.all(subs.map(async (s) => {
+    try {
+      await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: ttl, urgency: "high" });
+      sent++;
+    } catch (e) {
+      const code = (e as { statusCode?: number })?.statusCode;
+      if (code === 404 || code === 410) await fetch(`${SUPABASE_URL}/rest/v1/push_subs?endpoint=eq.${encodeURIComponent(s.endpoint)}`, { method: "DELETE", headers: H });
+    }
+  }));
+  return sent;
+}
+
+// Rings the phone of someone who is being called and is not on the site.
+async function ringPhone(cid: number) {
+  if (!Number.isFinite(cid)) return new Response("bad", { status: 400 });
+  const cr = await fetch(`${SUPABASE_URL}/rest/v1/calls?id=eq.${cid}&select=caller,callee,kind,status`, { headers: H });
+  const c = (await cr.json())?.[0];
+  if (!c || c.status !== "ringing") return new Response("not ringing");
+  const pr = await fetch(`${SUPABASE_URL}/rest/v1/user_presence?user_id=eq.${c.callee}&select=seen_at`, { headers: H });
+  const seen = pr.ok ? (await pr.json())?.[0]?.seen_at : null;
+  if (seen && Date.now() - Date.parse(seen) < ONLINE_MS) return new Response("online");
+  const nr = await fetch(`${SUPABASE_URL}/rest/v1/profiles?user_id=eq.${c.caller}&select=name`, { headers: H });
+  const name = (await nr.json())?.[0]?.name || "A friend";
+  const payload = JSON.stringify({ title: `📞 ${name} is calling`, body: c.kind === "video" ? "Video call. Tap to answer." : "Voice call. Tap to answer.", url: `${SITE}/#calls`, tag: "call", ring: true });
+  const sent = await sendTo(c.callee, payload, 30);
+  return new Response(JSON.stringify({ sent }), { headers: { "Content-Type": "application/json" } });
+}
+
 Deno.serve(async (req) => {
   try {
-    const { id } = await req.json();
+    const body = await req.json();
+    if (body?.call !== undefined) return await ringPhone(Number(body.call));
+    const { id } = body;
     const mid = Number(id);
     if (!Number.isFinite(mid)) return new Response("bad", { status: 400 });
 
