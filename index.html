@@ -3542,7 +3542,7 @@ function callMedia(kind){
   });
 }
 function callPc(){
-  var C=CALL,pc=new RTCPeerConnection({iceServers:iceServers()});C.pc=pc;C.stream.getTracks().forEach(function(t){pc.addTrack(t,C.stream)});
+  var C=CALL,pc=new RTCPeerConnection({iceServers:iceServers()});C.pc=pc;C.stream.getTracks().forEach(function(t){pc.addTrack(t,C.stream)});if(C.kind==="video"&&C.role==="caller"&&!C.stream.getVideoTracks().length)pc.addTransceiver("video",{direction:"recvonly"});
   pc.ontrack=function(e){C.remote=e.streams[0];C.ui.rv.srcObject=C.remote;C.ui.ra.srcObject=C.remote;var rp=C.ui.rv.play();rp&&rp.catch&&rp.catch(function(){});if(C.kind!=="video")C.ui.rv.style.display="none";var p=C.ui.ra.play();p&&p.catch&&p.catch(function(){})};
   pc.onicecandidate=function(e){if(e.candidate&&C.id&&C.sendIce)api("rpc/call_ice_add",{p_id:C.id,p_cand:JSON.stringify(e.candidate)}).catch(function(){})};
   pc.onconnectionstatechange=function(){
