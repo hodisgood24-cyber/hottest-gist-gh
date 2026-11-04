@@ -3501,7 +3501,8 @@ function renderEvents(){
 }
 /* ===== Voice and video calls (WebRTC, 1 to 1) ===== */
 var CALL=null,callT=null,callTick=0,ringT=null,callOv=null;
-function iceServers(){var i=cfgSet.ice;if(Array.isArray(i)&&i.length)return i;return[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"}]}
+function iceServers(){var i=cfgSet.ice;if(Array.isArray(i)&&i.length)return i;return[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"},
+  {urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443","turn:openrelay.metered.ca:443?transport=tcp","turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}]}
 function callOk(){return!!(CFG&&SES&&window.RTCPeerConnection&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)}
 function callStart(){
   if(callT||!CFG||!SES)return;
@@ -3612,7 +3613,7 @@ function callPc(){
   pc.onicecandidate=function(e){if(e.candidate&&C.id&&C.sendIce)api("rpc/call_ice_add",{p_id:C.id,p_cand:JSON.stringify(e.candidate)}).catch(function(){})};
   pc.onconnectionstatechange=function(){
     if(!CALL||CALL!==C)return;
-    if(pc.connectionState==="connected"&&!C.t0){C.t0=Date.now();ringOff();C.ui.o.classList.add("live");callWake(C);callAutoHide(C);C.ui.mid.classList.toggle("vid",C.kind==="video");callTimer()}
+    if(pc.connectionState==="connected"&&!C.t0){C.t0=Date.now();clearTimeout(C.cto);ringOff();C.ui.o.classList.add("live");callWake(C);callAutoHide(C);C.ui.mid.classList.toggle("vid",C.kind==="video");callTimer()}
     if(pc.connectionState==="disconnected"&&C.t0){C.ui.st.textContent="Reconnecting…"}
     if(pc.connectionState==="connected"&&C.t0)callTimer();
     if(pc.connectionState==="failed"){toast("Call failed. The connection couldn't be made.");callHang(true)}
@@ -3629,6 +3630,7 @@ function callAutoHide(C){
   o.addEventListener("click",function(e){if(e.target.closest(".cb,.clv"))return;if(o.classList.contains("hideui"))show();else{o.classList.add("hideui");clearTimeout(t)}});
   o.addEventListener("click",function(e){if(e.target.closest(".cb"))show()});show();
 }
+function callConnWatch(C){clearTimeout(C.cto);C.cto=setTimeout(function(){if(CALL===C&&!C.t0){toast("Couldn't connect the call. The network may be blocking it. Try Wi-Fi on both sides.");callHang(true)}},30000)}
 function callGather(pc){return new Promise(function(res){if(pc.iceGatheringState==="complete")return res();var t=setTimeout(res,3000);pc.addEventListener("icegatheringstatechange",function f(){if(pc.iceGatheringState==="complete"){clearTimeout(t);pc.removeEventListener("icegatheringstatechange",f);res()}})})}
 function callTimer(){var C=CALL;clearInterval(C.tm);function u(){if(!CALL||CALL!==C)return;var s=Math.floor((Date.now()-C.t0)/1000);C.ui.st.textContent=Math.floor(s/60)+":"+("0"+(s%60)).slice(-2)}u();C.tm=setInterval(u,1000)}
 function callPollState(){
@@ -3636,7 +3638,7 @@ function callPollState(){
   api("rpc/call_state",{p_id:C.id,p_after:C.lastIce||0}).then(function(r){
     if(!CALL||CALL!==C||!r)return;
     var st=r.status;
-    if(C.role==="caller"&&st==="active"&&r.answer&&!C.gotAns){C.gotAns=true;ringOff();C.ui.st.textContent="Connecting…";C.pc.setRemoteDescription(JSON.parse(r.answer)).catch(function(){})}
+    if(C.role==="caller"&&st==="active"&&r.answer&&!C.gotAns){C.gotAns=true;ringOff();C.ui.st.textContent="Connecting…";callConnWatch(C);C.pc.setRemoteDescription(JSON.parse(r.answer)).catch(function(){})}
     (r.ice||[]).forEach(function(i){C.lastIce=Math.max(C.lastIce||0,i.id);if(C.pc&&C.pc.remoteDescription){try{C.pc.addIceCandidate(JSON.parse(i.cand)).catch(function(){})}catch(e){}}else{(C.pend=C.pend||[]).push(i.cand)}});
     if(C.pc&&C.pc.remoteDescription&&C.pend&&C.pend.length){C.pend.splice(0).forEach(function(c){try{C.pc.addIceCandidate(JSON.parse(c)).catch(function(){})}catch(e){}})}
     if(st==="declined"){toast(C.name+" declined the call");callClose()}
@@ -3645,7 +3647,7 @@ function callPollState(){
   }).catch(function(){})
 }
 function callClose(){
-  var C=CALL;if(!C)return;CALL=null;ringOff();clearInterval(C.poll);clearInterval(C.tm);
+  var C=CALL;if(!C)return;CALL=null;ringOff();clearTimeout(C.cto);clearInterval(C.poll);clearInterval(C.tm);
   try{GSND.raw("hang")}catch(e){}
   try{C.pc&&C.pc.close()}catch(e){}try{C.wake&&C.wake.release()}catch(e){}try{C.hideT&&C.hideT()}catch(e){}
   try{C.stream&&C.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}
@@ -3666,7 +3668,7 @@ function callAccept(){
     if(CALL!==C){stream.getTracks().forEach(function(t){t.stop()});return}
     C.stream=stream;var pc=callPc();
     return pc.setRemoteDescription(JSON.parse(C.offer)).then(function(){pc.getTransceivers().forEach(function(t){if(t.receiver&&t.receiver.track&&t.receiver.track.kind==="video"&&t.direction==="recvonly")try{t.direction="sendrecv"}catch(e){}});return pc.createAnswer()}).then(function(a){return pc.setLocalDescription(a)}).then(function(){return callGather(pc)}).then(function(){
-      return api("rpc/call_answer",{p_id:C.id,p_answer:JSON.stringify(pc.localDescription)})}).then(function(){C.sendIce=true;C.state="active";callBtns();callPollState()});
+      return api("rpc/call_answer",{p_id:C.id,p_answer:JSON.stringify(pc.localDescription)})}).then(function(){C.sendIce=true;C.state="active";callBtns();callPollState();callConnWatch(C)});
   }).catch(function(e){toast(/denied|permission|NotAllowed/i.test(String(e&&(e.name||e.message)))?"Allow the microphone (and camera) to take calls.":"Couldn't answer. The call may have ended.");callHang(true)});
 }
 function callUser(uid,name,avatar,kind){
