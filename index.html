@@ -201,7 +201,24 @@ header.wrap{padding-right:112px}
 .sp .tg{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;font-weight:700;margin-top:6px}
 header.wrap{padding-right:64px}
 .logo{width:44px;height:44px;vertical-align:middle;margin-right:10px;border-radius:10px;display:inline-block}
-.gc .logo{width:56px;height:56px;display:block;margin:0 0 10px}
+.gc .logo{width:64px;height:64px;display:block;margin:0 auto 14px;border-radius:16px}
+/* simple login */
+.gate{background:var(--card);animation:none;align-items:flex-start;padding-top:max(48px,8vh)}
+.locked header.hdr,.locked .where,.locked #tabs,.locked main,.locked footer,.locked .gear,.locked header.hdr .who,.locked .bnav,.locked #who{display:none!important}
+.gc{background:transparent;border:0;box-shadow:none;padding:8px 4px;text-align:center}
+.gc h1{font-size:30px;line-height:1.1;text-align:center}
+.gc .sub{margin:8px 0 22px;color:var(--muted);text-align:center}
+.gc form{text-align:left;gap:12px}
+.gc input{padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg)}
+.gc input:focus{outline:0;border-color:var(--red);box-shadow:0 0 0 3px rgba(206,17,38,.12)}
+.gc .go{border-radius:999px;padding:15px;font-size:16px;box-shadow:0 8px 20px -8px var(--red)}
+.gc .pwrap{position:relative}.gc .pwrap input{padding-right:48px}
+.gc .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;font-size:18px;padding:8px;cursor:pointer;opacity:.5;text-decoration:none}.gc .eye.on{opacity:1}
+.gc .fgrow{display:flex;justify-content:flex-end;margin:-4px 0 -2px}.gc .fgrow .lnk{font-size:14px;text-decoration:none;padding:0}
+.gc .or{margin:18px 0 12px}
+.gc .gbtn{border-radius:999px;padding:13px}
+.gc .swl{margin:20px 0 0;font-size:15px;color:var(--muted);line-height:2}.gc .swl .lnk{text-decoration:none;font-weight:800}
+.gc .kb{font-size:14px;color:var(--muted);font-weight:700}
 .tabs{display:flex;gap:6px;margin:6px auto 4px;padding-block:6px;overflow-x:auto}
 .tabs button{flex:1;white-space:nowrap;font:inherit;font-weight:800;font-size:14px;padding:10px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--text);cursor:pointer}
 .tabs button[aria-pressed=true]{background:var(--red);color:var(--on-red);border-color:var(--red)}
@@ -1290,7 +1307,7 @@ function needLogin(why){needLogin.y=window.scrollY;showGate("signup",why||"Creat
 function keepBrowsing(){document.body.classList.remove("locked");$("gate").hidden=true;if(!started)start();else if(needLogin.y)window.scrollTo(0,needLogin.y)}
 function showGate(mode,note){
   document.body.classList.add("locked");
-  var g=$("gate");g.hidden=false;g.textContent="";
+  var g=$("gate");g.hidden=false;g.textContent="";window.scrollTo(0,0);
   if(!showGate.hue)showGate.hue=Math.floor(Math.random()*360);
   var h0=showGate.hue;
   g.style.setProperty("--c1","hsl("+h0+",85%,72%)");
@@ -1298,47 +1315,27 @@ function showGate(mode,note){
   g.style.setProperty("--c3","hsl("+((h0+190+Math.random()*60)%360)+",85%,72%)");
   var c=el("div","gc");
   var lg=el("img","logo");lg.src="/favicon.svg";lg.alt="Hottest Gist GH logo";c.appendChild(lg);
-  var h=el("h1");h.appendChild(document.createTextNode("Hottest Gist"));h.appendChild(el("span",null,"GH"));c.appendChild(h);
   var recovery=mode==="reset";
-  var bg=el("div","fx");bg.setAttribute("aria-hidden","true");
-  var em0=["\ud83d\udd25","\u2764\ufe0f","\ud83d\ude02","\ud83c\udfb6","\ud83c\udfa4","\ud83d\udcac","\ud83c\uddec\ud83c\udded","\ud83d\ude0d","\ud83c\udf89","\ud83d\udc83","\ud83e\udd41","\ud83d\udc4f"];
-  em0.forEach(function(e,i){var sp=el("span",null,e);sp.style.left=((i*8.3+Math.random()*4)%94)+"%";sp.style.animationDuration=(9+Math.random()*7)+"s";sp.style.animationDelay=(-Math.random()*14)+"s";sp.style.fontSize=(20+Math.random()*16)+"px";bg.appendChild(sp)});
-  g.appendChild(bg);
-  c.appendChild(el("p","hi",recovery?"Almost there":(mode==="signup"?"Join the gist \ud83c\uddec\ud83c\udded":"Welcome to the gist \ud83d\udc4b")));
-  c.appendChild(el("p","sub",recovery?"Choose a new password.":"Ghana's hottest music and entertainment news, all in one place."));
-  if(!recovery){
-    var pk=el("div","perks");
-    [["\u2764\ufe0f","Like"],["\ud83d\udcac","Comment"],["\ud83d\ude02","Laugh"],["\ud83d\udd25","Share"]].forEach(function(x){var d=el("div","perk");d.appendChild(el("b",null,x[0]));d.appendChild(el("span",null,x[1]));pk.appendChild(d)});
-    c.appendChild(pk);
-  }
+  var signup0=mode==="signup",magic0=mode==="magic";
+  var h=el("h1",null,recovery?"Almost there":(signup0?"Join the gist":(magic0?"Log in with email":"Welcome back")));c.appendChild(h);
+  c.appendChild(el("p","sub",recovery?"Choose a new password.":(signup0?"Create a free account in a few seconds.":(magic0?"We'll email you a link. Tap it and you're in.":"Log in to continue."))));
   var msg=el("div","msg",note||"");msg.setAttribute("role","status");
   if(note)msg.classList.add("ok");
   function say(t,ok){msg.textContent=t;msg.classList.toggle("ok",!!ok)}
   var signup=mode==="signup",magic=mode==="magic";
-  if(!recovery){
-    var gb=el("button","gbtn");gb.type="button";
-    gb.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
-    gb.appendChild(el("span",null,"Continue with Google"));
-    gb.onclick=function(){location.href=CFG.url.replace(/\/$/,"")+"/auth/v1/authorize?provider=google&prompt=select_account&redirect_to="+encodeURIComponent(location.origin+location.pathname)};
-    c.appendChild(gb);c.appendChild(el("div","or","or use email"));
-    var tab=el("div","tab");
-    [["magic","Email link"],["login","Password"],["signup","Sign up"]].forEach(function(x){var b=el("button",null,x[1]);b.type="button";b.setAttribute("aria-pressed",String(x[0]===(signup?"signup":magic?"magic":"login")));b.onclick=function(){showGate(x[0])};tab.appendChild(b)});
-    c.appendChild(tab);
-  }
   var f=el("form");
   var nm=(signup||magic)?field("text",magic?"Your name (for new accounts)":"Your name (shown on comments)","nickname","Your name"):null;if(nm)nm.maxLength=40;
   var em=recovery?null:field("email","Email","email");
   var pw=magic?null:field("password",recovery?"New password":(signup?"Create a password (6+ characters)":"Password"),signup||recovery?"new-password":"current-password");
-  if(nm)f.appendChild(nm);if(em)f.appendChild(em);if(pw)f.appendChild(pw);
-  var go=el("button","go",recovery?"Save password":(magic?"Continue with email":(signup?"Create my account":"Log in")));go.type="submit";f.appendChild(go);
-  f.appendChild(msg);
-  if(magic){f.appendChild(el("p","sub","We email you a link. Tap it and you're in. No password needed."))}
-  if(!signup&&!recovery&&!magic){
-    var fg=el("button","lnk","Forgot password?");fg.type="button";fg.onclick=function(){
+  var pwrap=null;if(pw){pwrap=el("div","pwrap");pwrap.appendChild(pw);var ey=el("button","eye","\ud83d\udc41");ey.type="button";ey.setAttribute("aria-label","Show password");ey.onclick=function(){var sh=pw.type==="password";pw.type=sh?"text":"password";ey.classList.toggle("on",sh);ey.setAttribute("aria-label",sh?"Hide password":"Show password")};pwrap.appendChild(ey)}
+  if(nm)f.appendChild(nm);if(em)f.appendChild(em);if(pwrap)f.appendChild(pwrap);
+  var go=el("button","go",recovery?"Save password":(magic?"Send me the link":(signup?"Create my account":"Log in")));go.type="submit";
+  if(!signup&&!recovery&&!magic){var fgw=el("div","fgrow");f.appendChild(fgw);var fg=el("button","lnk","Forgot password?");fg.type="button";fg.onclick=function(){
       if(!em.value.trim()){say("Type your email above first.");em.focus();return}
       authCall("recover",{email:em.value.trim()}).then(function(){say("Check your email for a reset link.",true)}).catch(function(e){say(e.message)});
-    };f.appendChild(fg);
-  }
+    };fgw.appendChild(fg)}
+  f.appendChild(go);
+  f.appendChild(msg);
   f.onsubmit=function(e){
     e.preventDefault();say("");go.disabled=true;
     var done=function(){go.disabled=false};
@@ -1363,8 +1360,22 @@ function showGate(mode,note){
     }
   };
   c.appendChild(f);
+  if(!recovery){
+    var gb=el("button","gbtn");gb.type="button";
+    gb.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+    gb.appendChild(el("span",null,"Continue with Google"));
+    gb.onclick=function(){location.href=CFG.url.replace(/\/$/,"")+"/auth/v1/authorize?provider=google&prompt=select_account&redirect_to="+encodeURIComponent(location.origin+location.pathname)};
+    c.appendChild(el("div","or","or"));c.appendChild(gb);
+  }
+  if(!recovery){
+    var sl=el("p","swl");
+    function lk(t,m){var b=el("button","lnk",t);b.type="button";b.onclick=function(){showGate(m)};return b}
+    if(signup){sl.appendChild(document.createTextNode("Already have an account? "));sl.appendChild(lk("Log in","login"))}
+    else if(magic){sl.appendChild(lk("Use a password instead","login"))}
+    else{sl.appendChild(document.createTextNode("New here? "));sl.appendChild(lk("Create an account","signup"));sl.appendChild(el("br"));sl.appendChild(lk("Email me a login link","magic"))}
+    c.appendChild(sl);
+  }
   if(!recovery&&!SES){var kb=el("button","lnk kb","Keep reading without an account \u2192");kb.type="button";kb.onclick=keepBrowsing;c.appendChild(kb)}
-  var fl=el("div","tagl");["#CE1126","#FCD116","#006B3F"].forEach(function(k){var i=document.createElement("i");i.style.background=k;fl.appendChild(i)});c.appendChild(fl);
   g.appendChild(c);
 }
 function logout(){
