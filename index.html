@@ -3533,9 +3533,11 @@ function callBtns(){
 function callMedia(kind){
   var au={echoCancellation:true,noiseSuppression:true},md=navigator.mediaDevices;
   if(kind!=="video")return md.getUserMedia({audio:au,video:false});
-  return md.getUserMedia({audio:au,video:{facingMode:"user",width:{ideal:640}}}).catch(function(){
-    return md.getUserMedia({audio:au,video:true}).catch(function(){
-      return md.getUserMedia({audio:au,video:false}).then(function(st){toast("Camera isn't available (blocked or in use). Allow the camera for this site, then try again. Continuing with voice only.");return st});
+  var why="";
+  function note(e){var n=e&&e.name||"";why=/NotAllowed|Permission/.test(n)?"Camera is blocked. Allow it for this site (lock icon in the address bar, and System Settings > Privacy > Camera for your browser).":/NotReadable|TrackStart|Abort/.test(n)?"Camera is in use by another app (CapCut, Zoom, another tab). Close it and call again.":/NotFound|Overconstrained/.test(n)?"No camera was found on this device.":"Camera couldn't start ("+(n||"unknown")+").";}
+  return md.getUserMedia({audio:au,video:{facingMode:"user",width:{ideal:640}}}).catch(function(e){note(e);
+    return md.getUserMedia({audio:au,video:true}).catch(function(e2){note(e2);
+      return md.getUserMedia({audio:au,video:false}).then(function(st){st.camWhy=why;toast(why+" Continuing with voice only.");return st});
     });
   });
 }
@@ -3549,7 +3551,7 @@ function callPc(){
     if(pc.connectionState==="failed"){toast("Call failed. The connection couldn't be made.");callHang(true)}
   };
   if(C.kind==="video"){var lv=C.ui.lv;lv.srcObject=C.stream;var lp=lv.play();lp&&lp.catch&&lp.catch(function(){});
-    if(!C.stream.getVideoTracks().length){lv.style.display="none";var nc=el("div","clv nocam","Your camera is off");C.ui.o.appendChild(nc)}}
+    if(!C.stream.getVideoTracks().length){lv.style.display="none";var nc=el("div","clv nocam","Your camera is off");C.ui.o.appendChild(nc);if(C.stream.camWhy){var w=el("p","cst",C.stream.camWhy);w.style.cssText="position:absolute;left:16px;right:16px;bottom:130px;text-align:center;z-index:3;font-size:14px";C.ui.o.appendChild(w)}}}
   return pc;
 }
 function callGather(pc){return new Promise(function(res){if(pc.iceGatheringState==="complete")return res();var t=setTimeout(res,3000);pc.addEventListener("icegatheringstatechange",function f(){if(pc.iceGatheringState==="complete"){clearTimeout(t);pc.removeEventListener("icegatheringstatechange",f);res()}})})}
