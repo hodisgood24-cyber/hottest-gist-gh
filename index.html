@@ -864,7 +864,7 @@ header.hdr .who{margin:0;position:fixed;top:calc(16px + env(safe-area-inset-top,
 
 /* ===== Top display: categories with logos ===== */
 #tabs{display:block;overflow:visible;flex-wrap:nowrap;padding-block:6px}
-#tabs .cats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+#tabs .cats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
 #tabs .cats button.cat{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;border:1.5px solid var(--line);background:var(--card);color:var(--text);font-weight:800;font-size:12.5px;line-height:1.15;text-align:center}
 #tabs .cic{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--cc) 16%,transparent);transition:transform .15s}
 #tabs .cic svg{width:23px;height:23px;fill:none;stroke:var(--cc);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -876,7 +876,7 @@ header.hdr .who{margin:0;position:fixed;top:calc(16px + env(safe-area-inset-top,
 #tabs .subs button{flex:0 0 auto;padding:8px 14px;font-size:14px}
 #tabs .subs button[aria-pressed=true]{background:var(--cc);border-color:var(--cc);color:#fff;box-shadow:none}
 #tabs .cic{flex:none}#tabs .clb{min-width:0;white-space:normal}
-@media (max-width:699px){#tabs .cats{gap:6px}#tabs .cats button.cat{font-size:11px;padding:9px 1px 7px}}
+@media (max-width:699px){#tabs .cats{gap:4px}#tabs .cats button.cat{font-size:10.5px;padding:8px 0 6px;border-radius:14px}#tabs .cic{width:34px;height:34px;border-radius:11px}#tabs .cic svg{width:20px;height:20px}}
 @media (min-width:700px){#tabs .cats button.cat{flex-direction:row;justify-content:center;gap:10px;padding:10px 8px;font-size:14px}}
 
 /* ===== Market ===== */
@@ -4049,8 +4049,9 @@ function setView(v){
 var TCATS=[
  ["home","Home","#c8102e",'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',[["gist","🔥 Gist"]]],
  ["music","Music & Sport","#7c3aed",'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',[["matchday","⚽ Match day"],["chart","🎵 Top 10"],["events","📅 Events"]]],
- ["community","Community","#2563eb",'<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><path d="M16 4.500a3.500 3.500 0 0 1 0 7M18 14.500a6.500 6.500 0 0 1 3.500 5.500"/>',[["fans","🌟 Fans"],["wall","💬 Wall"],["top","🏆 Top fans"],["bible","📖 Bible"]]],
+ ["community","Community","#2563eb",'<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><path d="M16 4.500a3.500 3.500 0 0 1 0 7M18 14.500a6.500 6.500 0 0 1 3.500 5.500"/>',[["fans","🌟 Fans"],["wall","💬 Wall"],["top","🏆 Top fans"]]],
  ["fun","Fun & Games","#d97706",'<path d="M7 7h10a4 4 0 0 1 4 4v3a3 3 0 0 1-5.500 1.600L14.800 14H9.200l-.7 1.600A3 3 0 0 1 3 14v-3a4 4 0 0 1 4-4z"/><path d="M8 10v3M6.500 11.500h3"/><circle cx="15.500" cy="10.500" r=".6"/><circle cx="17.500" cy="12.500" r=".6"/>',[["play","🎮 Play"],["movies","🎬 Movies"],["polls","📊 Polls"],["quiz","🧠 Quiz"]]],
+ ["bible","Bible","#7c5a1e",'<path d="M4 5.500A2.500 2.500 0 0 1 6.500 3H20v16H6.500A2.500 2.500 0 0 0 4 21.500z"/><path d="M4 21.500V5.500M12 7v6M9.500 9.500h5"/>',[["bible","\ud83d\udcd6 Bible"]]],
  ["biz","Business","#15803d",'<path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/>',[["market","🛍️ Market"],["gigs","💼 Services"],["tix","🎟️ Tickets"],["ads","📣 Advertise"],["earn","💰 Earnings"]]]
 ];
 var tLastCat="home",tCatView={};
