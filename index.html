@@ -1784,6 +1784,7 @@ function buildMsgTab(p){
   api("rpc/my_chats",{}).then(function(r){npChats=r||[];if(npOpen&&npTab==="msgs")draw()}).catch(function(){if(!npChats){list.textContent="";list.appendChild(el("div","none","Messages aren't ready yet. Run setup-messages.sql in Supabase."))}});
 }
 // ===== Messages (friends only) =====
+var chatAct=Date.now();["pointerdown","keydown","touchstart"].forEach(function(ev){document.addEventListener(ev,function(){chatAct=Date.now()},{passive:true})});
 var unreadMsgs=0,chats=null,chatUid=null,chatMsgs=[],chatLast=0,chatTimer=null;
 function loadUnread(){if(!(CFG&&SES))return;api("rpc/unread_messages",{}).then(function(n){unreadMsgs=n||0;friendBadge();badge();if(npOpen&&npTab==="msgs")buildNotes()}).catch(function(){})}
 function openChat(uid){if(viewName!=="chat"&&viewName!=="messages")backTo=viewName;chatUid=uid;chatMsgs=[];chatLast=0;setView("chat")}
@@ -1859,7 +1860,7 @@ function renderChat(){
       dock.appendChild(r);
     }).catch(function(){})
   }
-  drawDock();dockT=setInterval(drawDock,4000);
+  drawDock();dockT=setInterval(function(){if(!document.hidden)drawDock()},8000);
 
   var WALLS=[["none","Default",""],["night","Night","linear-gradient(160deg,#0f1b2d,#243b6b)"],["sunset","Sunset","linear-gradient(160deg,#ff9a5a,#c2185b)"],["ocean","Ocean","linear-gradient(160deg,#0e7c86,#0b3d62)"],["forest","Forest","linear-gradient(160deg,#1f7a4c,#0b3b2a)"],["grape","Grape","linear-gradient(160deg,#8e44ad,#2c1654)"],["gold","Gold","linear-gradient(160deg,#f6d365,#b8860b)"],["rose","Rose","linear-gradient(160deg,#ffd1dc,#f48fb1)"],["dots","Dots","radial-gradient(rgba(128,128,128,.28) 1.5px,transparent 1.5px) 0 0/18px 18px"],["ghana","Ghana","linear-gradient(180deg,#ce1126 0 33%,#fcd116 33% 66%,#006b3f 66%)"]];
   function wallCss(w){
@@ -1962,7 +1963,7 @@ function renderChat(){
     api("rpc/chat_with",{p_user:uid,p_after:after}).then(function(r){
       r=r||[];var fresh=[];r.forEach(function(m){if(m.id>chatLast)fresh.push(m);else if(m.mine&&m.read_at){var cm=chatMsgs.filter(function(x){return x.id===m.id})[0];if(cm&&!cm.read_at){cm.read_at=m.read_at;var t=box.querySelector('[data-tk="'+m.id+'"]');if(t){t.textContent="\u2713\u2713";t.classList.add("seen");t.setAttribute("aria-label","Seen")}}}});r=fresh;
       if(first){box.textContent="";if(!r.length)box.appendChild(el("div","snone","Say hi \ud83d\udc4b Your messages are private between you and "+(c.name||"your friend")+"."))}
-      if(r.length){var stick=first||atBottom();if(first===false&&box.querySelector(".snone"))box.textContent="";r.forEach(function(m){chatMsgs.push(m);bubble(m)});chatLast=r[r.length-1].id;if(stick)down();if(!first&&r.some(function(m){return !m.mine}))GSND.ping("msg");
+      if(r.length){var stick=first||atBottom();if(first===false&&box.querySelector(".snone"))box.textContent="";r.forEach(function(m){chatMsgs.push(m);bubble(m)});chatLast=r[r.length-1].id;if(stick)down();if(!first&&r.some(function(m){return !m.mine})){GSND.ping("msg");chatAct=Date.now()}
         if(r.some(function(m){return !m.mine}))api("rpc/mark_chat_read",{p_user:uid}).then(loadUnread).catch(function(){})}
       pullRx();
     }).catch(function(e){if(first){box.textContent="";box.appendChild(el("div","snone","Messages aren't ready yet. Did you run setup-messages.sql?"))}});
@@ -1978,7 +1979,7 @@ function renderChat(){
   }
   function preview(fl){
     var isV=/^video\//.test(fl.type);
-    if(isV&&fl.size>50*1024*1024){note.hidden=false;note.textContent="That video is over 50 MB. Trim it and try again.";return}
+    if(isV&&fl.size>20*1024*1024){note.hidden=false;note.textContent="That video is over 20 MB. Trim it and try again.";return}
     var url=URL.createObjectURL(fl);
     var m=el("div","cpv");m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","Send "+(isV?"video":"photo"));
     var top=el("div","cpvtop");var cx=el("button","phx","\u00d7");cx.type="button";cx.setAttribute("aria-label","Cancel");top.appendChild(cx);top.appendChild(el("b",null,"Send to "+(nm.textContent||"your friend")));
@@ -2025,7 +2026,9 @@ function renderChat(){
   f.onsubmit=function(e){e&&e.preventDefault&&e.preventDefault();var t=ta.value.trim();if(!t)return;sb.disabled=true;
     api("rpc/send_message",{p_to:uid,p_body:t}).then(function(){GSND.ping("sent");ta.value="";ta.style.height="auto";swap();note.hidden=true;pull(false);ta.focus()}).catch(function(er){note.hidden=false;note.textContent=er.detail||"Couldn't send. Try again."}).then(function(){sb.disabled=false})};
   pull(true);
-  var pc=0;presFetch();chatTimer=setInterval(function(){if(!document.hidden){pull(false);if(++pc%5===0)presFetch()}},4000);
+  var pc=0;presFetch();chatAct=Date.now();
+  (function loop(){var idle=Date.now()-chatAct,d=idle<60000?4000:idle<300000?10000:25000;
+    chatTimer=setTimeout(function(){if(!dockAlive())return;if(!document.hidden){pull(false);if(++pc%3===0)presFetch()}loop()},d)})();
   if(!frLoaded)loadFriends(function(){if(frState(uid)!=="friends"){note.hidden=false;note.textContent="You can only message friends. Add "+(c.name||"them")+" as a friend first."}});
   else if(frState(uid)!=="friends"){note.hidden=false;note.textContent="You can only message friends. Add "+(c.name||"them")+" as a friend first."}
   setTimeout(function(){ta.focus()},100);
@@ -2273,7 +2276,7 @@ function postChooser(){
   var m=el("div","pch");m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","What do you want to post?");
   var c=el("div","pchb");c.appendChild(el("div","pgrab"));c.appendChild(el("h3",null,"What do you want to post?"));
   var g=el("div","pgrid");
-  [["photo","📷","Picture","From your gallery or camera"],["video","🎬","Video","Up to 50 MB"],["text","✍️","Text","Share your gist in words"],["voice","🎙️","Voice","Record a voice note"]].forEach(function(k){
+  [["photo","📷","Picture","From your gallery or camera"],["video","🎬","Video","Up to 35 MB"],["text","✍️","Text","Share your gist in words"],["voice","🎙️","Voice","Record a voice note"]].forEach(function(k){
     var b=el("button","popt "+k[0]);b.type="button";b.appendChild(el("span","pi",k[1]));b.appendChild(el("b",null,k[2]));b.appendChild(el("small",null,k[3]));
     b.onclick=function(){close();startPost(k[0])};g.appendChild(b)});
   c.appendChild(g);var cn=el("button","pcancel","Cancel");cn.type="button";c.appendChild(cn);m.appendChild(c);
@@ -2327,7 +2330,7 @@ function openComposer(kind,files){
   // ---- video
   if(kind==="video"){
     var f=files[0];
-    if(f.size>50*1024*1024){st.textContent="That video is over 50 MB. Trim it in CapCut or your gallery, or post it on TikTok/YouTube and share the link in a text post.";st.className="cmpst err"}
+    if(f.size>35*1024*1024){st.textContent="That video is over 35 MB. Trim it in CapCut or your gallery, or post it on TikTok/YouTube and share the link in a text post.";st.className="cmpst err"}
     else{
       var vp=document.createElement("video");vp.src=URL.createObjectURL(f);vp.controls=true;vp.playsInline=true;vp.className="cmpvid";media.appendChild(vp);
       var bar=el("div","cmpbar");var fill=el("i");bar.appendChild(fill);media.appendChild(bar);st.textContent="Uploading video… keep this page open";pending++;ready();
@@ -3539,7 +3542,7 @@ function renderFans(){
     if(fanFilter==="following"){var ids=Object.keys(fol);if(!ids.length){box.textContent="";box.appendChild(el("div","empty","You're not following anyone yet. Tap a name to open a profile and follow."));return}q+="&user_id=in.("+ids.join(",")+")"}
     showFans(box,q,fanFilter==="following"?"No posts from people you follow yet.":"No fan posts yet. Be the first!");
   }
-  var HINT="Photos (up to 3) or one short video (up to 50 MB).";
+  var HINT="Photos (up to 3) or one short video (up to 35 MB).";
   if(CFG&&!SES)v.appendChild(loginBox("Want to post your own gist and grow your page?"));
   if(CFG&&SES){
     var pc=el("div","pcard");var pw=el("button","pwhat");pw.type="button";pw.appendChild(avEl(cr[SES.user.id]||{name:myName()},40));pw.appendChild(el("span",null,"What's the gist today?"));pw.onclick=postChooser;pc.appendChild(pw);
@@ -3985,7 +3988,7 @@ function openComments(p,box){
     var fl=fi.files[0];if(!fl)return;
     var isV=/^video\//.test(fl.type);
     if(!isV&&!/^image\//.test(fl.type)){toast("Pick a photo or a video");return}
-    if(isV&&fl.size>50*1024*1024){toast("That video is over 50 MB. Trim it and try again.");fi.value="";return}
+    if(isV&&fl.size>35*1024*1024){toast("That video is over 35 MB. Trim it and try again.");fi.value="";return}
     clearFile();file=fl;fileUrl=URL.createObjectURL(fl);pv.hidden=false;
     var m;if(isV){m=document.createElement("video");m.src=fileUrl;m.muted=true;m.playsInline=true;m.preload="metadata"}else{m=document.createElement("img");m.src=fileUrl;m.alt="Photo to add"}
     pv.appendChild(m);pv.appendChild(el("span",null,isV?"🎬 Video ready":"📷 Photo ready"));
