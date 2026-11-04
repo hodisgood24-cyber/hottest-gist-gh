@@ -229,6 +229,11 @@ body.locked.hasnav{padding-left:0!important;padding-bottom:0!important}
 .callov .crv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:0}
 .callov .clv.nocam{transform:none;display:grid;place-items:center;text-align:center;color:#fff;font:600 12px system-ui;padding:6px}
 .callov .clv{position:absolute;right:14px;top:calc(14px + env(safe-area-inset-top,0px));width:96px;height:136px;object-fit:cover;border-radius:14px;border:2px solid #fff6;background:#222;z-index:3;transform:scaleX(-1)}
+.callov.swap .crv{inset:auto;right:14px;top:calc(14px + env(safe-area-inset-top,0px));width:96px;height:136px;border-radius:14px;border:2px solid #fff6;z-index:4}
+.callov.swap .clv:not(.nocam){inset:0;width:100%;height:100%;right:auto;top:0;border:0;border-radius:0;z-index:0}
+.callov .clv{cursor:pointer}
+.callov .callbar,.callov .cmid{transition:opacity .25s}
+.callov.hideui .callbar,.callov.hideui .cmid{opacity:0;pointer-events:none}
 .callov .callbar{display:flex;gap:22px;justify-content:center;z-index:3}
 .callov .cb{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:0}
 .callov .cb svg{width:62px;height:62px;padding:18px;box-sizing:border-box;border-radius:50%;background:#ffffff26;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -3528,7 +3533,18 @@ function callBtns(){
   if(C.state==="incoming"){mk("no","Decline",PH,function(){callDecline()});mk("yes","Accept",PH,function(){callAccept()});return}
   var mic=mk("","Mute",'<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',function(){var t=C.stream&&C.stream.getAudioTracks()[0];if(!t)return;t.enabled=!t.enabled;mic.classList.toggle("off",!t.enabled);mic.lastChild.textContent=t.enabled?"Mute":"Unmute"});
   if(C.kind==="video"){var cam=mk("","Camera",'<svg viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M22 8l-6 4 6 4z"/></svg>',function(){var t=C.stream&&C.stream.getVideoTracks()[0];if(!t)return;t.enabled=!t.enabled;cam.classList.toggle("off",!t.enabled);C.ui.lv.style.visibility=t.enabled?"visible":"hidden"})}
+  if(C.kind==="video"&&navigator.mediaDevices&&navigator.mediaDevices.enumerateDevices){mk("","Flip",'<svg viewBox="0 0 24 24"><path d="M20 7h-3l-1.500-2h-7L7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"/><path d="M9 13a3 3 0 0 1 5-2l1 1M15 13a3 3 0 0 1-5 2l-1-1"/></svg>',function(){callFlip()})}
   mk("no","End",PH,function(){callHang(true)});
+}
+function callFlip(){
+  var C=CALL;if(!C||!C.stream)return;var old=C.stream.getVideoTracks()[0];if(!old)return toast("Your camera isn't on.");
+  C.face=C.face==="environment"?"user":"environment";
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:C.face},width:{ideal:640}}}).then(function(ns){
+    var nt=ns.getVideoTracks()[0];if(CALL!==C){nt.stop();return}
+    var sd=C.pc&&C.pc.getSenders().filter(function(x){return x.track&&x.track.kind==="video"})[0];
+    old.stop();C.stream.removeTrack(old);C.stream.addTrack(nt);if(sd)sd.replaceTrack(nt);
+    C.ui.lv.srcObject=C.stream;C.ui.lv.style.transform=C.face==="user"?"scaleX(-1)":"none";
+  }).catch(function(){C.face=C.face==="environment"?"user":"environment";toast("Couldn't switch the camera.")});
 }
 function callMedia(kind){
   var au={echoCancellation:true,noiseSuppression:true},md=navigator.mediaDevices;
@@ -3547,12 +3563,22 @@ function callPc(){
   pc.onicecandidate=function(e){if(e.candidate&&C.id&&C.sendIce)api("rpc/call_ice_add",{p_id:C.id,p_cand:JSON.stringify(e.candidate)}).catch(function(){})};
   pc.onconnectionstatechange=function(){
     if(!CALL||CALL!==C)return;
-    if(pc.connectionState==="connected"&&!C.t0){C.t0=Date.now();ringOff();C.ui.o.classList.add("live");C.ui.mid.classList.toggle("vid",C.kind==="video");callTimer()}
+    if(pc.connectionState==="connected"&&!C.t0){C.t0=Date.now();ringOff();C.ui.o.classList.add("live");callWake(C);callAutoHide(C);C.ui.mid.classList.toggle("vid",C.kind==="video");callTimer()}
+    if(pc.connectionState==="disconnected"&&C.t0){C.ui.st.textContent="Reconnecting…"}
+    if(pc.connectionState==="connected"&&C.t0)callTimer();
     if(pc.connectionState==="failed"){toast("Call failed. The connection couldn't be made.");callHang(true)}
   };
-  if(C.kind==="video"){var lv=C.ui.lv;lv.srcObject=C.stream;var lp=lv.play();lp&&lp.catch&&lp.catch(function(){});
+  if(C.kind==="video"){var lv=C.ui.lv;lv.onclick=function(){C.ui.o.classList.toggle("swap")};lv.srcObject=C.stream;var lp=lv.play();lp&&lp.catch&&lp.catch(function(){});
     if(!C.stream.getVideoTracks().length){lv.style.display="none";var nc=el("div","clv nocam","Your camera is off");C.ui.o.appendChild(nc);if(C.stream.camWhy){var w=el("p","cst",C.stream.camWhy);w.style.cssText="position:absolute;left:16px;right:16px;bottom:130px;text-align:center;z-index:3;font-size:14px";C.ui.o.appendChild(w)}}}
   return pc;
+}
+function callWake(C){try{if(navigator.wakeLock)navigator.wakeLock.request("screen").then(function(w){C.wake=w}).catch(function(){})}catch(e){}}
+function callAutoHide(C){
+  if(C.kind!=="video")return;var o=C.ui.o,t;
+  function show(){o.classList.remove("hideui");clearTimeout(t);t=setTimeout(function(){if(CALL===C)o.classList.add("hideui")},5000)}
+  C.hideT=function(){clearTimeout(t)};
+  o.addEventListener("click",function(e){if(e.target.closest(".cb,.clv"))return;if(o.classList.contains("hideui"))show();else{o.classList.add("hideui");clearTimeout(t)}});
+  o.addEventListener("click",function(e){if(e.target.closest(".cb"))show()});show();
 }
 function callGather(pc){return new Promise(function(res){if(pc.iceGatheringState==="complete")return res();var t=setTimeout(res,3000);pc.addEventListener("icegatheringstatechange",function f(){if(pc.iceGatheringState==="complete"){clearTimeout(t);pc.removeEventListener("icegatheringstatechange",f);res()}})})}
 function callTimer(){var C=CALL;clearInterval(C.tm);function u(){if(!CALL||CALL!==C)return;var s=Math.floor((Date.now()-C.t0)/1000);C.ui.st.textContent=Math.floor(s/60)+":"+("0"+(s%60)).slice(-2)}u();C.tm=setInterval(u,1000)}
@@ -3572,7 +3598,7 @@ function callPollState(){
 function callClose(){
   var C=CALL;if(!C)return;CALL=null;ringOff();clearInterval(C.poll);clearInterval(C.tm);
   try{GSND.raw("hang")}catch(e){}
-  try{C.pc&&C.pc.close()}catch(e){}
+  try{C.pc&&C.pc.close()}catch(e){}try{C.wake&&C.wake.release()}catch(e){}try{C.hideT&&C.hideT()}catch(e){}
   try{C.stream&&C.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}
   if(C.ui&&C.ui.o)C.ui.o.remove();callOv=null;document.body.classList.remove("incall");
   if(viewName==="chat"&&chatUid===C.peer&&typeof pullNow==="function")pullNow();
