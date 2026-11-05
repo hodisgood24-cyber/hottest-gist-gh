@@ -1,6 +1,35 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "youtube-music-top-ghanaian-projects-2026",
+      "title": "MOLIY's BADDIES leads the most-streamed Ghanaian projects on YouTube Music in 2026",
+      "cat": "Trending",
+      "by": "News desk",
+      "body": "Pulse Ghana has published its list of the 10 most-streamed Ghanaian projects on YouTube Music so far this year, and MOLIY's BADDIES sits far out in front with 632.5 million streams 🔥\n\nBlack Sherif's Sun Sherif Vol. 1 is second with 85.2 million, followed by KiDi's Where Do We Go From Here at 8.97 million, O'Kenneth's CAME OF AGE at 8.7 million, and the King Promise and Mr Eazi collaboration See What We've Done at 8.2 million.\n\nThe rest of the top 10 is Kweku Smoke's No Days Off, Kuami Eugene's Sweet Boy, Samini's Origin8A, Oseikrom Sikanii's 9 and Reggie's Guy Guy Mmienu.\nSource: Pulse Ghana",
+      "ts": 1793861315735,
+      "link": "https://www.pulse.com.gh/story/top-10-ghanaian-projects-youtube-music-2026-2026110414225982217",
+      "images": [
+          "images/youtube-music-top-ghanaian-projects-2026.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
+      "id": "tofamba-asumdwe-single",
+      "title": "Singer Tofamba to release new single \"AsumDwe\" on November 6",
+      "cat": "News",
+      "by": "News desk",
+      "body": "Ghanaian singer Tofamba is dropping a new single titled \"AsumDwe\" on November 6 🎶\n\nThe song is about inner peace, self-discovery and freedom, and draws on her own experiences. She says she learned that avoiding difficult situations does not make them go away, so she had to face the things holding her back.\n\nTofamba hopes listeners going through their own struggles will feel less alone and be encouraged to keep moving forward. She describes the single as a glimpse of the woman she is becoming.\nSource: MyJoyOnline",
+      "ts": 1793861314735,
+      "link": "https://www.myjoyonline.com/singer-tofamba-confronts-fear-embraces-self-discovery-in-new-single-asumdwe/",
+      "images": [
+          "images/tofamba-asumdwe-single.jpg"
+      ],
+      "pin": false,
+      "status": "live",
+      "eventAt": 1793923200000
+  },
+  {
         "id": "kweku-smoke-bra-no1-apple-music-ghana",
         "title": "Kweku Smoke's \"Bra\" takes No. 1 on Apple Music Ghana, and he now holds 13 of the top 20",
         "cat": "Afrobeats",
