@@ -1,6 +1,21 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "kidi-crazy-world-concert",
+      "title": "KiDi to headline first \"Crazy World\" concert at Ghud Park on December 4",
+      "cat": "Events",
+      "by": "News desk",
+      "body": "KiDi is set to headline his first flagship concert, Crazy World, on Friday, December 4 at Ghud Park, Accra Mall 🎤\n\nThe show lands on the Farmers' Day holiday and promises a festival-style experience with interactive installations and immersive entertainment zones. It draws on his album Where Do We Go From Here?, and KiDi says it will be different on every level.\n\nIt follows a sold-out London headline show and builds on his Likor on the Beach series at Polo Beach Club. Early Bird tickets are gone, but General Admission and VIP are on sale at crazyworld.live or by dialing *714*567#, with packages for couples, groups and families.\nSource: MyJoyOnline",
+      "ts": 1793893705485,
+      "link": "https://myjoyonline.com/kidi-to-headline-first-crazy-world-concert-at-ghud-park-on-december-4",
+      "images": [
+          "images/kidi-crazy-world-concert.jpg"
+      ],
+      "pin": false,
+      "status": "live",
+      "eventAt": 1796342400000
+  },
+  {
       "id": "youtube-music-top-ghanaian-projects-2026",
       "title": "MOLIY's BADDIES leads the most-streamed Ghanaian projects on YouTube Music in 2026",
       "cat": "Trending",
