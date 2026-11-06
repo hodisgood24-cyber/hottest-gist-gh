@@ -1,6 +1,34 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "king-paluta-fameye-good-feeling",
+    "title": "King Paluta and Fameye team up on new single \"Good Feeling\"",
+    "cat": "Highlife",
+    "body": "Two of Ghana's hottest voices are joining forces 🎶 King Paluta has teamed up with Fameye on a new song called \"Good Feeling\", dropping today, Friday, November 6.\n\nThe single arrives on all major streaming platforms and follows Paluta's recent releases \"Give Up and See\" and \"Away (Prayer)\".\n\nFans have been waiting to hear the two award-winning artistes on the same record, so expect it to get plenty of spins this weekend.\nSource: GhanaWeb",
+    "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Award-Winning-duo-King-Paluta-Fameye-set-to-join-forces-on-new-song-Good-Feeling-2059932",
+    "ts": 1793947740114,
+    "by": "News desk",
+    "images": [
+      "images/king-paluta-fameye-good-feeling.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "davido-wizkid-joint-tour-500k",
+    "title": "Davido says a Wizkid joint tour would cost $500,000 a show",
+    "cat": "Afrobeats",
+    "body": "Davido has floated the idea of a joint tour with Wizkid, and he says he would ask for $500,000 per show 🔥\n\nSpeaking on the IONWANNATALK show, he said such a tour would draw huge crowds around the world. He was less sure about a collaborative single, pointing to the D'banj and 2Baba record as an example of a team-up that did not make much impact.\n\nDavido added that the two have not recorded together in about 10 years, and that he has moved past their earlier disagreements.\nSource: Pulse Ghana",
+    "link": "https://www.pulse.com.gh/story/davido-wizkid-joint-tour-500k-fee-2026110517043793084",
+    "ts": 1793947740113,
+    "by": "News desk",
+    "images": [
+      "images/davido-wizkid-joint-tour-500k.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
       "id": "kidi-crazy-world-concert",
       "title": "KiDi to headline first \"Crazy World\" concert at Ghud Park on December 4",
       "cat": "Events",
