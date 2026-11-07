@@ -1,6 +1,34 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "sarkodie-african-diaries-tour-kenya",
+    "title": "Sarkodie takes his African Diaries tour to Kenya as London O2 show passes 75% sold",
+    "cat": "Hiplife",
+    "by": "News desk",
+    "body": "Sarkodie is on the road again 🌍 The rapper has reached Kenya on his \"African Diaries\" promotional tour, where he met Kenyan rapper Khaligraph Jones and paid a visit to Ghana's High Commissioner, Paul Evans Aidoo.\n\nTanzania, Ivory Coast and Nigeria are expected to follow, though no dates have been shared yet.\n\nBack home, over 75 percent of tickets for his Rapperholic show at London's O2 Arena in March 2027 have reportedly been sold. The venue holds more than 20,000 people, and the usual Accra Rapperholic is still lined up for December 25.\nSource: GhanaWeb",
+    "ts": 1794034123085,
+    "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Over-75-percent-of-tickets-sold-as-Sarkodie-intensifies-African-tour-2060216",
+    "images": [
+      "images/sarkodie-african-diaries-tour-kenya.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "edemfest-postponed-new-date-soon",
+    "title": "EdemFest postponed, organisers promise a new date",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "Fans of the Volta festival will have to wait a little longer 🎶 EdemFest, which was due to run alongside this year's Hogbetsotso celebrations in Anloga, has been postponed.\n\nVolta Regime Music Group announced the change on Monday, November 2, saying it spotted a \"strategic opportunity\" to take the festival further and create even greater value for the region. Edem apologised for the change.\n\nNo new date has been given yet, but the organisers say one will be announced.\nSource: 3News",
+    "ts": 1794034123084,
+    "link": "https://3news.com/travel-leisure/hogbetsotso-anloga-durbar-edemfest-postponed",
+    "images": [
+      "images/edemfest-postponed-new-date-soon.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "king-paluta-fameye-good-feeling",
     "title": "King Paluta and Fameye team up on new single \"Good Feeling\"",
     "cat": "Highlife",
