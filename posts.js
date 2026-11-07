@@ -1,6 +1,35 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "hogbetsotso-beach-concerts-stonebwoy-shatta-wale",
+    "title": "Stonebwoy, MzVee and Shatta Wale to light up Hogbetsotso beach concerts",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "Hogbetsotso weekend in Anloga is getting a big music boost 🎶 Stonebwoy and MzVee perform at Lalana Beach today, Saturday, November 7, while Shatta Wale headlines the Hogbetsotso Sunday Beach Concert at Eli Beach Resort & Hotel in Tegbi on November 8.\n\nThe festival also features the Xetoto Arts Festival, the Tsadidi Street Art Festival in Keta and the Keta To The World Concert, running from November 5 to 8.\n\nEdemFest, earlier planned for Emancipation Beach, has been postponed, with a new date to be announced.\nSource: Ghana News Agency",
+    "ts": 1794066582368,
+    "link": "https://gna.org.gh/2026/11/stonebwoy-shatta-wale-light-up-hogbetsotso-2026-as-edemfest-shifts/",
+    "images": [
+      "images/hogbetsotso-beach-concerts-stonebwoy-shatta-wale.jpg"
+    ],
+    "pin": false,
+    "status": "live",
+    "eventAt": 1794096000000
+  },
+  {
+    "id": "kuami-eugene-releasing-less-music",
+    "title": "Kuami Eugene says he is deliberately releasing less music",
+    "cat": "Highlife",
+    "by": "News desk",
+    "body": "Kuami Eugene is slowing down on purpose 🎤 In an interview on Pluzz FM, the singer said he wants to see whether fans keep supporting him through longer gaps between releases.\n\nHe says royalties, publishing and investments now bring in steady income, so money is no longer his main driver, and he hopes to reach a level like Shatta Wale's where \"you don't have to do much\".\n\nHe plans to give his single \"Stranger\" more time before the next project, and says he is not leaving music.\nSource: Pulse Ghana",
+    "ts": 1794066582367,
+    "link": "https://www.pulse.com.gh/story/kuami-eugene-shatta-wale-legacy-career-strategy-2026110611220777732",
+    "images": [
+      "images/kuami-eugene-releasing-less-music.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "sarkodie-african-diaries-tour-kenya",
     "title": "Sarkodie takes his African Diaries tour to Kenya as London O2 show passes 75% sold",
     "cat": "Hiplife",
