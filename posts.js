@@ -1,6 +1,48 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "apple-music-ghana-top20-nov-9-kweku-smoke",
+    "title": "Kweku Smoke keeps No. 1 on Apple Music Ghana as he holds 11 of the top 20",
+    "cat": "Trending",
+    "by": "News desk",
+    "body": "Kweku Smoke is still running the Apple Music Ghana chart 📈 \"Bra\" stays at No. 1 this week, with \"Faith\" featuring Lasmid at No. 2, \"Bombele\" at No. 3 and \"Survivor\" at No. 5. In all, the rapper holds 11 of the 20 spots.\n\nKofi Mole's \"BALOTELLI (SUPA)\" sits at No. 4. Asake has five songs on the list, led by \"Forgiveness\", which climbs five places to No. 6, while \"B4 B4\" by Davido, FOLA and Mayorkun jumps four places to No. 10.\n\nTwo songs are new this week: Blaqbonez and Asake's \"Chanel\" at No. 17 and Asake's \"WHY LOVE\" at No. 20. Fameye's \"Gen Z\" rises to No. 18 and Black Sherif's \"Jolie\" slips to No. 19.\nSource: Pulse Ghana",
+    "ts": 1794239376313,
+    "link": "https://www.pulse.com.gh/story/kweku-smoke-bra-apple-music-ghana-chart-no-1-2026110910513863860",
+    "images": [
+      "images/apple-music-ghana-top20-nov-9-kweku-smoke.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "agya-koo-national-creative-arts-museum",
+    "title": "Agya Koo asks government to build a national museum for Ghana's creative arts legends",
+    "cat": "News",
+    "by": "News desk",
+    "body": "Veteran Kumawood actor Agya Koo wants Ghana to start preserving its entertainment history 🎬 He is asking the government to set up a national museum honouring actors, musicians and other creative pioneers, so the country does not lose part of its culture.\n\nHe also suggested that film producers set aside 20 percent of actors' payments for a welfare or insurance fund that would support performers who fall ill, grow old or can no longer work.\n\nAgya Koo further urged experienced industry people to mentor young filmmakers as Kumawood moves to platforms like YouTube, and called on the Office of the President and the Ministry of Tourism, Culture and Creative Arts to back the plan.\nSource: Pulse Ghana",
+    "ts": 1794239376312,
+    "link": "https://www.pulse.com.gh/story/agya-koo-calls-for-national-creative-arts-museum-2026110914110846678",
+    "images": [
+      "images/agya-koo-national-creative-arts-museum.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "yohanne-dgang-bosses-outside",
+    "title": "Yohanne D'Gang returns to Ghana with 'Bosses Outside' for multi-artist album",
+    "cat": "News",
+    "by": "News desk",
+    "body": "Ghanaian recording artiste Yohanne D'Gang is back with a new track called \"Bosses Outside\" 🎤 It is his contribution to the multi-artist album \"Harris Moses Set It\", produced by CV Tay and mixed and mastered by ExtremeBeatz.\n\nThe album is planned to carry eight to ten songs from artists in Liberia, Ghana and Nigeria, and is executive-produced by Harris Moses Wogbeh, who owns MosMove Entertainment. Yohanne is CEO of Good People Social, the group launched in December 2025.\n\nHis sound mixes Afro-fusion, dancehall, Afrobeats and street anthems. The album's release date and other featured artists have not been announced yet.\nSource: GhanaWeb",
+    "ts": 1794239376311,
+    "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/From-Street-Hustle-to-the-Spotlight-Yohanne-D-Gang-returns-to-Ghana-with-Bosses-Outside-2060316",
+    "images": [
+      "images/yohanne-dgang-bosses-outside.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "hogbetsotso-beach-concerts-stonebwoy-shatta-wale",
     "title": "Stonebwoy, MzVee and Shatta Wale to light up Hogbetsotso beach concerts",
     "cat": "Events",
