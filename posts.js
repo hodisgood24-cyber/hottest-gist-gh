@@ -1,6 +1,43 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "nacee-kavod-26-review",
+    "title": "Nacee's KAVOD 26 delivers a night of drama, comedy and gospel at the National Theatre",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "The second edition of Nacee's KAVOD took over the National Theatre in Accra on Sunday, November 8, mixing stage drama, stand-up comedy and live gospel music 🙌 Roselyn Felli was MC.\n\nThe main play was a family drama about neglect, betrayal and compassion. Soul Winners, Yvonne Menz, Cindy Thompson and Kofi Peprah performed, Nacee took the stage for two big sets, and Joe Mettle closed the night. Comedians Jacinta, OB Amponsah, Parrot Mouth and Jeffrey Nortey kept the laughs coming.\n\nNacee also paid tribute to the late Bernice Offei by singing through her songs.\nSource: MyJoyOnline",
+    "ts": 1794325793490,
+    "link": "https://www.myjoyonline.com/nacees-kavod-26-delivers-an-evening-of-drama-laughter-and-gospel-music-at-national-theatre/",
+    "images": ["images/nacee-kavod-26-review.jpg"],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "lil-win-journey-to-africa-soundtrack",
+    "title": "Lil Win drops \"A Journey to Africa\" soundtrack with Medikal and Fameye",
+    "cat": "News",
+    "by": "News desk",
+    "body": "Kumawood actor and filmmaker Lil Win has released the official soundtrack for his upcoming film \"A Journey to Africa (Nzulezu)\" 🎬 He announced the drop on Facebook on November 9. Medikal delivers the rap verses and Fameye handles the vocals.\n\nThe film brings together Ghanaian and Nigerian stars, including Kanayo O. Kanayo, Patience Ozokwor, Mike Ezuruonye, Zubby Michael and Destiny Etiko. It was largely shot at Nzulezu, the stilt settlement in the Western Region, where the community made Lil Win its Nkosuohene.\n\nFans have been reacting online, with many praising Fameye's vocals and Medikal's creativity.\nSource: Pulse Ghana",
+    "ts": 1794325793491,
+    "link": "https://www.pulse.com.gh/story/lil-win-journey-to-africa-soundtrack-medikal-fameye-2026110916163470832",
+    "images": ["images/lil-win-journey-to-africa-soundtrack.jpg"],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "abiana-3rd-harmony-nov-14",
+    "title": "Abiana to release three-track project \"3rd Harmony\" on November 14",
+    "cat": "Highlife",
+    "by": "News desk",
+    "body": "Singer-songwriter Abiana is dropping a three-track audio and visual project called \"3rd Harmony\" on Saturday, November 14, on all major streaming platforms 🎶 A pre-save link is already up.\n\nThe project is built around love, connection, transformation and permanence, and is split into three movements: NOW, BECOMING and FOREVER. The tracks are \"What We Do for Love\", \"One X One\" and \"We Will Always Be Together\".\n\nHe-Brew produced the first two songs, while Nana Kofi (Finurse) produced the third. Abiana describes her sound as \"Soul Life\", a blend of soul, highlife, neo-soul and contemporary African music.\nSource: MyJoyOnline",
+    "ts": 1794325793492,
+    "link": "https://www.myjoyonline.com/abiana-to-release-three-track-project-3rd-harmony-on-november-14/",
+    "images": ["images/abiana-3rd-harmony-nov-14.jpg"],
+    "pin": false,
+    "status": "live",
+    "eventAt": 1794614400000
+  },
+  {
     "id": "apple-music-ghana-top20-nov-9-kweku-smoke",
     "title": "Kweku Smoke keeps No. 1 on Apple Music Ghana as he holds 11 of the top 20",
     "cat": "Trending",
