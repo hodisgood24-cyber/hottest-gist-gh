@@ -1,6 +1,35 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "black-sherif-zaama-disco-2026-dec-21",
+      "title": "Black Sherif confirms Zaama Disco 2026 for December 21 at Legon",
+      "cat": "Events",
+      "by": "News desk",
+      "body": "Black Sherif has announced the fifth edition of his annual Zaama Disco concert, billed as \"The Sun Swagga Edition\" 🎤 It takes place on Monday, December 21, at the University of Ghana Sports Stadium in Legon, Accra.\n\nThe show began as Mozama Disco in 2022, moved to Spintex in 2024 and returned to Legon in 2025, when early-bird tickets sold out fast and Sarkodie and KiDi performed. This year's name nods to his Sun Sherif EP.\n\nTicket prices and supporting acts have not been announced yet, but an early-bird waitlist is open on the concert website, and a daytime vendor marketplace for fashion, food, art and crafts is planned.\nSource: 3News",
+      "ts": 1794379808879,
+      "link": "https://3news.com/music/black-sherif-zaama-disco-2026",
+      "images": [
+          "images/black-sherif-zaama-disco-2026-dec-21.jpg"
+      ],
+      "pin": false,
+      "status": "live",
+      "eventAt": 1797811200000
+  },
+  {
+      "id": "paa-2026-adds-two-nominations",
+      "title": "Praise Achievement Awards 2026 adds two nominations after petitions",
+      "cat": "Gospel",
+      "by": "News desk",
+      "body": "The organisers of the Praise Achievement Awards 2026 have approved two petitions and added the nominees to the official list 🙏\n\nThe new entries are Efua Black's Holy Ghost Concert 2025 in the Christian Music Event of the Year category, and Miss Walters' \"Finding Hope\" in Urban Gospel Song of the Year.\n\nThe petition window ran from October 19 to 23. The announcement did not give a ceremony date.\nSource: allAfrica",
+      "ts": 1794379808880,
+      "link": "https://allafrica.com/stories/202611100679.html",
+      "images": [
+          "images/paa-2026-adds-two-nominations.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
     "id": "nacee-kavod-26-review",
     "title": "Nacee's KAVOD 26 delivers a night of drama, comedy and gospel at the National Theatre",
     "cat": "Events",
