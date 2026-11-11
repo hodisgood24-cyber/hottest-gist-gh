@@ -1,6 +1,20 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+        "id": "december-2026-accra-concerts-calendar",
+        "title": "December in Accra: Medikal, Stonebwoy, Bisa Kdei and Samini headline a packed concert calendar",
+        "cat": "Events",
+        "by": "News desk",
+        "body": "December is shaping up to be busy for live music in Accra 🎶 KiDi's Crazy World Concert opens the month on December 4 at Ghud Park, and Medikal's Beyond Kontrol: The Spaceship Edition follows on December 17 at Untamed Empire on Spintex Road.\n\nBisa Kdei's The Convention is set for December 20 in East Legon, Black Sherif's Zaama Disco lands at the University of Ghana Sports Stadium on December 21, and Stonebwoy's BHIM Festival takes the same venue on December 24. Samini's Xperience Festival runs in Dansoman from December 18 to 24, closing at Carl Reindorf Stadium.\n\nThe list also covers a nine-event diaspora series, Akwaaba UK's December in Ghana, running from December 18 to January 6. As of mid-November, Sarkodie's Rapperholic, Shatta Wale's December show, Detty Rave and Afro Nation had no confirmed Accra dates.\nSource: 3News",
+        "ts": 1794412140922,
+        "link": "https://3news.com/diaspora/december-in-ghana-2026-events-calendar",
+        "images": [
+              "images/december-2026-accra-concerts-calendar.jpg"
+        ],
+        "pin": false,
+        "status": "live"
+  },
+  {
       "id": "black-sherif-zaama-disco-2026-dec-21",
       "title": "Black Sherif confirms Zaama Disco 2026 for December 21 at Legon",
       "cat": "Events",
