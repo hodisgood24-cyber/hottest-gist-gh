@@ -1,6 +1,34 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "wiyaala-funsi-shs-appeal",
+    "title": "Wiyaala appeals for power and water at Funsi SHS after visiting the school",
+    "cat": "News",
+    "by": "News desk",
+    "body": "Ghanaian musician Wiyaala has called for urgent help for Funsi Senior High School in the Upper West Region after visiting the school and sharing a video on Facebook 📢\n\nShe highlighted frequent blackouts, water shortages and crowded dormitories, pointing to Boyle Dormitory, where students reportedly have gone three to four years without electricity. Some students said they wait hours for water, and the water the Fire Service brings in from a dam was described as unsafe to drink.\n\nWiyaala said the students had raised their concerns peacefully through the proper channels without getting help. She asked President John Dramani Mahama, the area MP Dr Godfred Seidu Jasaw and the District Chief Executive Adamu Shaibu to step in, and urged the Ghana Education Service to take an interest.\nSource: Adom Online",
+    "link": "https://www.adomonline.com/no-electricity-for-years-wiyaala-appeals-to-mahama-ges-over-deplorable-conditions-at-funsi-shs/",
+    "ts": 1794466207537,
+    "images": [
+      "images/wiyaala-funsi-shs-appeal.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "gomashie-creative-arts-funding-data",
+    "title": "Minister Gomashie says creative arts deserve bigger funding but the sector lacks the data to ask for it",
+    "cat": "News",
+    "by": "News desk",
+    "body": "Tourism, Culture and Creative Arts Minister Abla Dzifa Gomashie believes Ghana's creative sector could be as valuable as gold and cocoa, and says it deserves a bigger share of state funding 🎨\n\nShe explained that her ministry struggles to win money from the Ministry of Finance because, in her words, \"we cannot back it with data.\" To fix that, Ghana is working on UNESCO's 2030 Culture Indicators, a framework for measuring what culture adds to development, and has submitted its work for validation, with feedback expected in weeks or months.\n\nThe ministry is also working with the Ghana Statistical Service, which has already released early findings, and talking to the International Finance Corporation and the World Intellectual Property Organization about support for creatives, copyright protection and royalty collection.\nSource: Pulse Ghana",
+    "link": "https://www.pulse.com.gh/story/ghana-creative-arts-budget-gomashie-unesco-2026111114153289037",
+    "ts": 1794466207538,
+    "images": [
+      "images/gomashie-creative-arts-funding-data.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
         "id": "december-2026-accra-concerts-calendar",
         "title": "December in Accra: Medikal, Stonebwoy, Bisa Kdei and Samini headline a packed concert calendar",
         "cat": "Events",
