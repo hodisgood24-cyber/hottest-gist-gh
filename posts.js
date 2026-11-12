@@ -1,6 +1,48 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "chicago-hum-paare-frafra-piano",
+    "title": "Teenage rapper Chicago's Frafra-language hit \"Hum Paare\" is spreading far beyond the Upper East",
+    "cat": "Trending",
+    "body": "Buzz is building around Chicago, a young rapper from Bongo in the Upper East Region, and her Frafra-language single \"Hum Paare\" 🎶\n\nThe song, made with fellow Upper East rapper Soorebia and produced by Bolgatanga's Fasetwo, came out on October 23. It has travelled through Facebook reels, reposts and fan remakes, and listeners who don't speak Frafra are singing the hook. It reportedly reached the Shazam Ghana top 20 in early November.\n\nFans have nicknamed her mix of Frafra rap and amapiano \"Frafrapiano\". Her TikTok has about 334,700 followers, and her earlier hit \"Ba Na Zoe\" won Most Popular Song of the Year at the 2024 Upper East Music Awards.\nSource: 3News",
+    "link": "https://3news.com/showbiz/music/chicago-frafra-piano-rapper-hum-paare",
+    "by": "News desk",
+    "ts": 1794498585654,
+    "images": [
+      "images/chicago-hum-paare-frafra-piano.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "kidi-success-family-joy-not-grammy",
+    "title": "KiDi says family and joy now matter more to him than a Grammy",
+    "cat": "News",
+    "body": "KiDi says awards no longer define success for him after a decade in music, telling TV3 that his family's wellbeing, his inner joy and music that touches lives come first 🎤\n\nHe admitted he once saw a Grammy as the mark of success but now treats such prizes as milestones. He described his recent first solo headline concert in London as \"surreal\", and said his third album, Where Do We Go From Here, takes its name from a question he asked himself the morning after winning Artiste of the Year in 2022.\n\nKiDi also wants to grow from 5,000-seat crowds to 10,000, then 20,000 and eventually a stadium, and says he can and will win the TGMA top prize again.\nSource: 3News",
+    "link": "https://3news.com/showbiz/celebrities/kidi-success-family-joy-not-grammy-tv3",
+    "by": "News desk",
+    "ts": 1794498585653,
+    "images": [
+      "images/kidi-success-family-joy-not-grammy.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "d-black-music-industry-lucrative-expensive",
+    "title": "D-Black says Ghana's music industry pays better but costs more to compete in",
+    "cat": "News",
+    "body": "Rapper and entrepreneur D-Black says Ghana's music industry has become more lucrative but also more expensive, speaking on TV3's Afternoon Show 🎙️\n\nHe explained that artistes now face rising costs for production, promotion and marketing just to stay competitive, even though digital platforms let them share a link and reach a global audience instantly, compared with the old days of pressing and distributing CDs around the country.\n\nD-Black also spoke about his long partnership with E.L, which began around 2008 or 2009, and said they have released a joint five-track EP centred on women.\nSource: 3News",
+    "link": "https://3news.com/showbiz/music/ghanas-music-industry-has-become-more-lucrative-but-expensive-d-black",
+    "by": "News desk",
+    "ts": 1794498585652,
+    "images": [
+      "images/d-black-music-industry-lucrative-expensive.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "wiyaala-funsi-shs-appeal",
     "title": "Wiyaala appeals for power and water at Funsi SHS after visiting the school",
     "cat": "News",
