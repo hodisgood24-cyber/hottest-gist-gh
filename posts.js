@@ -1,6 +1,20 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "nana-quame-okyeame-qhophi-lord-kenya-influence",
+      "title": "Nana Quame names Okyeame Qhophi, Lord Kenya and Daasebre as key influences",
+      "cat": "Highlife",
+      "body": "Highlife singer Nana Quame has been reflecting on the people who shaped his sound 🎺\n\nSpeaking to comedian Ajeezay on the TikTok programme Focus, he said Okyeame Qhophi helped groom him as a highlife artiste and had shown interest in producing him. Lord Kenya, he added, convinced him to travel to Accra to record with producer Zap Mallet.\n\nNana Quame also explained that Daasebre Gyamenah's 1999 song \"Kokooko\" inspired his own \"Odo Shock\". He is also remembered for his early rise through talent shows, where he performed Kojo Antwi's songs, before releasing his debut album on Antwi's Family Spirit label.\nSource: GhanaWeb",
+      "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Nana-Quame-on-Okyeame-Qhophi-Lord-Kenya-and-Daasebre-s-influence-on-his-music-2061230",
+      "by": "News desk",
+      "ts": 1794587325154,
+      "images": [
+          "images/nana-quame-okyeame-qhophi-lord-kenya-influence.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
     "id": "el-jay-foley-biggest-breakthrough",
     "title": "E.L says Jay Foley gave him his biggest break in music",
     "cat": "Hiplife",
