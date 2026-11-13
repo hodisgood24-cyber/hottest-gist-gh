@@ -1,6 +1,48 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "el-jay-foley-biggest-breakthrough",
+    "title": "E.L says Jay Foley gave him his biggest break in music",
+    "cat": "Hiplife",
+    "body": "Rapper and producer E.L has been telling TV3's Afternoon Show how his music career took off 🎤\n\nHe said it began in senior high school with a group called Scallions, who recorded on a small microphone and a Pentium 2 computer. He credits Jay Foley with his biggest breakthrough, saying Foley gave him the chance to go full-time in music after he left his job at the Ministry of Foreign Affairs, and helped him get early TV exposure.\n\nE.L also said he would not battle M.I Abaga, whom he sees as a senior brother, but would be open to facing South African rapper Nasty C. He added that his song \"Koko\", about gratitude, was recorded after he moved to the United States.\nSource: 3News",
+    "link": "https://3news.com/showbiz/music/jay-foley-gave-me-my-biggest-breakthrough-el",
+    "by": "News desk",
+    "ts": 1794552651275,
+    "images": [
+      "images/el-jay-foley-biggest-breakthrough.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "akwaboah-spirit-album-listening-accra",
+    "title": "Akwaboah's new album \"Spirit\" gets its listening event in Accra",
+    "cat": "Events",
+    "body": "Akwaboah has held the official listening event for his new album \"Spirit\" in Accra 🎶\n\nA video shared on social media on November 11 shows actress Vivian Jill Lawrence at the event, where she took part in a cake-cutting ceremony and bought copies of the album worth $2,000.\n\nShe said Akwaboah's songs have comforted and inspired her, adding that she called his wife at dawn to say how much they mean to her.\nSource: GhanaWeb",
+    "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Vivian-Jill-splashes-2-000-on-Akwaboah-s-Spirit-album-2060983",
+    "by": "News desk",
+    "ts": 1794552651274,
+    "images": [
+      "images/akwaboah-spirit-album-listening-accra.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "okyeame-quophi-becca-hw3-highlife",
+    "title": "Okyeame Quophi says Highlife helped revive Becca's career with \"Hw3\"",
+    "cat": "Highlife",
+    "body": "Media personality and former Akyeame member Okyeame Quophi says he played a part in reviving Becca's career with the song \"Hw3\" 🎺\n\nIn a video shared online, he said Becca was struggling to reach audiences across Africa and had gone without a hit for a while. He said his wife, Stacy, introduced Becca to him, and he suggested she reconnect with Ghanaian listeners through Highlife.\n\nAccording to him, the song became a hit about a week after release. \"Ghanaians love Highlife,\" he said.\nSource: GhanaWeb",
+    "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Okyeame-Quophi-reveals-how-he-rescued-Becca-s-career-with-Hw3-song-2060989",
+    "by": "News desk",
+    "ts": 1794552651273,
+    "images": [
+      "images/okyeame-quophi-becca-hw3-highlife.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "chicago-hum-paare-frafra-piano",
     "title": "Teenage rapper Chicago's Frafra-language hit \"Hum Paare\" is spreading far beyond the Upper East",
     "cat": "Trending",
