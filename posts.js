@@ -1,6 +1,48 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "sarkodie-nobody-remy-adan-dejavu",
+    "title": "Sarkodie drops new single \"Nobody\" with Rémy Adan ahead of DeJaVu",
+    "cat": "Hiplife",
+    "body": "Sarkodie has released a new single called \"Nobody\", featuring Rémy Adan 🎤\n\nThe visualizer premiered on Sarkodie's YouTube channel on Thursday, November 12, and the song reached streaming platforms on Friday, November 13. On Apple Music it runs for 3 minutes 28 seconds. The visual was directed by Edward Pappoe and Gus Sarkodee and released through Sarkcess Music.\n\n\"Nobody\" arrives as a lead-in to Sarkodie's DeJaVu, which he has announced for November 27.\nSource: 3News",
+    "link": "https://3news.com/showbiz/music/sarkodie-nobody-remy-adan",
+    "by": "News desk",
+    "ts": 1794638989026,
+    "images": [
+      "images/sarkodie-nobody-remy-adan-dejavu.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "okyeame-kwame-bog-notes-women",
+    "title": "Okyeame Kwame welcomes Bank of Ghana's decision to honour women on new cedi notes",
+    "cat": "News",
+    "body": "Rapper Okyeame Kwame has welcomed the Bank of Ghana's decision to feature prominent Ghanaian women on its newly unveiled cedi notes, calling it a fulfilment of his long-standing advocacy 🇬🇭\n\nThe honourees are market queen Agnes Oforiwa Tagoe-Quarcoopome on the GH¢1 note, Justice Annie Ruth Jiagge, Ghana's first female High Court judge, on the GH¢10, and flag designer Theodosia Okoh on the GH¢50.\n\nOkyeame Kwame has celebrated notable Ghanaians in his own music too. His song \"Ayekoo (Big Up)\", released on September 21 and produced by Gomez Beats, names women including Theodosia Okoh, Mabel Dove Danquah and Susanna Al-Hassan.\nSource: MyJoyOnline",
+    "link": "https://www.myjoyonline.com/okyeame-kwames-advocacy-gets-massive-boost-as-bog-honours-ghanas-heroines/",
+    "by": "News desk",
+    "ts": 1794638989025,
+    "images": [
+      "images/okyeame-kwame-bog-notes-women.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "empress-gifty-gospel-artistes-own-names",
+    "title": "Empress Gifty advises married gospel artistes to build their brands on their own names",
+    "cat": "Gospel",
+    "body": "Gospel singer Empress Gifty says married female gospel artistes should build their music brands under their own names rather than their husbands' 🙏\n\nSpeaking to Andy Dosty on Joy Prime, she argued that a personal name keeps a brand intact through any change in marital status, while a husband's name in a stage name could become a problem later.\n\nThe advice comes from a chapter of a book she is writing on the challenges facing the gospel music industry.\nSource: Pulse Ghana",
+    "link": "https://www.pulse.com.gh/story/empress-gifty-gospel-artistes-stage-names-advice-2026111311505287515",
+    "by": "News desk",
+    "ts": 1794638989024,
+    "images": [
+      "images/empress-gifty-gospel-artistes-own-names.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
       "id": "nana-quame-okyeame-qhophi-lord-kenya-influence",
       "title": "Nana Quame names Okyeame Qhophi, Lord Kenya and Daasebre as key influences",
       "cat": "Highlife",
