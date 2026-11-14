@@ -1,6 +1,20 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "gramps-morgan-ghana-jamaica-festival-lineup",
+      "title": "Gramps Morgan joins the Ghana Jamaica Homecoming Festival line-up",
+      "cat": "Events",
+      "body": "Morgan Heritage singer Gramps Morgan has announced on Instagram that he will be part of the Ghana Jamaica festival, urging fans to get their tickets now 🇬🇭🇯🇲\n\nHis post tagged a number of Ghanaian names linked to the event, including Samini, Rocky Dawuni, Edem, Blakk Rasta, Gunnyboy and King Lagazee. He also shouted out the Bhim Nation and Shatta Movement fanbases, and called on fans to \"raise the consciousness in Ghana\".\n\nThe festival dates and venue were not given in his post, so keep an eye on the organisers' page for details.\nSource: DancehallMag",
+      "link": "https://www.dancehallmag.com/2026/11/14/news/gramps-morgan-joins-ghana-jamaica-homecoming-festival-lineup.html",
+      "by": "News desk",
+      "ts": 1794671338923,
+      "images": [
+          "images/gramps-morgan-ghana-jamaica-festival-lineup.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
     "id": "sarkodie-nobody-remy-adan-dejavu",
     "title": "Sarkodie drops new single \"Nobody\" with Rémy Adan ahead of DeJaVu",
     "cat": "Hiplife",
