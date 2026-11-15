@@ -1,6 +1,48 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "joseph-atarah-formula-single",
+    "title": "Prophet Joseph Atarah releases new gospel single \"Formula\"",
+    "cat": "Gospel",
+    "by": "News desk",
+    "body": "Gospel singer Prophet Joseph Atarah, who leads Believers Grace Crown Ministry International, has released a new single titled \"Formula\" 🙏\n\nThe song was produced by Dan Bassey, and the music video was directed and shot by Skyweb. It is encouraging believers to keep trusting God through difficult times.\n\nAtarah says God's blessings do not follow a formula. The single is out now on all digital music stores.\nSource: GhanaWeb",
+    "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Prophet-Joseph-Atarah-releases-new-single-Formula-2061270",
+    "ts": 1794725698339,
+    "images": [
+      "images/joseph-atarah-formula-single.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "kofi-mole-balotelli-marseille-tribute",
+    "title": "Marseille uses Kofi Mole's \"Balotelli\" in tribute video to Mario Balotelli",
+    "cat": "Hiplife",
+    "by": "News desk",
+    "body": "Kofi Mole's song \"Balotelli\" has got some international love, after French club Olympique de Marseille used it in a video celebrating Mario Balotelli's goals 🎤\n\nThe clip put together Balotelli's goals at the Stade Vélodrome. He joined Marseille from OGC Nice in January 2019 and scored eight goals in 15 Ligue 1 games, becoming a fan favourite in his short stay.\n\nThe song takes its inspiration from the Italian striker's name.\nSource: GhanaWeb",
+    "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Marseille-gives-Kofi-Mole-s-Balotelli-song-spotlight-in-Mario-Balotelli-tribute-2061299",
+    "ts": 1794725698338,
+    "images": [
+      "images/kofi-mole-balotelli-marseille-tribute.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "sirjones-twum-only-you-jb",
+    "title": "JB hails SIRJones Twum as the best Afro-gospel act, backs \"Only You\"",
+    "cat": "Gospel",
+    "by": "News desk",
+    "body": "Onua TV's Maakye host JB has praised Afro-gospel musician SIRJones Twum, calling him the best act in the genre in Ghana 🙌\n\nThe endorsement came on Friday while Twum was promoting his single \"Only You\", released a few weeks ago. Twum describes its high-tempo sound as \"Gospel Drill\", and JB said he wants to play it on his show every morning because the style is so uncommon.\n\nTwum started recording in 2009, and the song is on all streaming platforms.\nSource: GhanaWeb",
+    "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/You-re-the-best-Media-personality-JB-endorses-Afro-gospel-musician-SIRJones-Twum-2061366",
+    "ts": 1794725698337,
+    "images": [
+      "images/sirjones-twum-only-you-jb.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
       "id": "gramps-morgan-ghana-jamaica-festival-lineup",
       "title": "Gramps Morgan joins the Ghana Jamaica Homecoming Festival line-up",
       "cat": "Events",
