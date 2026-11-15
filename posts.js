@@ -1,6 +1,34 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "shatta-wale-big-one-new-song",
+    "title": "Shatta Wale drops new song \"Big One\" on YouTube",
+    "cat": "Afrobeats",
+    "by": "News desk",
+    "body": "Shatta Wale has released a new song called \"Big One\", and it is already getting plays 🔥\n\nThe audio went up on his official YouTube channel in the early hours of Friday, November 13, with cover art crediting Nawtyboi for the production. By Sunday morning it had passed 40,000 plays.\n\nThe release comes during a busy stretch for the artiste. He was billed to headline the Hogbetsotso beach concert at Tegbi on November 8, and he has announced Shatta Fest UK 2026 for August in London.\nSource: 3News",
+    "link": "https://3news.com/showbiz/music/shatta-wale-big-one-new-song",
+    "ts": 1794757727722,
+    "images": [
+      "images/shatta-wale-big-one-new-song.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "dada-hafco-kofi-kinaata-enka-ho-da",
+    "title": "Dada Hafco and Kofi Kinaata team up on highlife single \"Enka Ho Da\"",
+    "cat": "Highlife",
+    "by": "News desk",
+    "body": "Highlife artiste Dada Hafco has teamed up with Kofi Kinaata on a new single titled \"Enka Ho Da\" 🎶\n\nThe official audio is on Dada Hafco's YouTube channel, runs 3 minutes 13 seconds, and was produced by DDT under Dadabees Empire Ent. A smart link points fans to their favourite streaming platform.\n\nBoth artistes were on the Best Highlife Artiste shortlist at the 2021 VGMA, and Kinaata won Songwriter of the Year for a fifth time at the 26th Telecel Ghana Music Awards in May 2025.\nSource: 3News",
+    "link": "https://3news.com/showbiz/music/dada-hafco-kofi-kinaata-enka-ho-da",
+    "ts": 1794757727721,
+    "images": [
+      "images/dada-hafco-kofi-kinaata-enka-ho-da.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "joseph-atarah-formula-single",
     "title": "Prophet Joseph Atarah releases new gospel single \"Formula\"",
     "cat": "Gospel",
