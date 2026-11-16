@@ -1,6 +1,20 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "tidal-rave-2026-davido-closes-la-palm",
+    "title": "Davido closes Tidal Rave 2026 at La Palm as Lasmid joins Kweku Smoke on stage",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "Tidal Rave 2026 lit up La Palm Royal Beach Hotel in Accra over the weekend, with Davido closing the night 🔥\n\nThe beach festival, run by EchoHouse under the theme \"No Raver Left Behind\", ran from Saturday, November 14 into the early hours of Sunday. Kweku Smoke's set started before midnight, and Lasmid came out to join him on stage.\n\nDavido was still performing after 4am. Kwesi Arthur and Mr Drew were on the billed line-up, and Pulse Ghana set up a games corner with influencers for festivalgoers.\nSource: 3News",
+    "link": "https://3news.com/showbiz/music/tidal-rave-2026-davido-kwesi-arthur-kweku-smoke-la-palm",
+    "ts": 1794812023060,
+    "images": [
+      "images/tidal-rave-2026-davido-closes-la-palm.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "shatta-wale-big-one-new-song",
     "title": "Shatta Wale drops new song \"Big One\" on YouTube",
     "cat": "Afrobeats",
