@@ -1,6 +1,48 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "king-ayisoba-grammy-nomination-2027",
+    "title": "King Ayisoba earns first Grammy nomination with Rocky Dawuni",
+    "cat": "News",
+    "by": "News desk",
+    "body": "Ghana has a new Grammy nominee! King Ayisoba has been nominated for the first time, in the Best African Music Performance category 🎉\n\nHis nod comes for \"No Tradition, No Africa\", a collaboration with Rocky Dawuni that was released on May 29, 2026 and produced by Panji Anoff. The song is about African identity and protecting cultural heritage, and it appears on his seventh studio album, Pure Confusion.\n\nHe is up against Asake, Angélique Kidjo and Ayra Starr, Tems, and Wizkid with Asake. The 69th Grammy Awards take place on February 7, 2027 in Los Angeles.\nSource: Pulse Ghana",
+    "link": "https://www.pulse.com.gh/story/king-ayisoba-grammy-nomination-no-tradition-no-africa-2026111614283160932",
+    "ts": 1794844139303,
+    "images": [
+      "images/king-ayisoba-grammy-nomination-2027.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "okenneth-kweku-smoke-apple-music-ghana-top-20-nov-16",
+    "title": "O'Kenneth and Kweku Smoke hold 16 of Apple Music Ghana's Top 20",
+    "cat": "Trending",
+    "by": "News desk",
+    "body": "O'Kenneth and Kweku Smoke are dominating the Apple Music Ghana chart today 🔥\n\nO'Kenneth has 11 songs in the Top 20 and Kweku Smoke has 5, which means the two artistes own 16 of the 20 spots. \"Faith\" by Kweku Smoke and Lasmid sits at number one, followed by Kofi Mole's \"Balotelli (Supa)\" at number two and Kweku Smoke's \"Bra\" at number three.\n\nThe other four places in the Top 20 belong to Nigerian acts, including Asake, Blaqbonez and Davido. The chart is updated daily, so positions can shift.\nSource: Pulse Ghana",
+    "link": "https://www.pulse.com.gh/story/okenneth-kweku-smoke-ghana-apple-music-top-20-2026111611090488016",
+    "ts": 1794844139302,
+    "images": [
+      "images/okenneth-kweku-smoke-apple-music-ghana-top-20-nov-16.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "phlakes-outside-dlar-vol-2",
+    "title": "Phlakes releases street-inspired single \"Outside\" ahead of DLAR Vol. 2",
+    "cat": "Hiplife",
+    "by": "News desk",
+    "body": "Phlakes is back with a new single called \"Outside\" 🎤\n\nThe street-inspired record has a catchy hook built around the North Side and South Side, and speaks about different lifestyles and experiences. It is available on Audiomack.\n\n\"Outside\" is a preview of his upcoming tape, Dreamers, Leaders and Rebels Volume 2, which focuses on identity, growth and new perspectives.\nSource: MyJoyOnline",
+    "link": "https://www.myjoyonline.com/phlakes-releases-outside-ahead-of-upcoming-dlar-vol-2-project/",
+    "ts": 1794844139301,
+    "images": [
+      "images/phlakes-outside-dlar-vol-2.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "tidal-rave-2026-davido-closes-la-palm",
     "title": "Davido closes Tidal Rave 2026 at La Palm as Lasmid joins Kweku Smoke on stage",
     "cat": "Events",
