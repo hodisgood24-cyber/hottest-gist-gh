@@ -1,6 +1,34 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "december-2026-concerts-ghana-full-list",
+    "title": "20 shows lined up in Ghana from November 20 to New Year's Eve",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "December in Ghana is shaping up to be busy 🎟️ Pulse Ghana has pulled together a list of 20 shows running from November 20 to December 31.\n\nKiDi's Crazyworld is on December 4 at GHUD Park, Lasmid performs on December 5 at the Palms Convention Centre, and Gyakie plays GHUD Park on December 12. Black Sherif's Zaama Disco is on December 21 at the University of Ghana Sports Stadium, with Stonebwoy's Bhim Concert following there on December 24.\n\nSarkodie's Rapperholic is listed for December 25, Victony and Young Jonn play Future Club on December 28 and 29, and King Promise's 5 Star Show is on December 30 at GHUD Park. Prices range from free entry to GH₵2,000 for premium access, and some venues are still to be announced.\nSource: Pulse Ghana",
+    "link": "https://www.pulse.com.gh/story/december-2026-concerts-ghana-venues-dates-ticket-prices-2026111711525234350",
+    "ts": 1794930545692,
+    "images": [
+      "images/december-2026-concerts-ghana-full-list.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "burna-boy-shakira-dai-dai-grammy-2027",
+    "title": "Burna Boy and Shakira's \"Dai Dai\" gets 2027 Grammy nod",
+    "cat": "News",
+    "by": "News desk",
+    "body": "Burna Boy and Shakira have earned a 2027 Grammy nomination for \"Dai Dai\", their song linked to the 2026 FIFA World Cup 🏆\n\nIt is up for Best Global Music Performance, where it faces Angélique Kidjo's \"Bando [Orchestral]\" and three other recordings. This is Burna Boy's 14th Grammy nomination, while Shakira gets her first in this category. Kidjo is also nominated in Best African Music Performance and Best Global Music Album.\n\nThe Recording Academy announced the nominees on November 16, and the 69th Grammy Awards take place on February 7, 2027 at the Crypto.com Arena in Los Angeles.\nSource: Pulse Ghana",
+    "link": "https://www.pulse.com.gh/story/burna-boy-shakira-world-cup-grammy-nomination-2027-2026111711124374655",
+    "ts": 1794930545691,
+    "images": [
+      "images/burna-boy-shakira-dai-dai-grammy-2027.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "king-ayisoba-grammy-nomination-2027",
     "title": "King Ayisoba earns first Grammy nomination with Rocky Dawuni",
     "cat": "News",
