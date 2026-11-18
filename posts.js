@@ -1,6 +1,34 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "olamide-time-and-space-album",
+    "title": "Olamide drops 10-track album \"Time and Space\"",
+    "cat": "Afrobeats",
+    "by": "News desk",
+    "body": "Olamide has released his 13th studio album, Time and Space, which landed on streaming platforms on Monday, November 16 🎧\n\nThe project has 10 tracks and runs about 33 minutes. FOLA is the only guest, joining him on \"Jaiye\", while Olamide carries the rest of the songs alone. The tracklist includes \"Elohim\", \"Skoskola\", \"Say Less\", \"Burukutu\", \"Alujon\" and \"Jogor\".\n\nIt comes through his YBNL Nation label with EMPIRE. \"Burukutu\" was the earlier single, out since October 20, with a video directed by TG Omori.\nSource: 3news",
+    "link": "https://3news.com/showbiz/music/olamide-drops-10-track-album-time-and-space-via-ybnl-nation-and-empire",
+    "ts": 1794984899405,
+    "images": [
+      "images/olamide-time-and-space-album.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "raye-ghana-roots-leads-2027-grammy-nominations",
+    "title": "Raye, with Ghanaian roots, leads 2027 Grammy nominations with 11",
+    "cat": "News",
+    "by": "News desk",
+    "body": "British singer Raye has topped the 2027 Grammy nominations with 11, including album, record and song of the year 🏆\n\nShe has said her mum and uncle were both raised in Ghana, and her uncle bought her first MacBook for her 13th birthday, where she made the demos that sparked her love of production. Her total ties the most any woman has received in one year.\n\nGhana is also represented by King Ayisoba and Rocky Dawuni, nominated for best African music performance with \"No Tradition, No Africa\". Winners will be announced on February 7, 2027 in Los Angeles.\nSource: 3news",
+    "link": "https://3news.com/showbiz/music/raye-ghanaian-roots-leads-2027-grammy-nominations-11",
+    "ts": 1794984899404,
+    "images": [
+      "images/raye-ghana-roots-leads-2027-grammy-nominations.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "december-2026-concerts-ghana-full-list",
     "title": "20 shows lined up in Ghana from November 20 to New Year's Eve",
     "cat": "Events",
