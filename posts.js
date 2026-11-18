@@ -1,6 +1,35 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "kofi-kinaata-ghana-70-canada-2027",
+    "title": "Kofi Kinaata to headline Ghana @ 70 concerts in Canada in 2027",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "Kofi Kinaata is heading to Canada! 🇨🇦 He will headline the Ghana @ 70 Heritage and Music Concert, marking Ghana's 70th independence anniversary, and says it will be his first time performing in the country.\n\nThe shows are set for Ottawa on February 27, 2027 at SP Event Center, and Toronto on March 6, 2027 at 1000 Finch, which will host the main national celebration. Sister Afia is also on the bill, and gospel star Empress Gifty is billed for the thanksgiving service.\n\nThe tour is organised by Willbe Events together with Kinaata's management, Team Move Ghana Limited.\nSource: 3news",
+    "link": "https://3news.com/showbiz/music/kofi-kinaata-headline-ghana-70-heritage-concert-canada-2027",
+    "ts": 1795016970578,
+    "images": [
+      "images/kofi-kinaata-ghana-70-canada-2027.jpg"
+    ],
+    "pin": false,
+    "status": "live",
+    "eventAt": 1803686400000
+  },
+  {
+    "id": "sunshine-selina-western-gospel-awards-diaspora",
+    "title": "Sunshine Selina wins Best Diaspora Artiste at 2026 Western Gospel Awards",
+    "cat": "Gospel",
+    "by": "News desk",
+    "body": "US-based Ghanaian gospel singer Sunshine Selina has been crowned Overall Best Diaspora Artiste of the Year at the 2026 Western Gospel Awards 🏆\n\nThe event, which has just ended, brought together gospel musicians, pastors, industry players and fans from across the Western Region and beyond. In her acceptance speech she described herself as the 2026 Western Best Diaspora Gospel Artiste winner.\nSource: GhanaWeb",
+    "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Sunshine-Selina-grabs-top-award-at-2026-Western-Gospel-Awards-2061753",
+    "ts": 1795016970578,
+    "images": [
+      "images/sunshine-selina-western-gospel-awards-diaspora.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "olamide-time-and-space-album",
     "title": "Olamide drops 10-track album \"Time and Space\"",
     "cat": "Afrobeats",
