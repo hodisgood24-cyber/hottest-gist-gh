@@ -1,6 +1,31 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "kojo-antwi-emy-africa-legend-award-2026",
+    "title": "Kojo Antwi to receive Legend Award at the 11th EMY Africa Awards",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "Highlife icon Kojo Antwi is set to be honoured with the Legend Award at the 11th EMY Africa Awards 🏆 Organisers describe him as a true icon of African music.\n\nThe ceremony takes place on Saturday, November 21, 2026 at the Grand Arena of the Accra International Conference Centre. Wode Maya and Mo Abudu have also been named as honorary honourees, with more names to be announced before the big night.\n\nWinners in the competitive categories are decided by public vote, which runs on the awards website and through likes on its Instagram posts.\nSource: 3news",
+    "link": "https://3news.com/showbiz/music/kojo-antwi-legend-award-2026-emy-africa",
+    "ts": 1795071063557,
+    "images": ["images/kojo-antwi-emy-africa-legend-award-2026.jpg"],
+    "pin": false,
+    "status": "live",
+    "eventAt": 1795219200000
+  },
+  {
+    "id": "adom-kiki-worshippers-heart-kumasi-2026",
+    "title": "Adom Kiki's Worshipper's Heart concert draws thousands in Kumasi",
+    "cat": "Gospel",
+    "by": "News desk",
+    "body": "Gospel minister Adom Kiki led thousands in worship at the fifth edition of The Worshipper's Heart, held at CCC Tech Atigya in Kumasi 🙏\n\nEsther Smith, Joe Mettle, Kofi Owusu Peprah and Efe Grace ministered as guests, and Nana Ama McBrown was among those in attendance.\n\nThere was also a surprise moment when Nana Yaw Ofori Atta, known as One Man Thousand, performed his hit You Dey Feel The Vibe and then joined Kiki to perform a new collaboration live for the first time. The song is expected to be released at a later date.\nSource: GhanaWeb",
+    "link": "https://ghanaweb.com/GhanaHomePage/entertainment/Kiki-leads-thousands-in-a-night-of-worship-as-Esther-Smith-Joe-Mettle-others-light-up-Kumasi-2061942",
+    "ts": 1795071063558,
+    "images": ["images/adom-kiki-worshippers-heart-kumasi-2026.jpg"],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "kofi-kinaata-ghana-70-canada-2027",
     "title": "Kofi Kinaata to headline Ghana @ 70 concerts in Canada in 2027",
     "cat": "Events",
