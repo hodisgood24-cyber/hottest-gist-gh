@@ -1,6 +1,35 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "energy-concert-tic-reggie-obrafour-zen-garden",
+    "title": "TiC, Reggie Rockstone and Obrafour set for the Energy Concert at Zen Garden",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "Three legends, one stage, one night 🎤 TiC, Reggie Rockstone and Obrafour are billed to headline the Energy Concert in Accra.\n\nThe show takes place on Saturday, November 21, 2026 at Zen Garden, with TiC leading the initiative behind it.\n\nReports so far do not give ticket prices or where to buy them, so keep an eye on the organisers' channels for details.\nSource: MyJoyOnline",
+    "ts": 1795103315846,
+    "link": "https://www.myjoyonline.com/tic-reggie-rockstone-and-obrafour-to-headline-energy-concert/",
+    "images": [
+      "images/energy-concert-tic-reggie-obrafour-zen-garden.jpg"
+    ],
+    "pin": false,
+    "status": "live",
+    "eventAt": 1795219200000
+  },
+  {
+    "id": "sarkodie-urges-government-fund-film-industry",
+    "title": "Sarkodie calls on government to put more funding into Ghana's film industry",
+    "cat": "News",
+    "by": "News desk",
+    "body": "Rapper Sarkodie has urged the Ghanaian government to back the film industry with more funding 🎬\n\nIn a post on X on November 19, he compared Ghana's storytelling potential with the way Hollywood has shaped America's image worldwide, saying Africa has not yet fully used creative content to change perceptions.\n\nHe argued that film can boost tourism, attract investment and strengthen national identity, and said the creative sector is often left out when budgets are approved. His message: \"Let's revive our film industry.\"\nSource: Pulse Ghana",
+    "ts": 1795103315845,
+    "link": "https://www.pulse.com.gh/story/sarkodie-ghana-film-industry-government-funding-2026111914520842275",
+    "images": [
+      "images/sarkodie-urges-government-fund-film-industry.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
     "id": "kojo-antwi-emy-africa-legend-award-2026",
     "title": "Kojo Antwi to receive Legend Award at the 11th EMY Africa Awards",
     "cat": "Events",
