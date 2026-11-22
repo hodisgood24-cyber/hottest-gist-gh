@@ -1,6 +1,18 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "emy-africa-2026-kweku-smoke-kojo-antwi-winners",
+      "title": "Kweku Smoke and Kojo Antwi honoured at the 11th EMY Africa Awards",
+      "cat": "Events",
+      "by": "News desk",
+      "body": "Rapper Kweku Smoke took home Man of the Year – Music at the 11th EMY Africa Awards 🏆 Highlife veteran Kojo Antwi was also honoured as Legend of the Year.\n\nThe ceremony was held on Saturday, November 21, 2026 at the Grand Arena of the Accra International Conference Centre. Moses Kwesi Baiden Jnr was named Ultimate Man of the Year, while Majid Michel won Actor of the Year and Antoine Semenyo took the sports honour.\n\nCamidoh, Akwaboah, RCee and Titi Owusu were among the performers, with Sefa closing the night.\nSource: GBC Ghana",
+      "link": "https://www.gbcghanaonline.com/entertainment/11th-emy-africa-2/2026/",
+      "ts": 1795362555476,
+      "images": ["images/emy-africa-2026-kweku-smoke-kojo-antwi-winners.jpg"],
+      "pin": false,
+      "status": "live"
+  },
+  {
     "id": "energy-concert-tic-reggie-obrafour-zen-garden",
     "title": "TiC, Reggie Rockstone and Obrafour set for the Energy Concert at Zen Garden",
     "cat": "Events",
