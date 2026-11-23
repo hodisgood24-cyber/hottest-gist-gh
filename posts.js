@@ -1,6 +1,34 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "apple-music-ghana-top-20-kweku-smoke-nine-songs-nov-23",
+      "title": "Kweku Smoke holds nine spots on Apple Music Ghana's Top 20",
+      "cat": "Trending",
+      "by": "News desk",
+      "body": "Kweku Smoke is running the Apple Music Ghana chart this Monday 📈 The rapper has nine songs in the Top 20, led by \"Faith\" with Lasmid at No. 1.\n\nKofi Mole's \"Balotelli (Supa)\" sits at No. 2, ahead of Kweku Smoke's \"Bra\" at No. 3. Asake has four entries, while O'Kenneth is down to two after claiming 11 spots on last week's list.\n\nOther Ghanaian names in the chart include Kwesi Arthur with \"Home\" and the Fameye, Joey B and Sarkodie link-up \"Gen Z II\".\nSource: Pulse Ghana",
+      "link": "https://www.pulse.com.gh/story/kweku-smoke-apple-music-ghana-top-20-2026112310580326530",
+      "ts": 1795448947695,
+      "images": [
+          "images/apple-music-ghana-top-20-kweku-smoke-nine-songs-nov-23.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
+      "id": "twinsdntbeg-canon-collaboration-african-visual-storytelling",
+      "title": "TwinsDntBeg team up with Canon to back young African creatives",
+      "cat": "News",
+      "by": "News desk",
+      "body": "Ghanaian photography and videography duo TwinsDntBeg have announced a collaboration with Canon 📸 The twin brothers, who work under Swag of Africa Studios, say the partnership is about supporting emerging African photographers, filmmakers and content creators.\n\nThey are also looking at a masterclass covering how to plan a shoot, cover live events and turn photos and footage into stories.\n\nThe duo's music-video work includes the visual for Rocky Dawuni's \"Rise\", which earned a Music Film of the Year nomination at the Black Stars International Film Festival in 2025.\nSource: GhanaWeb",
+      "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/TwinsDntBeg-secures-Canon-collaboration-to-promote-African-visual-storytelling-2062607",
+      "ts": 1795448947694,
+      "images": [
+          "images/twinsdntbeg-canon-collaboration-african-visual-storytelling.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
       "id": "emy-africa-2026-kweku-smoke-kojo-antwi-winners",
       "title": "Kweku Smoke and Kojo Antwi honoured at the 11th EMY Africa Awards",
       "cat": "Events",
