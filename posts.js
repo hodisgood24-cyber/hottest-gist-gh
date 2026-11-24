@@ -1,6 +1,48 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "saint-chicago-hum-paare-hit-king-promise",
+      "title": "Saint Chicago explains how \"Hum Paare\" became a hit, King Promise approves",
+      "cat": "Trending",
+      "by": "News desk",
+      "body": "Northern Region artiste Saint Chicago says her song \"Hum Paare\" sat unreleased for about three years before it took off 🔥 She told Kasapa FM that a visiting artiste offered to feature on it, which finally pushed her to put it out.\n\nThe first week was slow, with only around 200 people using the sound online, and she admits she nearly gave up. The turning point was an unplanned video in a Fulani outfit, which got people watching and creators using the sound. She thanked Lasmid and Shatta Wale for their support.\n\nKing Promise has also joined the fans. He told TV3 the track kept showing up on his feeds for about two weeks and called it \"fire\".\nSource: GhanaWeb",
+      "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Saint-Chicago-reveals-how-Hum-Paare-became-a-hit-three-years-after-recording-2062546",
+      "ts": 1795503051685,
+      "images": [
+          "images/saint-chicago-hum-paare-hit-king-promise.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
+      "id": "stonebwoy-hails-black-challenge-world-cup-win",
+      "title": "Stonebwoy hails Black Challenge after amputee football World Cup win",
+      "cat": "News",
+      "by": "News desk",
+      "body": "Stonebwoy has congratulated Ghana's amputee football team, the Black Challenge, after they won the 2026 Amputee Football World Cup 🏆 Ghana beat Morocco 1-0 in Sunday's final in Mexico, with captain Richard Opentil scoring in the 32nd minute.\n\nThe musician donated GH¢100,000 to the team in October and says he is glad it encouraged others to give too. It is Ghana's first World Cup title, and Mubarik Mohammed took the Golden Boot with seven goals.\n\nThe squad is due back in Ghana today, Tuesday 24 November.\nSource: Pulse Ghana",
+      "link": "https://www.pulse.com.gh/story/stonebwoy-hails-black-challenge-amputee-world-cup-win-2026112405021142634",
+      "ts": 1795503051685,
+      "images": [
+          "images/stonebwoy-hails-black-challenge-world-cup-win.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
+      "id": "kwaw-kese-22-years-no-new-hits-needed",
+      "title": "Kwaw Kese says 22 years in, he doesn't need new hits to stay relevant",
+      "cat": "Hiplife",
+      "by": "News desk",
+      "body": "Veteran rapper Kwaw Kese says fans still ask for his older songs at shows, so he feels no pressure to chase new hits after 22 years in music 🎤 He said Gen Z artistes now lead the scene, while veterans mostly make music for fun.\n\nHe also teased a song with Shatta Wale, saying fans have been asking for the pair to reunite. On his favourite rappers, he put Kofi Mole first and Kweku Smoke second.\nSource: GhanaWeb",
+      "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/I-don-t-need-new-hit-songs-to-stay-relevant-after-22-years-in-music-Kwaw-Kese-2062634",
+      "ts": 1795503051685,
+      "images": [
+          "images/kwaw-kese-22-years-no-new-hits-needed.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
       "id": "apple-music-ghana-top-20-kweku-smoke-nine-songs-nov-23",
       "title": "Kweku Smoke holds nine spots on Apple Music Ghana's Top 20",
       "cat": "Trending",
