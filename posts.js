@@ -1,6 +1,50 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "tic-obrafour-reggie-borga-kings-party-dates",
+      "title": "TiC, Obrafour and Reggie Rockstone add two \"Borga Kings\" party dates in December",
+      "cat": "Events",
+      "by": "News desk",
+      "body": "TiC, Obrafour and Reggie Rockstone are not done yet 🎉 After their sold-out Energy Night concert at Zen Garden, two more \"Borga Kings\" party dates have been announced.\n\nThe first is on Thursday, December 10 at Republic Bar in Osu, followed by another on Saturday, December 12.\n\nGhanaWeb reports that the organisers are promising classic songs from all three, with December in GH visitors from the diaspora in mind.\nSource: GhanaWeb",
+      "ts": 1795708526109,
+      "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Tic-Tac-Obrafour-and-Reggie-Rockstone-announce-two-more-Borga-Kings-party-dates-2063174",
+      "images": [
+          "images/tic-obrafour-reggie-borga-kings-party-dates.jpg"
+      ],
+      "pin": false,
+      "status": "live",
+      "eventAt": 1796860800000
+  },
+  {
+      "id": "afua-asantewaa-third-singathon-canada-2027",
+      "title": "Afua Asantewaa sets third singathon record attempt for Canada in 2027",
+      "cat": "News",
+      "by": "News desk",
+      "body": "Afua Asantewaa is going for it again 🎤 She has announced a third attempt at the Guinness World Record for the longest singing marathon by an individual, set for July 27, 2027 in Ontario, Canada.\n\nIt follows her earlier unsuccessful attempts in Accra in 2023 and Kumasi in 2024. The Canada edition is being organised with The ACE Foundation and Bee Connected Academy.\n\nPulse Ghana reports that her setlist mixes Ghanaian classics with international songs, including Bob Marley's \"Three Little Birds\".\nSource: Pulse Ghana",
+      "ts": 1795708526109,
+      "link": "https://www.pulse.com.gh/story/afua-asantewaa-guinness-world-record-singing-marathon-canada-2027-2026112609330012585",
+      "images": [
+          "images/afua-asantewaa-third-singathon-canada-2027.jpg"
+      ],
+      "pin": false,
+      "status": "live",
+      "eventAt": 1816646400000
+  },
+  {
+      "id": "m-jay-ngolo-kante-single-coming",
+      "title": "M Jay is getting ready to release new single \"Ngolo Kante!\"",
+      "cat": "Afrobeats",
+      "by": "News desk",
+      "body": "Ghanaian artiste M Jay has a new single on the way called \"Ngolo Kante!\", borrowing its name from the French footballer N'Golo Kante ⚽ It is described as a motivational Afrobeat and dancehall tune about perseverance and self-belief.\n\nThe news follows M Jay's wins at the Ghana Music Awards Europe 2026, for Best Diaspora Hiplife-Pop Artist of the Year and Best Diaspora New Artiste of the Year.\n\nThere is no release date yet, but MyJoyOnline reports that one is expected soon.\nSource: MyJoyOnline",
+      "ts": 1795708526109,
+      "link": "https://www.myjoyonline.com/ghanaian-award-winning-artiste-m-jay-set-to-release-single-ngolo-kante/",
+      "images": [
+          "images/m-jay-ngolo-kante-single-coming.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
       "id": "sarkodie-music-is-art-not-competition",
       "title": "Sarkodie to musicians: music is art, not a competition",
       "cat": "Hiplife",
