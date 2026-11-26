@@ -1,6 +1,48 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "sarkodie-music-is-art-not-competition",
+      "title": "Sarkodie to musicians: music is art, not a competition",
+      "cat": "Hiplife",
+      "by": "News desk",
+      "body": "Sarkodie has some advice for fellow musicians: don't let chart positions take over 🎤 In a post on X on Wednesday, the rapper encouraged artistes to focus on their craft instead of chasing quick streaming numbers.\n\n\"It's art, not a competition,\" he wrote, adding that there is no need to rush to get a song to number one.\nSource: Pulse Ghana",
+      "link": "https://www.pulse.com.gh/story/sarkodie-musicians-artistry-over-chart-dominance-2026112517343717228",
+      "ts": 1795676213675,
+      "images": [
+          "images/sarkodie-music-is-art-not-competition.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
+      "id": "ik-ansong-onyame-asem-gospel-single",
+      "title": "I.K. Ansong releases new gospel single \"Onyame Asem\" with a video",
+      "cat": "Gospel",
+      "by": "News desk",
+      "body": "Gospel musician I.K. Ansong has a new single out called \"Onyame Asem\", meaning \"God's Word\" 🙏 The gospel highlife song comes with an official music video and is available on digital platforms.\n\nIt draws on John 1:1 and Isaiah 53:5, with a message of faith, healing and hope.\nSource: GhanaWeb",
+      "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/I-K-Ansong-unveils-powerful-new-gospel-single-Onyame-Asem-2063020",
+      "ts": 1795676213675,
+      "images": [
+          "images/ik-ansong-onyame-asem-gospel-single.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
+      "id": "royal-tasha-miezah-ronaldo-yacht-album-launch",
+      "title": "Royal Tasha launches \"Miezah Ronaldo\" album on a yacht",
+      "cat": "News",
+      "by": "News desk",
+      "body": "Royal Tasha has launched a new album, \"Miezah Ronaldo\", aboard a yacht as a tribute to football star Cristiano Ronaldo ⚽ The five songs are \"Daily Bread\", \"King of My Castle\", \"Celebration\", \"Ronaldo\" and \"CR7\".\n\nGhanaWeb reports that Royal Tasha also donated hospital equipment to hospitals in Africa in Ronaldo's honour.\n\nMore activities are planned for December, including a Christmas giveaway on Atinka TV on December 23 and a Christmas party and barbecue night in the UK on December 25.\nSource: GhanaWeb",
+      "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Royal-Tasha-honours-Ronaldo-with-yacht-album-launch-hospital-donations-2063038",
+      "ts": 1795676213675,
+      "images": [
+          "images/royal-tasha-miezah-ronaldo-yacht-album-launch.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
       "id": "saint-chicago-hum-paare-hit-king-promise",
       "title": "Saint Chicago explains how \"Hum Paare\" became a hit, King Promise approves",
       "cat": "Trending",
