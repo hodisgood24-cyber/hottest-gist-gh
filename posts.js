@@ -1,6 +1,20 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "tomi-thomas-ghana-music-influence-highlife",
+      "title": "Tomi Thomas says Ghana's music has influenced Nigeria, wants more highlife",
+      "cat": "Highlife",
+      "by": "News desk",
+      "body": "Nigerian singer Tomi Thomas is showing Ghana some love 🇬🇭 Speaking on TV3's \"Afternoon Show\", he said Ghana's music scene has long been an influential one, including on Nigeria.\n\nHe also wants to make more highlife, and named Pat Thomas as a dream collaborator. Tomi Thomas has already worked with Stonebwoy, M.anifest and Efya.\nSource: Pulse Ghana",
+      "ts": 1795762650390,
+      "link": "https://www.pulse.com.gh/story/tomi-thomas-ghana-music-highlife-pat-thomas-2026112616424041087",
+      "images": [
+          "images/tomi-thomas-ghana-music-influence-highlife.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
       "id": "tic-obrafour-reggie-borga-kings-party-dates",
       "title": "TiC, Obrafour and Reggie Rockstone add two \"Borga Kings\" party dates in December",
       "cat": "Events",
