@@ -1,6 +1,50 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "kojo-blak-blak-rave-serallio-dec-22",
+      "title": "Kojo Blak sets first headline concert, \"Blak Rave\", for December 22 in Accra",
+      "cat": "Events",
+      "by": "News desk",
+      "body": "Kojo Blak is getting his own big night 🔥 His first headline concert, \"Blak Rave\", is set for Tuesday, December 22 at Serallio in Osu, Accra.\n\nIt will be a ticketed show, but ticket prices and supporting acts have not been announced yet.\n\nThe news comes after his wins for Best New Artiste and Best Afrobeats Song, for \"Excellent\" featuring Kelvyn Boy, at the Telecel Ghana Music Awards in May.\nSource: 3News",
+      "ts": 1795794905124,
+      "link": "https://3news.com/showbiz/music/kojo-blak-first-headline-concert-blak-rave",
+      "images": [
+          "images/kojo-blak-blak-rave-serallio-dec-22.jpg"
+      ],
+      "pin": false,
+      "status": "live",
+      "eventAt": 1797897600000
+  },
+  {
+      "id": "fameye-our-day-homecoming-concert-tarkwa",
+      "title": "Fameye announces first homecoming concert, \"Our Day\", in Tarkwa on December 18",
+      "cat": "Events",
+      "by": "News desk",
+      "body": "Fameye is taking the music home 🎤 He has announced his first-ever homecoming concert in Tarkwa, titled \"Our Day\".\n\nThe show is set for Friday, December 18, 2026 at the TNA Sports Stadium.\nSource: GhanaWeb",
+      "ts": 1795794905124,
+      "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/Fameye-announces-first-ever-homecoming-concert-in-Tarkwa-2063220",
+      "images": [
+          "images/fameye-our-day-homecoming-concert-tarkwa.jpg"
+      ],
+      "pin": false,
+      "status": "live",
+      "eventAt": 1797552000000
+  },
+  {
+      "id": "nsromamusic-brand-new-day-release",
+      "title": "NSROMAmusic marks her birthday with new release \"Brand New Day\"",
+      "cat": "Gospel",
+      "by": "News desk",
+      "body": "NSROMAmusic celebrated her birthday with new music 🙏 MyJoyOnline reports that she released \"Brand New Day\" on Thursday, November 26.\n\nIt follows her earlier work, \"His Word\" and \"RADIANCE 2026: A Heavenly Sound\".\nSource: MyJoyOnline",
+      "ts": 1795794905124,
+      "link": "https://www.myjoyonline.com/brand-new-day-nsromamusics-next-move/",
+      "images": [
+          "images/nsromamusic-brand-new-day-release.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
       "id": "tomi-thomas-ghana-music-influence-highlife",
       "title": "Tomi Thomas says Ghana's music has influenced Nigeria, wants more highlife",
       "cat": "Highlife",
