@@ -1,6 +1,49 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+    "id": "rama-blak-women-in-highlife-concert-dec-5",
+    "title": "Rama Blak to celebrate women in highlife at \"Blackness I\" concert on December 5",
+    "cat": "Events",
+    "by": "News desk",
+    "body": "Highlife's women are getting their own night 🎶 Rama Blak is set to stage \"Blackness I: Women in Highlife\" on Saturday, December 5, at +233 Jazz Bar and Grill in Accra.\n\nSusan Augustt, Yahyra and Abiana are the guest artistes, and Mzbel will make a special appearance.\n\nThe concert's theme is \"Celebrating Women in Ghanaian Highlife\". Rama Blak's song \"Kwame Macho\" earned a Record of the Year nomination at the TGMA.\nSource: Graphic Online",
+    "ts": 1795880982071,
+    "link": "https://www.graphic.com.gh/entertainment/showbiz-news/rama-blak-celebrates-women-in-highlife.html",
+    "images": [
+      "images/rama-blak-women-in-highlife-concert-dec-5.jpg"
+    ],
+    "pin": false,
+    "status": "live",
+    "eventAt": 1796428800000
+  },
+  {
+    "id": "wendy-shay-concert-2026-over-2-million-cedis",
+    "title": "Wendy Shay says her team spent over GH¢2 million on Shay Concert 2026",
+    "cat": "Celebrity",
+    "by": "News desk",
+    "body": "Putting on a big free show doesn't come cheap. In an interview with Nana Romeo, Wendy Shay said her team spent more than GH¢2 million on this year's Shay Concert.\n\nThe fifth edition was held on November 21 at the forecourt of West Hills Mall in Weija, Accra, with free entry. She said the money went into things like the stage, sound, lighting, security, water, a health screening and gifts for bloggers and the media.\n\nSarkodie made a surprise appearance and Black Sherif joined in on stage. Other performers included Kofi Kinaata, Fameye, Lasmid, Obrafour, Sista Afia and Kofi Mole 🔥\nSource: GhanaWeb",
+    "ts": 1795880982071,
+    "link": "https://www.ghanaweb.com/GhanaHomePage/entertainment/I-spent-over-GH-2m-on-Shay-Concert-2026-Wendy-Shay-2063416",
+    "images": [
+      "images/wendy-shay-concert-2026-over-2-million-cedis.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
+    "id": "rex-omar-kweku-smoke-favourite-young-artiste",
+    "title": "Rex Omar names Kweku Smoke as his favourite young Ghanaian artiste",
+    "cat": "Hiplife",
+    "by": "News desk",
+    "body": "Kweku Smoke has a fan in a highly respected veteran 🎤 Rex Omar has named the rapper as his favourite young Ghanaian artiste.\n\nSpeaking on TV3's Afternoon Show on Thursday, November 26, he said: \"He's my favourite now. The guy is deep. He's almost a poet.\"\n\nRex Omar, who is also a cultural ambassador and coordinator of the Black Star Experience Secretariat, added that he sees his younger self in Smoke.\nSource: 3News",
+    "ts": 1795880982071,
+    "link": "https://3news.com/showbiz/music/rex-omar-names-kweku-smoke-favourite-young-ghanaian",
+    "images": [
+      "images/rex-omar-kweku-smoke-favourite-young-artiste.jpg"
+    ],
+    "pin": false,
+    "status": "live"
+  },
+  {
       "id": "stonebwoy-marry-you-torcher-iii-single",
       "title": "Stonebwoy releases \"Marry You\", first single from \"TORCHER III: Flames of Love\"",
       "cat": "Afrobeats",
