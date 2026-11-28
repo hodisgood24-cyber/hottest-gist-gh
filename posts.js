@@ -1,6 +1,49 @@
 /* Your posts. See README.txt for how to add or edit them. */
 window.POSTS = [
   {
+      "id": "stonebwoy-marry-you-torcher-iii-single",
+      "title": "Stonebwoy releases \"Marry You\", first single from \"TORCHER III: Flames of Love\"",
+      "cat": "Afrobeats",
+      "by": "News desk",
+      "body": "Stonebwoy has new music out 🔥 \"Marry You\" is the first official single from his upcoming album, \"TORCHER III: Flames of Love\", the third part of his Torcher series.\n\nThe Afro-dancehall tune was produced by Selasi, a Ghanaian producer based in the US.\n\nThe music video was shot in Atlanta and directed by Kwaku Kwakye. It features Stonebwoy's wife, Dr Louisa, and their two children.\nSource: MyJoyOnline",
+      "ts": 1795848637168,
+      "link": "https://www.myjoyonline.com/stonebwoy-releases-marry-you-ahead-of-torcher-iii-album/",
+      "images": [
+          "images/stonebwoy-marry-you-torcher-iii-single.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
+      "id": "black-sherif-guinness-ghana-dj-awards-2026-dec-4",
+      "title": "Black Sherif celebrates DJs ahead of Guinness Ghana DJ Awards on December 4",
+      "cat": "Events",
+      "by": "News desk",
+      "body": "Black Sherif is giving DJs their flowers 🎧 Ahead of the 2026 Guinness Ghana DJ Awards, he described them as \"the roots\" of the music Ghana sends to the world, and prayed for their success.\n\nThe awards, powered by Smirnoff, are set for December 4 at the Palms Convention Centre in Accra, under the theme \"All Out\".\n\nPerformers named so far include DJ Wallpaper, DJ Juicy, Viq and DJ Onaapo.\nSource: Adom Online",
+      "ts": 1795848637168,
+      "link": "https://www.adomonline.com/may-god-fill-your-pockets-black-sherif-celebrates-djs-ahead-of-2026-guinness-ghana-dj-awards/",
+      "images": [
+          "images/black-sherif-guinness-ghana-dj-awards-2026-dec-4.jpg"
+      ],
+      "pin": false,
+      "status": "live",
+      "eventAt": 1796342400000
+  },
+  {
+      "id": "reinna-turn-my-back-single",
+      "title": "Emerging artiste Reinna releases new single \"Turn My Back\"",
+      "cat": "News",
+      "by": "News desk",
+      "body": "Here is a new voice to check out 🎶 Emerging Ghanaian artiste Reinna has released a new single called \"Turn My Back\".\n\nThe song is about resilience and refusing to give up. MyJoyOnline reports that it is out now on digital platforms.\nSource: MyJoyOnline",
+      "ts": 1795848637168,
+      "link": "https://www.myjoyonline.com/reinna-releases-new-single-turn-my-back/",
+      "images": [
+          "images/reinna-turn-my-back-single.jpg"
+      ],
+      "pin": false,
+      "status": "live"
+  },
+  {
       "id": "kojo-blak-blak-rave-serallio-dec-22",
       "title": "Kojo Blak sets first headline concert, \"Blak Rave\", for December 22 in Accra",
       "cat": "Events",
